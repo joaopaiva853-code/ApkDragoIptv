@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1a0a00">
+    <title>🐉 Dragon IPTV Revenda</title>
+    <style>
+        :root {
+            --bg: #0a0014;
+            --sidebar-bg: #0d001a;
+            --card-bg: rgba(20, 5, 40, 0.7);
+            --border: rgba(255, 107, 0, 0.3);
+            --text: #f0e6ff;
+            --text-secondary: #c4b5d4;
+            --primary: #FF6B00;
+            --success: #00e676;
+            --warning: #FFD700;
+            --danger: #ff4757;
+            --info: #40c4ff;
+            --radius: 16px;
+            --glass: rgba(10, 0, 20, 0.7);
+            --glass-border: rgba(255, 107, 0, 0.35);
+            --gradient-dragon: linear-gradient(135deg, #FF6B00, #FF8C00, #FFD700, #FF6B00);
+            --safe-bottom: env(safe-area-inset-bottom, 10px);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0014; color: var(--text); min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; overflow-x: hidden; position: relative; }
+        body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 20% 30%, rgba(255,107,0,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(0,102,204,0.12) 0%, transparent 50%), radial-gradient(ellipse at 50% 10%, rgba(255,215,0,0.08) 0%, transparent 40%); pointer-events: none; z-index: 0; }
+
+        .mobile-header { display: flex; position: sticky; top: 0; z-index: 50; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 12px 14px; align-items: center; justify-content: space-between; min-height: 52px; }
+        .mobile-header .logo-mobile { font-size: 1.1rem; font-weight: 800; background: var(--gradient-dragon); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientFlow 2s ease infinite; display: flex; align-items: center; gap: 6px; }
+        .hamburger { background: var(--card-bg); border: 2px solid var(--glass-border); color: var(--warning); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); transition: all 0.3s; }
+        .hamburger:active { transform: scale(0.9); background: var(--gradient-dragon); color: #fff; }
+
+        .sidebar { width: 280px; max-width: 85vw; background: rgba(5,0,15,0.95); border-right: 2px solid var(--glass-border); display: flex; flex-direction: column; gap: 4px; position: fixed; top: 0; left: 0; height: 100vh; height: 100dvh; z-index: 100; transition: transform 0.35s ease; padding: 16px 10px; overflow-y: auto; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transform: translateX(-100%); }
+        .sidebar.open { transform: translateX(0); }
+        .sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 99; backdrop-filter: blur(6px); }
+        .sidebar-backdrop.active { display: block; }
+        .sidebar .logo { display: flex; align-items: center; gap: 8px; padding: 8px 10px 16px; font-size: 1.1rem; font-weight: 800; user-select: none; }
+        .sidebar .logo span { background: var(--gradient-dragon); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientFlow 2s ease infinite; }
+        .sidebar nav { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+        .sidebar nav a { display: flex; align-items: center; gap: 8px; padding: 11px 12px; border-radius: 12px; text-decoration: none; color: var(--text-secondary); font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; border: 1px solid transparent; position: relative; overflow: hidden; user-select: none; }
+        .sidebar nav a::before { content: ''; position: absolute; inset: 0; background: var(--gradient-dragon); opacity: 0; transition: opacity 0.3s; border-radius: 12px; }
+        .sidebar nav a:hover::before, .sidebar nav a.active::before { opacity: 1; }
+        .sidebar nav a span { position: relative; z-index: 1; }
+        .sidebar nav a:hover, .sidebar nav a.active { color: #fff; transform: translateX(4px); box-shadow: 0 0 25px rgba(255,107,0,0.5); border-color: rgba(255,215,0,0.5); }
+        .badge { margin-left: auto; background: linear-gradient(135deg, #ff4757, #ff6b81); color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; position: relative; z-index: 1; animation: pulseGlow 2s infinite; }
+
+        .main { flex: 1; padding: 16px 12px; padding-bottom: calc(20px + var(--safe-bottom)); position: relative; z-index: 1; transition: all 0.35s ease; }
+        .page { display: none; animation: fadeInScale 0.4s ease; }
+        .page.active { display: block; }
+        h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 2px; background: var(--gradient-dragon); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradientFlow 2s ease infinite; }
+        .subtitle { color: var(--text-secondary); font-size: 0.78rem; margin-bottom: 16px; }
+
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+        .card { background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 14px 12px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s; }
+        .card:active { transform: scale(0.97); }
+        .card:hover { border-color: var(--warning); box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .card-icon { font-size: 1.5rem; margin-bottom: 6px; display: block; animation: float 2.5s ease-in-out infinite; }
+        .card-value { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px; }
+        .card-label { color: var(--text-secondary); font-size: 0.7rem; font-weight: 500; }
+        .card.accent-purple { border-left: 3px solid var(--primary); background: linear-gradient(145deg, rgba(255,107,0,0.2), rgba(255,140,0,0.08)); }
+        .card.accent-green { border-left: 3px solid var(--success); background: linear-gradient(145deg, rgba(0,230,118,0.2), rgba(105,240,174,0.08)); }
+        .card.accent-red { border-left: 3px solid var(--danger); background: linear-gradient(145deg, rgba(255,71,87,0.2), rgba(255,107,129,0.08)); }
+        .card.accent-orange { border-left: 3px solid var(--warning); background: linear-gradient(145deg, rgba(255,215,0,0.2), rgba(255,235,100,0.08)); }
+        .card.accent-blue { border-left: 3px solid var(--info); background: linear-gradient(145deg, rgba(0,102,204,0.2), rgba(51,153,255,0.08)); }
+        .card .card-hint { position: absolute; bottom: 8px; right: 10px; font-size: 0.6rem; color: var(--text-secondary); opacity: 0.6; }
+
+        .table-container { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--radius); overflow: hidden; box-shadow: 0 0 30px rgba(255,107,0,0.2); }
+        .table-header { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); }
+        .table-header input, .table-header select { width: 100%; background: rgba(10,0,20,0.6); border: 1px solid var(--glass-border); color: var(--text); padding: 10px 12px; border-radius: 10px; font-size: 0.82rem; }
+        .table-header input:focus, .table-header select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,107,0,0.3); outline: none; }
+        .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .table-scroll::-webkit-scrollbar { display: none; }
+        .btn { padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer; font-weight: 700; font-size: 0.82rem; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; transition: all 0.3s; width: 100%; justify-content: center; }
+        .btn:active { transform: scale(0.94); }
+        .btn-primary { background: var(--gradient-dragon); background-size: 300% auto; color: #fff; box-shadow: 0 0 25px rgba(255,107,0,0.5); animation: gradientFlow 2s ease infinite; }
+        .btn-sm { padding: 6px 10px; font-size: 0.7rem; border-radius: 8px; width: auto; }
+        .btn-danger { background: transparent; border: 2px solid var(--danger); color: var(--danger); width: auto; }
+        .btn-success { background: linear-gradient(135deg, #00e676, #69f0ae); color: #000; font-weight: 700; width: auto; }
+        .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: var(--text); width: auto; }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; width: auto; }
+        .btn-edit { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; font-weight: 700; width: auto; }
+        table { width: 100%; min-width: 450px; border-collapse: collapse; font-size: 0.7rem; }
+        table th, table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--glass-border); white-space: nowrap; }
+        table th { background: rgba(255,107,0,0.08); font-weight: 700; color: var(--warning); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; }
+        table tbody tr:hover { background: rgba(255,107,0,0.06); }
+        .status-badge { padding: 3px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
+        .status-ativo { background: rgba(0,230,118,0.15); color: var(--success); border: 1px solid rgba(0,230,118,0.3); }
+        .status-vencido { background: rgba(255,71,87,0.15); color: var(--danger); border: 1px solid rgba(255,71,87,0.3); }
+        .status-pendente { background: rgba(255,215,0,0.15); color: var(--warning); border: 1px solid rgba(255,215,0,0.3); }
+        .empty-state { text-align: center; padding: 40px 16px; color: var(--text-secondary); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; display: flex; align-items: flex-end; justify-content: center; backdrop-filter: blur(10px); animation: fadeInScale 0.3s ease; }
+        .modal { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: var(--radius) var(--radius) 0 0; padding: 18px 14px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 -10px 50px rgba(255,107,0,0.3); animation: slideUp 0.35s ease; }
+        .modal h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 14px; background: var(--gradient-dragon); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .modal label { font-size: 0.72rem; color: var(--text-secondary); display: block; margin-bottom: 3px; font-weight: 600; }
+        .modal input, .modal select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(10,0,20,0.5); color: var(--text); font-size: 0.85rem; margin-bottom: 10px; }
+        .modal input:focus, .modal select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,107,0,0.3); outline: none; }
+        .modal .btn-row { display: flex; gap: 6px; justify-content: flex-end; margin-top: 12px; }
+        .modal .btn-row .btn { width: auto; }
+        .modal .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+        .glass-panel { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 14px; }
+        .chart-container { display: flex; align-items: flex-end; gap: 4px; height: 100px; margin-top: 10px; }
+        .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .chart-bar { width: 100%; max-width: 30px; border-radius: 6px 6px 0 0; background: var(--gradient-dragon); box-shadow: 0 0 20px rgba(255,107,0,0.6); transition: height 0.5s ease; }
+
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gradient-dragon); background-size: 300% auto; color: #fff; padding: 10px 18px; border-radius: 20px; font-weight: 700; z-index: 300; animation: toastIn 0.4s ease forwards; white-space: nowrap; font-size: 0.78rem; box-shadow: 0 0 30px rgba(255,107,0,0.7); }
+        .toast.leaving { animation: toastOut 0.3s ease forwards; }
+
+        .aviso-info { background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 0.75rem; color: var(--warning); display: flex; align-items: center; gap: 6px; }
+
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 15px rgba(255,107,0,0.4); } 50% { box-shadow: 0 0 35px rgba(255,107,0,0.8); } }
+        @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(25px) scale(0.9); } to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); } to { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.9); } }
+
+        @media (min-width: 768px) {
+            .mobile-header { display: none; }
+            .sidebar { transform: translateX(0); width: 260px; position: fixed; }
+            .sidebar-backdrop { display: none !important; }
+            .main { margin-left: 260px; padding: 24px 20px; }
+            .cards-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+            .card { padding: 18px 16px; }
+            .card-value { font-size: 1.6rem; }
+            .table-header { flex-direction: row; }
+            .table-header input, .table-header select { width: auto; flex: 1; }
+            .btn { width: auto; }
+            .modal { max-width: 550px; }
+            .chart-container { height: 130px; }
+            .chart-bar { max-width: 40px; }
+            h2 { font-size: 1.5rem; }
+        }
+        @media (min-width: 1024px) {
+            .sidebar { width: 280px; }
+            .main { margin-left: 280px; padding: 28px 24px; }
+            .cards-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="mobile-header">
+        <span class="logo-mobile">🐉 Dragon IPTV</span>
+        <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">⭐</button>
+    </header>
+
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo"><span>🐉 Dragon IPTV</span></div>
+        <nav>
+            <a class="active" data-page="dashboard" onclick="navigateTo('dashboard')">📊 <span>Dashboard</span></a>
+            <a data-page="clientes" onclick="navigateTo('clientes')">👥 <span>Clientes</span><span class="badge" id="badge-vencidos">0</span></a>
+            <a data-page="avisos" onclick="navigateTo('avisos')">💬 <span>Avisos</span><span class="badge" id="badge-avisos">0</span></a>
+            <a data-page="planos" onclick="navigateTo('planos')">📋 <span>Planos</span></a>
+            <a data-page="estoque" onclick="navigateTo('estoque')">📦 <span>Estoque</span></a>
+            <a data-page="financeiro" onclick="navigateTo('financeiro')">💰 <span>Financeiro</span></a>
+            <a data-page="relatorios" onclick="navigateTo('relatorios')">📈 <span>Relatórios</span></a>
+        </nav>
+    </aside>
+
+    <main class="main" id="main-content">
+        <!-- Dashboard -->
+        <div class="page active" id="page-dashboard">
+            <h2>📊 Dashboard do Guerreiro</h2>
+            <p class="subtitle">⚡ Clique nos cards para acessar cada seção</p>
+            <div class="cards-grid" id="dashboard-cards"></div>
+            <div class="glass-panel">
+                <h4 style="margin-bottom:10px;color:var(--warning);font-size:0.9rem;">📈 Poder de Receita (R$)</h4>
+                <div class="chart-container" id="chart-receita"></div>
+            </div>
+        </div>
+
+        <!-- Clientes -->
+        <div class="page" id="page-clientes">
+            <h2>👥 Guerreiros (Clientes)</h2>
+            <p class="subtitle">Gerencie seus assinantes</p>
+            <div class="table-container">
+                <div class="table-header">
+                    <input type="text" id="search-clientes" placeholder="🔍 Buscar guerreiro..." oninput="renderTabelaClientes()">
+                    <select id="filtro-status-clientes" onchange="renderTabelaClientes()">
+                        <option value="todos">🌟 Todos</option><option value="ativo">✅ Ativo</option><option value="vencido">⚠️ Vencido</option><option value="pendente">⏳ Pendente</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="abrirModalCliente()">✨ Novo Guerreiro</button>
+                </div>
+                <div class="table-scroll"><table><thead><tr><th>Nome</th><th>Tel</th><th>Plano</th><th>Valor</th><th>Custo</th><th>Lucro</th><th>Venc</th><th>Status</th><th>Ações</th></tr></thead><tbody id="tabela-clientes-body"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Avisos -->
+        <div class="page" id="page-avisos">
+            <h2>💬 Avisos WhatsApp</h2>
+            <p class="subtitle">⚡ Clientes que precisam de atenção (vencidos, vence hoje ou próximos 3 dias)</p>
+            <div class="aviso-info">
+                ⚠️ Alertas para: <strong>Vencidos</strong> • <strong>Vence hoje</strong> • <strong>Vence em até 3 dias</strong>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+                <button class="btn btn-whatsapp btn-sm" onclick="enviarAvisosWeb()">📱 WhatsApp Web</button>
+                <span id="contador-avisos" style="margin-left:auto;color:var(--warning);font-size:0.78rem;font-weight:600;"></span>
+            </div>
+            <div class="table-container"><div class="table-scroll"><table><thead><tr><th>Cliente</th><th>Tel</th><th>Plano</th><th>Venc</th><th>Situação</th><th>Status</th><th>Ação</th></tr></thead><tbody id="tabela-avisos-body"></tbody></table></div></div>
+        </div>
+
+        <!-- Planos -->
+        <div class="page" id="page-planos">
+            <h2>📋 Planos de Treinamento</h2>
+            <div class="table-container"><div class="table-header"><button class="btn btn-primary" onclick="abrirModalPlano()">✨ Novo Plano</button></div><div class="table-scroll"><table><thead><tr><th>Nome</th><th>Dias</th><th>Valor</th><th>Custo</th><th>Lucro</th><th>Ações</th></tr></thead><tbody id="tabela-planos-body"></tbody></table></div></div>
+        </div>
+
+        <!-- Estoque -->
+        <div class="page" id="page-estoque">
+            <h2>📦 Estoque das Esferas</h2>
+            <div class="table-container"><div class="table-header"><button class="btn btn-primary" onclick="abrirModalProduto()">✨ Novo Produto</button></div><div class="table-scroll"><table><thead><tr><th>Produto</th><th>Qtd</th><th>Última</th><th>Ações</th></tr></thead><tbody id="tabela-estoque-body"></tbody></table></div></div>
+        </div>
+
+        <!-- Financeiro -->
+        <div class="page" id="page-financeiro">
+            <h2>💰 Tesouro do Dragão</h2>
+            <div class="cards-grid" id="financeiro-cards"></div>
+            <div class="glass-panel" style="margin-top:12px;">
+                <h4 style="margin-bottom:8px;color:var(--warning);font-size:0.9rem;">📋 Resumo por Plano</h4>
+                <div class="table-scroll"><table id="tabela-resumo-planos"><thead><tr><th>Plano</th><th>Qtd</th><th>Receita</th><th>Custo</th><th>Lucro</th></tr></thead><tbody></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Relatórios -->
+        <div class="page" id="page-relatorios">
+            <h2>📈 Relatórios do Oráculo</h2>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+                <input type="date" id="rel-data-inicio" style="flex:1;min-width:100px;background:rgba(10,0,20,0.5);border:1px solid var(--glass-border);color:var(--text);padding:8px;border-radius:8px;font-size:0.8rem;">
+                <input type="date" id="rel-data-fim" style="flex:1;min-width:100px;background:rgba(10,0,20,0.5);border:1px solid var(--glass-border);color:var(--text);padding:8px;border-radius:8px;font-size:0.8rem;">
+                <button class="btn btn-primary btn-sm" onclick="atualizarRelatorios()">🔮 Filtrar</button>
+                <button class="btn btn-outline btn-sm" onclick="exportarCSV()">📥 CSV</button>
+            </div>
+            <div class="cards-grid" id="relatorio-cards"></div>
+            <div class="table-container" style="margin-top:12px;"><div class="table-scroll"><table><thead><tr><th>Cliente</th><th>Plano</th><th>Valor</th><th>Venc</th><th>Status</th></tr></thead><tbody id="rel-tabela-clientes"></tbody></table></div></div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="modal-cliente-overlay" style="display:none;" onclick="fecharModal(event, 'modal-cliente-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3 id="modal-cliente-title">✨ Novo Guerreiro</h3><form id="form-cliente" onsubmit="salvarCliente(event)"><input type="hidden" id="cliente-id"><label>👤 Nome *</label><input type="text" id="cliente-nome" required><label>📱 Telefone *</label><input type="text" id="cliente-telefone" required placeholder="5511999990000"><label>📋 Plano *</label><select id="cliente-plano" required onchange="atualizarValoresPlano()"><option value="">Selecione...</option></select><div class="form-row"><div><label>💵 Valor (R$)</label><input type="number" id="cliente-valor" step="0.01" required></div><div><label>📤 Custo (R$)</label><input type="number" id="cliente-custo" step="0.01"></div></div><div class="form-row"><div><label>📅 Início</label><input type="date" id="cliente-inicio"></div><div><label>📅 Vencimento *</label><input type="date" id="cliente-vencimento" required></div></div><label>📌 Status</label><select id="cliente-status"><option value="ativo">✅ Ativo</option><option value="vencido">⚠️ Vencido</option><option value="pendente">⏳ Pendente</option></select><div class="btn-row"><button type="button" class="btn btn-outline" onclick="fecharModal(null, 'modal-cliente-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">💾 Salvar</button></div></form></div></div>
+
+    <div class="modal-overlay" id="modal-plano-overlay" style="display:none;" onclick="fecharModal(event, 'modal-plano-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>📋 Plano</h3><form id="form-plano" onsubmit="salvarPlano(event)"><input type="hidden" id="plano-id"><label>📛 Nome *</label><input type="text" id="plano-nome" required><label>📅 Duração (dias) *</label><input type="number" id="plano-duracao" min="1" required><label>💵 Valor (R$)</label><input type="number" id="plano-valor" step="0.01" required><label>📤 Custo (R$)</label><input type="number" id="plano-custo" step="0.01"><div class="btn-row"><button type="button" class="btn btn-outline" onclick="fecharModal(null, 'modal-plano-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">💾 Salvar</button></div></form></div></div>
+
+    <div class="modal-overlay" id="modal-produto-overlay" style="display:none;" onclick="fecharModal(event, 'modal-produto-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>📦 Produto</h3><form id="form-produto" onsubmit="salvarProduto(event)"><input type="hidden" id="produto-id"><label>🏷️ Nome *</label><input type="text" id="produto-nome" required><label>📦 Qtd Inicial</label><input type="number" id="produto-qtd-inicial" value="0"><div class="btn-row"><button type="button" class="btn btn-outline" onclick="fecharModal(null, 'modal-produto-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">💾 Salvar</button></div></form></div></div>
+
+    <div class="modal-overlay" id="modal-movimentacao-overlay" style="display:none;" onclick="fecharModal(event, 'modal-movimentacao-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3 id="modal-movimentacao-title">📦 Movimentação</h3><form id="form-movimentacao" onsubmit="salvarMovimentacao(event)"><input type="hidden" id="mov-produto-id"><input type="hidden" id="mov-tipo"><p style="margin-bottom:8px;">Produto: <strong id="mov-produto-nome" style="color:#FFD700;"></strong></p><label>🔢 Quantidade *</label><input type="number" id="mov-quantidade" min="1" required><label>📅 Data</label><input type="date" id="mov-data"><label>📝 Obs</label><input type="text" id="mov-obs"><div class="btn-row"><button type="button" class="btn btn-outline" onclick="fecharModal(null, 'modal-movimentacao-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">💾 Registrar</button></div></form></div></div>
+
+    <div id="toast" class="toast" style="display:none;"></div>
+
+    <script>
+        const STORAGE_KEYS = { clientes: 'iptv_c15', planos: 'iptv_p15', produtos: 'iptv_pr15' };
+        let clientes = [], planos = [], produtos = [];
+        const DIAS_AVISO_PREVIO = 3;
+
+        const gerarId = () => 'id_' + Date.now() + Math.random().toString(36).substr(2, 6);
+        const addDias = (data, dias) => { const d = new Date(data); d.setDate(d.getDate() + dias); return d.toISOString().split('T')[0]; };
+        const formatarData = s => { if (!s) return '-'; const [a, m, d] = s.split('-'); return `${d}/${m}/${a}`; };
+        const formatarMoeda = v => Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+        const calcularLucro = (v, c) => (Number(v) || 0) - (Number(c) || 0);
+        const hojeStr = () => new Date().toISOString().split('T')[0];
+        const getDuracaoMeses = nome => { const p = planos.find(pl => pl.nome === nome); return p ? Math.max(p.duracao / 30, 0.5) : 1; };
+        const salvar = tipo => { const map = { clientes: STORAGE_KEYS.clientes, planos: STORAGE_KEYS.planos, produtos: STORAGE_KEYS.produtos }; const data = { clientes, planos, produtos }; localStorage.setItem(map[tipo], JSON.stringify(data[tipo])); };
+
+        function carregarDados() {
+            clientes = JSON.parse(localStorage.getItem(STORAGE_KEYS.clientes) || '[]');
+            planos = JSON.parse(localStorage.getItem(STORAGE_KEYS.planos) || '[]');
+            produtos = JSON.parse(localStorage.getItem(STORAGE_KEYS.produtos) || '[]');
+            if (planos.length === 0) { planos = [{ id: 'p1', nome: 'Mensal', duracao: 30, valor: 35, custo: 15 }, { id: 'p2', nome: 'Trimestral', duracao: 90, valor: 90, custo: 35 }, { id: 'p3', nome: 'Anual', duracao: 365, valor: 300, custo: 100 }]; salvar('planos'); }
+            if (produtos.length === 0) { produtos = [{ id: 'pr1', nome: 'Crédito IPTV', quantidade: 20, movimentacoes: [{ tipo: 'entrada', quantidade: 20, data: hojeStr(), obs: 'Estoque inicial' }] }, { id: 'pr2', nome: 'TV Box', quantidade: 10, movimentacoes: [{ tipo: 'entrada', quantidade: 10, data: hojeStr(), obs: 'Compra' }] }]; salvar('produtos'); }
+            if (clientes.length === 0) { const h = new Date(); clientes = [{ id: 'c1', nome: 'Goku Silva', telefone: '5511987654321', plano: 'Mensal', valor: 35, custo: 15, inicio: addDias(h, -20), vencimento: addDias(h, 10), status: 'ativo' }, { id: 'c2', nome: 'Vegeta Santos', telefone: '5521976543210', plano: 'Trimestral', valor: 90, custo: 35, inicio: addDias(h, -60), vencimento: addDias(h, 30), status: 'ativo' }, { id: 'c3', nome: 'Piccolo Oliveira', telefone: '5531965432109', plano: 'Anual', valor: 300, custo: 100, inicio: addDias(h, -200), vencimento: addDias(h, -5), status: 'vencido' }, { id: 'c4', nome: 'Kuririn Souza', telefone: '5541987654321', plano: 'Mensal', valor: 35, custo: 15, inicio: addDias(h, -25), vencimento: addDias(h, 2), status: 'ativo' }]; salvar('clientes'); }
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-backdrop').classList.toggle('active'); }
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+            document.querySelector(`.sidebar nav a[data-page="${page}"]`)?.classList.add('active');
+            if (window.innerWidth < 768) toggleSidebar();
+            atualizarTudo();
+        }
+        function atualizarTudo() {
+            atualizarDashboard(); atualizarFinanceiro(); renderTabelaClientes(); renderTabelaPlanos();
+            renderTabelaEstoque(); renderTabelaAvisos(); atualizarBadges(); preencherSelectPlanos();
+            if (document.getElementById('page-relatorios').classList.contains('active')) atualizarRelatorios();
+        }
+        function atualizarBadges() { 
+            document.getElementById('badge-vencidos').textContent = clientes.filter(c => c.status === 'vencido').length; 
+            document.getElementById('badge-avisos').textContent = getClientesAviso().length; 
+        }
+
+        function getClientesAviso() {
+            const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+            return clientes.filter(c => {
+                if (c.status === 'cancelado') return false;
+                if (c.status === 'vencido' || c.status === 'pendente') return true;
+                if (c.status === 'ativo') {
+                    const venc = new Date(c.vencimento + 'T00:00:00');
+                    const diasRestantes = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+                    return diasRestantes >= 0 && diasRestantes <= DIAS_AVISO_PREVIO;
+                }
+                return false;
+            });
+        }
+
+        function getSituacaoAviso(c) {
+            if (c.status === 'vencido') return { texto: '🔴 Vencido', classe: 'status-vencido' };
+            if (c.status === 'pendente') return { texto: '🟡 Pendente', classe: 'status-pendente' };
+            const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+            const venc = new Date(c.vencimento + 'T00:00:00');
+            const dias = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+            if (dias === 0) return { texto: '🟠 Vence hoje!', classe: 'status-pendente' };
+            return { texto: `🟡 Vence em ${dias} dia(s)`, classe: 'status-pendente' };
+        }
+
+        function getMensagemAviso(c) {
+            const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+            const venc = new Date(c.vencimento + 'T00:00:00');
+            const dias = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+            if (c.status === 'vencido' || dias < 0) {
+                return `Olá ${c.nome}! 🐉 Seu plano *${c.plano}* está VENCIDO desde ${formatarData(c.vencimento)}. ⚠️ Renove agora para continuar seu treinamento! 💪 Valor: R$ ${formatarMoeda(c.valor)}`;
+            } else if (dias === 0) {
+                return `Olá ${c.nome}! ⚡ Seu plano *${c.plano}* VENCE HOJE (${formatarData(c.vencimento)})! 🏃‍♂️ Não perca o timing, renove agora! 💰 Valor: R$ ${formatarMoeda(c.valor)}`;
+            } else {
+                return `Olá ${c.nome}! 🔔 Seu plano *${c.plano}* vence em *${dias} dia(s)* (${formatarData(c.vencimento)}). ⏰ Já pode renovar para não ficar sem! 💵 Valor: R$ ${formatarMoeda(c.valor)}`;
+            }
+        }
+
+        function atualizarDashboard() {
+            const c = document.getElementById('dashboard-cards'); if (!c) return;
+            const t = clientes.length, a = clientes.filter(x => x.status === 'ativo').length, v = clientes.filter(x => x.status === 'vencido').length, l = clientes.reduce((s, x) => s + calcularLucro(x.valor, x.custo), 0);
+            c.innerHTML = `
+                <div class="card accent-purple" onclick="navigateTo('clientes')" title="Ir para Guerreiros">
+                    <span class="card-icon">👥</span><div class="card-value">${t}</div><div class="card-label">Guerreiros</div>
+                    <span class="card-hint">👆 Clique</span>
+                </div>
+                <div class="card accent-green" onclick="filtrarClientesAtivos()" title="Ver Ativos">
+                    <span class="card-icon">✅</span><div class="card-value">${a}</div><div class="card-label">Ativos</div>
+                    <span class="card-hint">👆 Clique</span>
+                </div>
+                <div class="card accent-red" onclick="navigateTo('avisos')" title="Ir para Avisos">
+                    <span class="card-icon">⚠️</span><div class="card-value">${v}</div><div class="card-label">Vencidos</div>
+                    <span class="card-hint">👆 Clique</span>
+                </div>
+                <div class="card accent-orange" onclick="navigateTo('financeiro')" title="Ir para Financeiro">
+                    <span class="card-icon">💰</span><div class="card-value">R$ ${formatarMoeda(l)}</div><div class="card-label">Tesouro</div>
+                    <span class="card-hint">👆 Clique</span>
+                </div>`;
+            const ch = document.getElementById('chart-receita'); if (!ch) return;
+            const ms = []; for (let i = 5; i >= 0; i--) { const d = new Date(); d.setMonth(d.getMonth() - i); ms.push({ l: d.toLocaleDateString('pt-BR', { month: 'short' }), r: 0 }); }
+            clientes.forEach(x => { if (x.status !== 'cancelado') ms.forEach(m => m.r += Number(x.valor || 0) / (getDuracaoMeses(x.plano) || 1)); });
+            const mx = Math.max(...ms.map(m => m.r), 1);
+            ch.innerHTML = ms.map(m => `<div class="chart-bar-wrap"><span style="font-size:0.58rem;font-weight:700;">${formatarMoeda(m.r)}</span><div class="chart-bar" style="height:${Math.max((m.r/mx)*80,4)}px;"></div><span style="font-size:0.55rem;color:var(--text-secondary);">${m.l}</span></div>`).join('');
+        }
+
+        // NOVA FUNÇÃO: Redireciona para clientes com filtro "ativo"
+        function filtrarClientesAtivos() {
+            navigateTo('clientes');
+            setTimeout(() => {
+                const filtro = document.getElementById('filtro-status-clientes');
+                if (filtro) { filtro.value = 'ativo'; renderTabelaClientes(); }
+            }, 100);
+        }
+
+        function preencherSelectPlanos() { const s = document.getElementById('cliente-plano'); if (!s) return; const at = s.value; s.innerHTML = '<option value="">Selecione...</option>'; planos.forEach(p => s.innerHTML += `<option value="${p.nome}" ${at===p.nome?'selected':''}>${p.nome} (${p.duracao}d)</option>`); }
+        function atualizarValoresPlano() { const n = document.getElementById('cliente-plano').value, p = planos.find(x => x.nome === n); if (p && !document.getElementById('cliente-id').value) { document.getElementById('cliente-valor').value = p.valor; document.getElementById('cliente-custo').value = p.custo; } }
+        function renderTabelaClientes() { const tb = document.getElementById('tabela-clientes-body'); if (!tb) return; const b = (document.getElementById('search-clientes')?.value||'').toLowerCase(), f = document.getElementById('filtro-status-clientes')?.value||'todos'; let l = clientes.filter(x => !b || x.nome.toLowerCase().includes(b) || x.telefone.includes(b)); if (f !== 'todos') l = l.filter(x => x.status === f); l.sort((a,b) => new Date(a.vencimento) - new Date(b.vencimento)); tb.innerHTML = l.length === 0 ? '<tr class="empty-state"><td colspan="9">Nenhum guerreiro</td></tr>' : l.map(x => `<tr><td>${x.nome}</td><td>${x.telefone}</td><td>${x.plano}</td><td>${formatarMoeda(x.valor)}</td><td>${formatarMoeda(x.custo)}</td><td style="color:${calcularLucro(x.valor,x.custo)>=0?'var(--success)':'var(--danger)'};">${formatarMoeda(calcularLucro(x.valor,x.custo))}</td><td>${formatarData(x.vencimento)}</td><td><span class="status-badge ${x.status==='ativo'?'status-ativo':x.status==='vencido'?'status-vencido':'status-pendente'}">${x.status}</span></td><td><button class="btn btn-sm btn-outline" onclick="editarCliente('${x.id}')">✏️</button> <button class="btn btn-sm btn-danger" onclick="excluirCliente('${x.id}')">🗑️</button></td></tr>`).join(''); }
+        function abrirModalCliente() { document.getElementById('modal-cliente-title').textContent = '✨ Novo Guerreiro'; document.getElementById('form-cliente').reset(); document.getElementById('cliente-id').value = ''; document.getElementById('cliente-status').value = 'ativo'; document.getElementById('cliente-inicio').value = hojeStr(); preencherSelectPlanos(); document.getElementById('modal-cliente-overlay').style.display = 'flex'; }
+        function editarCliente(id) { const x = clientes.find(c => c.id === id); if (!x) return; document.getElementById('modal-cliente-title').textContent = '✏️ Editar'; document.getElementById('cliente-id').value = x.id; document.getElementById('cliente-nome').value = x.nome; document.getElementById('cliente-telefone').value = x.telefone; preencherSelectPlanos(); document.getElementById('cliente-plano').value = x.plano; document.getElementById('cliente-valor').value = x.valor; document.getElementById('cliente-custo').value = x.custo; document.getElementById('cliente-inicio').value = x.inicio; document.getElementById('cliente-vencimento').value = x.vencimento; document.getElementById('cliente-status').value = x.status; document.getElementById('modal-cliente-overlay').style.display = 'flex'; }
+        function salvarCliente(e) { e.preventDefault(); const id = document.getElementById('cliente-id').value; const d = { id: id || gerarId(), nome: document.getElementById('cliente-nome').value.trim(), telefone: document.getElementById('cliente-telefone').value.trim(), plano: document.getElementById('cliente-plano').value, valor: parseFloat(document.getElementById('cliente-valor').value)||0, custo: parseFloat(document.getElementById('cliente-custo').value)||0, inicio: document.getElementById('cliente-inicio').value, vencimento: document.getElementById('cliente-vencimento').value, status: document.getElementById('cliente-status').value }; if (!d.nome||!d.telefone||!d.plano||!d.vencimento) { mostrarToast('⚠️ Preencha!'); return; } if (id && clientes.find(c => c.id === id)) clientes = clientes.map(c => c.id === id ? d : c); else clientes.unshift(d); salvar('clientes'); fecharModal(null, 'modal-cliente-overlay'); atualizarTudo(); mostrarToast('✅ Salvo!'); }
+        function excluirCliente(id) { if (!confirm('Excluir?')) return; clientes = clientes.filter(c => c.id !== id); salvar('clientes'); atualizarTudo(); mostrarToast('🗑️ Excluído!'); }
+
+        function renderTabelaPlanos() { const tb = document.getElementById('tabela-planos-body'); if (!tb) return; tb.innerHTML = planos.length === 0 ? '<tr class="empty-state"><td colspan="6">Nenhum plano</td></tr>' : planos.map(p => `<tr><td>${p.nome}</td><td>${p.duracao}d</td><td>${formatarMoeda(p.valor)}</td><td>${formatarMoeda(p.custo)}</td><td style="color:${calcularLucro(p.valor,p.custo)>=0?'var(--success)':'var(--danger)'};">${formatarMoeda(calcularLucro(p.valor,p.custo))}</td><td><button class="btn btn-sm btn-outline" onclick="editarPlano('${p.id}')">✏️</button> <button class="btn btn-sm btn-danger" onclick="excluirPlano('${p.id}')">🗑️</button></td></tr>`).join(''); }
+        function abrirModalPlano() { document.getElementById('form-plano').reset(); document.getElementById('plano-id').value = ''; document.getElementById('modal-plano-overlay').style.display = 'flex'; }
+        function editarPlano(id) { const p = planos.find(x => x.id === id); if (!p) return; document.getElementById('plano-id').value = p.id; document.getElementById('plano-nome').value = p.nome; document.getElementById('plano-duracao').value = p.duracao; document.getElementById('plano-valor').value = p.valor; document.getElementById('plano-custo').value = p.custo; document.getElementById('modal-plano-overlay').style.display = 'flex'; }
+        function salvarPlano(e) { e.preventDefault(); const id = document.getElementById('plano-id').value; const d = { id: id || gerarId(), nome: document.getElementById('plano-nome').value.trim(), duracao: parseInt(document.getElementById('plano-duracao').value)||30, valor: parseFloat(document.getElementById('plano-valor').value)||0, custo: parseFloat(document.getElementById('plano-custo').value)||0 }; if (!d.nome) { mostrarToast('⚠️ Nome!'); return; } if (id && planos.find(p => p.id === id)) planos = planos.map(p => p.id === id ? d : p); else planos.push(d); salvar('planos'); fecharModal(null, 'modal-plano-overlay'); atualizarTudo(); mostrarToast('✅ Salvo!'); }
+        function excluirPlano(id) { if (!confirm('Excluir?')) return; planos = planos.filter(p => p.id !== id); salvar('planos'); atualizarTudo(); mostrarToast('🗑️ Excluído!'); }
+
+        function renderTabelaEstoque() { const tb = document.getElementById('tabela-estoque-body'); if (!tb) return; tb.innerHTML = produtos.length === 0 ? '<tr class="empty-state"><td colspan="4">Nenhum produto</td></tr>' : produtos.map(p => { const u = p.movimentacoes?.slice(-1)[0], ud = u ? formatarData(u.data) : '-'; let tag = 'status-ativo'; if (p.quantidade <= 2) tag = 'status-vencido'; else if (p.quantidade <= 5) tag = 'status-pendente'; return `<tr><td>${p.nome}</td><td><span class="status-badge ${tag}">${p.quantidade}</span></td><td>${ud}</td><td><button class="btn btn-sm btn-success" onclick="abrirMovimentacao('${p.id}','entrada')">📥</button> <button class="btn btn-sm btn-danger" onclick="abrirMovimentacao('${p.id}','saida')">📤</button> <button class="btn btn-sm btn-outline" onclick="editarProduto('${p.id}')">✏️</button> <button class="btn btn-sm btn-danger" onclick="excluirProduto('${p.id}')">🗑️</button></td></tr>`; }).join(''); }
+        function abrirModalProduto() { document.getElementById('form-produto').reset(); document.getElementById('produto-id').value = ''; document.getElementById('modal-produto-overlay').style.display = 'flex'; }
+        function editarProduto(id) { const p = produtos.find(x => x.id === id); if (!p) return; document.getElementById('produto-id').value = p.id; document.getElementById('produto-nome').value = p.nome; document.getElementById('produto-qtd-inicial').value = p.quantidade; document.getElementById('modal-produto-overlay').style.display = 'flex'; }
+        function salvarProduto(e) { e.preventDefault(); const id = document.getElementById('produto-id').value, n = document.getElementById('produto-nome').value.trim(), q = parseInt(document.getElementById('produto-qtd-inicial').value)||0; if (!n) { mostrarToast('⚠️ Nome!'); return; } if (id && produtos.find(p => p.id === id)) { const p = produtos.find(p => p.id === id); p.nome = n; if (!p.movimentacoes?.length) p.quantidade = q; } else produtos.push({ id: gerarId(), nome: n, quantidade: q, movimentacoes: q > 0 ? [{ tipo: 'entrada', quantidade: q, data: hojeStr(), obs: 'Inicial' }] : [] }); salvar('produtos'); fecharModal(null, 'modal-produto-overlay'); atualizarTudo(); mostrarToast('✅ Salvo!'); }
+        function excluirProduto(id) { if (!confirm('Excluir?')) return; produtos = produtos.filter(p => p.id !== id); salvar('produtos'); atualizarTudo(); mostrarToast('🗑️ Excluído!'); }
+        function abrirMovimentacao(pid, tipo) { const p = produtos.find(x => x.id === pid); if (!p) return; document.getElementById('mov-produto-id').value = pid; document.getElementById('mov-tipo').value = tipo; document.getElementById('mov-produto-nome').textContent = p.nome; document.getElementById('modal-movimentacao-title').textContent = tipo === 'entrada' ? '📥 Entrada' : '📤 Saída'; document.getElementById('form-movimentacao').reset(); document.getElementById('mov-data').value = hojeStr(); document.getElementById('modal-movimentacao-overlay').style.display = 'flex'; }
+        function salvarMovimentacao(e) { e.preventDefault(); const pid = document.getElementById('mov-produto-id').value, t = document.getElementById('mov-tipo').value, q = parseInt(document.getElementById('mov-quantidade').value)||0, d = document.getElementById('mov-data').value, o = document.getElementById('mov-obs').value; if (q <= 0) { mostrarToast('⚠️ Qtd!'); return; } const p = produtos.find(x => x.id === pid); if (!p) return; if (t === 'saida' && q > p.quantidade) { mostrarToast('⚠️ Estoque!'); return; } p.movimentacoes.push({ tipo: t, quantidade: q, data: d, obs: o }); p.quantidade = t === 'entrada' ? p.quantidade + q : p.quantidade - q; salvar('produtos'); fecharModal(null, 'modal-movimentacao-overlay'); atualizarTudo(); mostrarToast('✅ Registrado!'); }
+
+        function renderTabelaAvisos() {
+            const tb = document.getElementById('tabela-avisos-body');
+            if (!tb) return;
+            const av = getClientesAviso();
+            document.getElementById('contador-avisos').textContent = `${av.length} avisos`;
+            if (av.length === 0) {
+                tb.innerHTML = '<tr class="empty-state"><td colspan="7">✨ Nenhum aviso pendente! Todos em dia.</td></tr>';
+                return;
+            }
+            av.sort((a, b) => new Date(a.vencimento) - new Date(b.vencimento));
+            tb.innerHTML = av.map(c => {
+                const situacao = getSituacaoAviso(c);
+                const msg = getMensagemAviso(c);
+                return `<tr>
+                    <td><strong>${c.nome}</strong></td><td>${c.telefone}</td><td>${c.plano}</td>
+                    <td>${formatarData(c.vencimento)}</td>
+                    <td><span class="status-badge ${situacao.classe}">${situacao.texto}</span></td>
+                    <td><span class="status-badge ${c.status==='ativo'?'status-ativo':c.status==='vencido'?'status-vencido':'status-pendente'}">${c.status}</span></td>
+                    <td><button class="btn btn-whatsapp btn-sm" onclick="abrirWhatsApp('${c.telefone}', \`${msg.replace(/`/g, '\\`')}\`)">📱</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function abrirWhatsApp(tel, mensagem) {
+            const numero = (tel || '5511999990000').replace(/\D/g, '');
+            const msg = mensagem || 'Olá! 🐉 Verifique sua assinatura IPTV.';
+            window.open(`https://wa.me/${numero}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function enviarAvisosWeb() {
+            const av = getClientesAviso();
+            if (!av.length) { mostrarToast('✨ Nenhum aviso!'); return; }
+            av.forEach((c, i) => setTimeout(() => abrirWhatsApp(c.telefone, getMensagemAviso(c)), i * 1200));
+            mostrarToast(`📱 ${av.length} mensagens abertas!`);
+        }
+
+        function atualizarFinanceiro() { const c = document.getElementById('financeiro-cards'); if (!c) return; const r = clientes.filter(x => x.status !== 'cancelado').reduce((s,x) => s + Number(x.valor||0), 0), cs = clientes.filter(x => x.status !== 'cancelado').reduce((s,x) => s + Number(x.custo||0), 0), l = r - cs; c.innerHTML = `<div class="card accent-purple"><span class="card-icon">💵</span><div class="card-value">R$ ${formatarMoeda(r)}</div><div class="card-label">Receita</div></div><div class="card accent-orange"><span class="card-icon">📤</span><div class="card-value">R$ ${formatarMoeda(cs)}</div><div class="card-label">Custo</div></div><div class="card accent-green"><span class="card-icon">📈</span><div class="card-value">R$ ${formatarMoeda(l)}</div><div class="card-label">Lucro</div></div>`; const tb = document.querySelector('#tabela-resumo-planos tbody'); if (!tb) return; const rs = planos.map(p => { const cp = clientes.filter(x => x.plano === p.nome && x.status !== 'cancelado'); return { nome: p.nome, qtd: cp.length, receita: cp.reduce((s,x) => s + Number(x.valor||0), 0), custo: cp.reduce((s,x) => s + Number(x.custo||0), 0) }; }).filter(r => r.qtd > 0); tb.innerHTML = rs.length === 0 ? '<tr><td colspan="5">Sem dados</td></tr>' : rs.map(r => `<tr><td>${r.nome}</td><td>${r.qtd}</td><td>${formatarMoeda(r.receita)}</td><td>${formatarMoeda(r.custo)}</td><td style="color:${r.receita-r.custo>=0?'var(--success)':'var(--danger)'};">${formatarMoeda(r.receita-r.custo)}</td></tr>`).join(''); }
+
+        function atualizarRelatorios() { const ini = document.getElementById('rel-data-inicio').value || addDias(new Date(), -30), fim = document.getElementById('rel-data-fim').value || hojeStr(); const fl = clientes.filter(c => { const i = new Date(c.inicio+'T00:00:00'), v = new Date(c.vencimento+'T00:00:00'), fi = new Date(ini+'T00:00:00'), ff = new Date(fim+'T00:00:00'); return i <= ff && v >= fi; }); document.getElementById('relatorio-cards').innerHTML = `<div class="card accent-blue"><span class="card-icon">💵</span><div class="card-value">R$ ${formatarMoeda(fl.reduce((s,c)=>s+Number(c.valor||0),0))}</div><div class="card-label">Receita</div></div><div class="card accent-purple"><span class="card-icon">👥</span><div class="card-value">${fl.length}</div><div class="card-label">Guerreiros</div></div>`; document.getElementById('rel-tabela-clientes').innerHTML = fl.length === 0 ? '<tr class="empty-state"><td colspan="5">Nenhum</td></tr>' : fl.map(c => `<tr><td>${c.nome}</td><td>${c.plano}</td><td>${formatarMoeda(c.valor)}</td><td>${formatarData(c.vencimento)}</td><td>${c.status}</td></tr>`).join(''); }
+        function exportarCSV() { let csv = 'Nome,Telefone,Plano,Valor,Vencimento,Status\n'; clientes.forEach(c => csv += `"${c.nome}","${c.telefone}","${c.plano}",${c.valor},"${formatarData(c.vencimento)}","${c.status}"\n`); const b = new Blob([csv], { type: 'text/csv' }), a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'relatorio_dragon.csv'; a.click(); mostrarToast('📥 Exportado!'); }
+
+        function fecharModal(event, modalId) { if (event && event.target !== document.getElementById(modalId)) return; document.getElementById(modalId).style.display = 'none'; }
+        function mostrarToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block'; t.classList.remove('leaving'); t.style.animation = 'none'; void t.offsetWidth; t.style.animation = 'toastIn 0.4s ease forwards'; setTimeout(() => { t.classList.add('leaving'); setTimeout(() => { t.style.display = 'none'; }, 300); }, 2500); }
+
+        carregarDados(); atualizarTudo();
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); });
+        setInterval(() => { const h = new Date(); h.setHours(0,0,0,0); let alt = false; clientes.forEach(c => { if (c.status === 'ativo' && new Date(c.vencimento+'T00:00:00') < h) { c.status = 'vencido'; alt = true; } }); if (alt) { salvar('clientes'); atualizarTudo(); } }, 60000);
+    </script>
+</body>
+</html>
