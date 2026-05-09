@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#0a0a0a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="IPTV Manager">
-    <title>IPTV Manager | Gestão Profissional</title>
+    <title>IPTV Manager | Dark Theme</title>
     <style>
         * {
             margin: 0;
@@ -18,8 +18,8 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: #f0f4f8;
-            color: #1e293b;
+            background: #0a0a0a;
+            color: #e2e8f0;
             height: 100vh;
             height: 100dvh;
             display: flex;
@@ -28,17 +28,17 @@
             position: relative;
         }
 
-        /* Cabeçalho elegante */
+        /* Cabeçalho escuro */
         .app-header {
-            background: rgba(255,255,255,0.98);
+            background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 10;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .logo-area {
             display: flex;
@@ -55,15 +55,18 @@
         .logo-text {
             font-weight: 700;
             font-size: 1.3rem;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             letter-spacing: -0.4px;
         }
         .icon-btn {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: #1e1e1e;
+            border: 1px solid #333;
             border-radius: 40px;
             padding: 8px 18px;
-            color: #1e293b;
+            color: #e2e8f0;
             font-weight: 500;
             font-size: 0.8rem;
             display: flex;
@@ -71,12 +74,10 @@
             gap: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         .icon-btn:active {
-            background: #f8fafc;
             transform: scale(0.96);
-            border-color: #cbd5e1;
+            background: #2a2a2a;
         }
 
         /* Área principal */
@@ -98,21 +99,21 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Bottom Tab Bar refinada */
+        /* Bottom Tab Bar escura */
         .bottom-tab-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(255,255,255,0.96);
+            background: rgba(10, 10, 10, 0.96);
             backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0,0,0,0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
             display: flex;
             justify-content: space-around;
             align-items: center;
             padding: 8px 12px 14px;
             z-index: 20;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.3);
         }
         .tab-item {
             flex: 1;
@@ -122,7 +123,7 @@
             gap: 4px;
             background: none;
             border: none;
-            color: #64748b;
+            color: #94a3b8;
             font-size: 0.7rem;
             font-weight: 500;
             padding: 8px 0;
@@ -136,13 +137,13 @@
         }
         .tab-item.active {
             color: #f97316;
-            background: #fff7ed;
+            background: rgba(249,115,22,0.15);
         }
         .tab-item:active .tab-icon {
             transform: scale(0.92);
         }
 
-        /* Cards padrão - sofisticados */
+        /* Cards escuros */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -150,20 +151,17 @@
             margin-bottom: 28px;
         }
         .card, .client-card, .plano-card, .produto-card, .aviso-card, .relatorio-card {
-            background: #ffffff;
+            background: #141414;
             border-radius: 28px;
             padding: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
             transition: all 0.2s ease;
-            border: 1px solid #edf2f7;
+            border: 1px solid #262626;
         }
         .card:hover, .client-card:hover, .plano-card:hover, .produto-card:hover, .aviso-card:hover, .relatorio-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
-            border-color: #e2e8f0;
-        }
-        .card:active, .client-card:active, .plano-card:active {
-            transform: scale(0.98);
+            transform: translateY(-3px);
+            border-color: #3b3b3b;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.5);
         }
 
         .card-icon {
@@ -174,12 +172,15 @@
         .card-value {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             letter-spacing: -0.02em;
         }
         .card-label {
             font-size: 0.75rem;
-            color: #475569;
+            color: #94a3b8;
             font-weight: 500;
             margin-top: 6px;
         }
@@ -197,7 +198,10 @@
         .client-name {
             font-weight: 700;
             font-size: 1rem;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .client-status {
             font-size: 0.65rem;
@@ -205,8 +209,8 @@
             border-radius: 40px;
             font-weight: 600;
         }
-        .status-ativo { background: #e6f7ec; color: #15803d; }
-        .status-vencido { background: #fee9e6; color: #b91c1c; }
+        .status-ativo { background: linear-gradient(135deg, #166534, #14532d); color: #86efac; }
+        .status-vencido { background: linear-gradient(135deg, #7f1d1d, #991b1b); color: #fca5a5; }
         .client-info {
             display: flex;
             flex-direction: column;
@@ -218,10 +222,10 @@
             align-items: center;
             gap: 10px;
             font-size: 0.8rem;
-            color: #334155;
+            color: #cbd5e1;
         }
         .info-row strong {
-            color: #0f172a;
+            color: #ffffff;
             min-width: 55px;
             font-weight: 600;
         }
@@ -229,7 +233,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 12px;
-            border-top: 1px solid #eef2f8;
+            border-top: 1px solid #262626;
             padding-top: 14px;
         }
 
@@ -242,21 +246,25 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-            border-bottom: 1px solid #eef2f8;
+            border-bottom: 1px solid #262626;
             padding-bottom: 10px;
         }
         .plano-nome {
             font-size: 1.2rem;
             font-weight: 800;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .plano-duracao {
-            background: #eef2ff;
-            color: #1e40af;
+            background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+            color: #94a3b8;
             border-radius: 40px;
             padding: 4px 12px;
             font-size: 0.7rem;
             font-weight: 600;
+            border: 1px solid #333;
         }
         .plano-detalhes {
             display: flex;
@@ -270,20 +278,23 @@
             font-size: 0.85rem;
         }
         .detalhe-label {
-            color: #475569;
+            color: #94a3b8;
         }
         .detalhe-valor {
             font-weight: 700;
-            color: #0f172a;
+            color: #ffffff;
         }
         .lucro-destaque {
-            color: #15803d;
+            background: linear-gradient(135deg, #86efac, #4ade80);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .plano-actions, .aviso-acoes {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
-            border-top: 1px solid #eef2f8;
+            border-top: 1px solid #262626;
             padding-top: 14px;
         }
 
@@ -293,16 +304,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-            border-bottom: 1px solid #eef2f8;
+            border-bottom: 1px solid #262626;
             padding-bottom: 10px;
         }
         .produto-nome {
             font-size: 1.2rem;
             font-weight: 800;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .produto-qtd {
-            background: #f97316;
+            background: linear-gradient(135deg, #f97316, #ea580c);
             color: white;
             border-radius: 40px;
             padding: 4px 14px;
@@ -311,14 +325,14 @@
         }
         .produto-info {
             margin-bottom: 20px;
-            background: #f8fafc;
+            background: #1a1a1a;
             border-radius: 20px;
             padding: 12px;
             text-align: center;
         }
         .ultima-mov {
             font-size: 0.8rem;
-            color: #475569;
+            color: #94a3b8;
         }
         .produto-actions {
             display: flex;
@@ -337,13 +351,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            border-bottom: 1px solid #eef2f8;
+            border-bottom: 1px solid #262626;
             padding-bottom: 8px;
         }
         .aviso-nome {
             font-size: 1.1rem;
             font-weight: 800;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .aviso-status {
             font-size: 0.7rem;
@@ -363,12 +380,12 @@
             font-size: 0.85rem;
         }
         .aviso-urgente {
-            background: #fee9e6;
-            color: #b91c1c;
+            background: linear-gradient(135deg, #7f1d1d, #991b1b);
+            color: #fca5a5;
         }
         .aviso-alerta {
-            background: #fef9e3;
-            color: #b45309;
+            background: linear-gradient(135deg, #713f12, #854d0e);
+            color: #fde047;
         }
         .aviso-acoes {
             justify-content: flex-end;
@@ -383,13 +400,16 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            border-bottom: 1px solid #eef2f8;
+            border-bottom: 1px solid #262626;
             padding-bottom: 8px;
         }
         .relatorio-nome {
             font-size: 1rem;
             font-weight: 800;
-            color: #0f172a;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .relatorio-status {
             font-size: 0.65rem;
@@ -408,29 +428,28 @@
             font-size: 0.8rem;
         }
 
-        /* Botões primários e secundários */
+        /* Botões escuros */
         .btn-icon {
-            background: none;
-            border: none;
+            background: #1e1e1e;
+            border: 1px solid #333;
             border-radius: 40px;
             padding: 6px 14px;
             font-size: 0.7rem;
             font-weight: 500;
             cursor: pointer;
             transition: 0.15s;
+            color: #e2e8f0;
         }
         .btn-edit {
-            background: #f8fafc;
-            color: #1e293b;
-            border: 1px solid #e2e8f0;
+            background: #1e1e1e;
         }
         .btn-delete {
-            background: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fee2e2;
+            background: #2a1215;
+            color: #fca5a5;
+            border-color: #7f1d1d;
         }
         .btn-whatsapp-card {
-            background: #25D366;
+            background: linear-gradient(135deg, #25D366, #128C7E);
             color: white;
             border: none;
             padding: 8px 18px;
@@ -447,8 +466,8 @@
             transform: scale(0.96);
         }
         .btn-produto {
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
+            background: #1e1e1e;
+            border: 1px solid #333;
             border-radius: 40px;
             padding: 8px 16px;
             font-size: 0.75rem;
@@ -458,14 +477,14 @@
             gap: 6px;
             cursor: pointer;
             transition: 0.15s;
-            color: #1e293b;
+            color: #e2e8f0;
         }
-        .btn-entrada { background: #e6f7ec; color: #15803d; border-color: #bbf7d0; }
-        .btn-saida { background: #fee9e6; color: #b91c1c; border-color: #fed7d7; }
-        .btn-editar { background: #fef9e3; color: #b45309; border-color: #fde68a; }
-        .btn-excluir { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+        .btn-entrada { background: #14532d; color: #86efac; border-color: #166534; }
+        .btn-saida { background: #7f1d1d; color: #fca5a5; border-color: #991b1b; }
+        .btn-editar { background: #713f12; color: #fde047; border-color: #854d0e; }
+        .btn-excluir { background: #2a1215; color: #fca5a5; border-color: #7f1d1d; }
 
-        /* Filtros e campos */
+        /* Filtros e campos no tema escuro */
         .table-header {
             padding: 8px 0 16px 0;
             display: flex;
@@ -474,9 +493,9 @@
             align-items: center;
         }
         .table-header input, .table-header select {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            color: #0f172a;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #e2e8f0;
             padding: 10px 16px;
             border-radius: 48px;
             font-size: 0.8rem;
@@ -486,7 +505,7 @@
         }
         .table-header input:focus, .table-header select:focus {
             border-color: #f97316;
-            box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
         }
         .btn {
             padding: 8px 22px;
@@ -501,25 +520,24 @@
             font-size: 0.8rem;
         }
         .btn-primary {
-            background: #f97316;
+            background: linear-gradient(135deg, #f97316, #ea580c);
             color: white;
-            box-shadow: 0 2px 6px rgba(249,115,22,0.2);
+            box-shadow: 0 2px 6px rgba(249,115,22,0.3);
         }
         .btn-primary:active {
-            background: #ea580c;
             transform: scale(0.96);
         }
         .btn-whatsapp {
-            background: #25D366;
+            background: linear-gradient(135deg, #25D366, #128C7E);
             color: white;
             box-shadow: 0 2px 6px rgba(37,211,102,0.2);
         }
         .glass-panel {
-            background: #ffffff;
+            background: #141414;
             border-radius: 28px;
             padding: 20px;
-            border: 1px solid #edf2f7;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid #262626;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .chart-container {
             display: flex;
@@ -543,53 +561,58 @@
             transition: height 0.3s;
         }
 
-        /* Modal refinado */
+        /* Modal escuro */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
             z-index: 200;
             display: flex;
             align-items: flex-end;
             justify-content: center;
         }
         .modal {
-            background: #ffffff;
+            background: #141414;
             border-radius: 32px 32px 0 0;
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
             padding: 28px 24px;
             border-top: 3px solid #f97316;
-            color: #0f172a;
+            color: #e2e8f0;
         }
         .modal h3 {
             margin-bottom: 20px;
             font-weight: 700;
             font-size: 1.3rem;
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .modal input, .modal select {
             width: 100%;
             padding: 12px 16px;
             margin-bottom: 16px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: #1a1a1a;
+            border: 1px solid #333;
             border-radius: 28px;
             font-size: 0.9rem;
             transition: 0.2s;
+            color: #e2e8f0;
         }
         .modal input:focus, .modal select:focus {
             border-color: #f97316;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
         }
         .toast {
             position: fixed;
             bottom: 85px;
             left: 50%;
             transform: translateX(-50%);
-            background: #1e293b;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: white;
             padding: 8px 24px;
             border-radius: 48px;
@@ -598,11 +621,25 @@
             animation: fadeUp 0.3s ease;
             white-space: nowrap;
             font-size: 0.8rem;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
         @keyframes fadeUp {
             from { opacity: 0; transform: translateX(-50%) translateY(20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* Ajustes de texto adicional */
+        h2, .page h2 {
+            background: linear-gradient(135deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .page p.subtitle {
+            color: #94a3b8;
         }
 
         /* Responsividade */
@@ -630,18 +667,18 @@
 <div class="pages-container" id="pages-container">
     <!-- Dashboard -->
     <div class="page active" id="page-dashboard">
-        <h2 style="font-size:1.6rem; font-weight:700; color:#0f172a; margin-bottom:4px;">Dashboard</h2>
-        <p style="color:#475569; margin-bottom:24px;">Visão executiva do negócio</p>
+        <h2>Dashboard</h2>
+        <p style="color:#94a3b8; margin-bottom:24px;">Visão executiva do negócio</p>
         <div class="cards-grid" id="dashboard-cards"></div>
         <div class="glass-panel">
-            <h4 style="color:#0f172a; margin-bottom:16px; font-weight:600;">📈 Receita mensal</h4>
+            <h4 style="background:linear-gradient(135deg, #ffffff, #cbd5e1); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:16px; font-weight:600;">📈 Receita mensal</h4>
             <div class="chart-container" id="chart-receita"></div>
         </div>
     </div>
 
     <!-- Clientes -->
     <div class="page" id="page-clientes">
-        <h2 style="color:#0f172a; font-size:1.5rem;">Clientes</h2>
+        <h2>Clientes</h2>
         <div class="table-header">
             <input type="text" id="search-clientes" placeholder="🔍 Buscar por nome ou telefone..." oninput="renderClientesCards()">
             <select id="filtro-status-clientes" onchange="renderClientesCards()">
@@ -656,17 +693,17 @@
 
     <!-- Financeiro -->
     <div class="page" id="page-financeiro">
-        <h2 style="color:#0f172a;">Financeiro</h2>
+        <h2>Financeiro</h2>
         <div class="cards-grid" id="financeiro-cards"></div>
         <div class="glass-panel">
-            <h4 style="color:#0f172a; margin-bottom:16px;">Resumo por plano</h4>
+            <h4 style="background:linear-gradient(135deg, #ffffff, #cbd5e1); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:16px;">Resumo por plano</h4>
             <div id="resumo-planos-cards" class="cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));"></div>
         </div>
     </div>
 
     <!-- Estoque -->
     <div class="page" id="page-estoque">
-        <h2 style="color:#0f172a;">Estoque</h2>
+        <h2>Estoque</h2>
         <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
             <button class="btn btn-primary" onclick="abrirModalProduto()">+ Novo Produto</button>
         </div>
@@ -675,8 +712,8 @@
 
     <!-- Avisos -->
     <div class="page" id="page-avisos">
-        <h2 style="color:#0f172a;">Avisos</h2>
-        <div style="background:#fef9e3; padding:10px 16px; border-radius:28px; margin-bottom:16px; color:#b45309; font-size:0.85rem; display:inline-block;">
+        <h2>Avisos</h2>
+        <div style="background:linear-gradient(135deg, #1e1e1e, #2a2a2a); padding:10px 16px; border-radius:28px; margin-bottom:16px; color:#fde047; font-size:0.85rem; display:inline-block; border:1px solid #333;">
             ⚠️ Clientes vencidos ou com vencimento em até 3 dias
         </div>
         <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
@@ -695,19 +732,19 @@
     <button class="tab-item" data-page="avisos"><span class="tab-icon">💬</span><span>Avisos</span></button>
 </div>
 
-<!-- Modais (mesmos, com leve refinamento visual) -->
+<!-- Modais (mesma estrutura, com cores adaptadas) -->
 <div class="modal-overlay" id="modal-cliente-overlay" style="display:none;" onclick="fecharModal(event,'modal-cliente-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Dados do Cliente</h3><form id="form-cliente" onsubmit="salvarCliente(event)"><input type="hidden" id="cliente-id"><label>Nome completo</label><input type="text" id="cliente-nome" required><label>Telefone (com DDD)</label><input type="text" id="cliente-telefone" required><label>Plano</label><select id="cliente-plano" required onchange="atualizarValoresPlano()"></select><div style="display:flex;gap:10px;"><div style="flex:1"><label>Valor R$</label><input type="number" id="cliente-valor" step="0.01"></div><div style="flex:1"><label>Custo R$</label><input type="number" id="cliente-custo" step="0.01"></div></div><label>Data de vencimento</label><input type="date" id="cliente-vencimento" required><label>Status</label><select id="cliente-status"><option value="ativo">Ativo</option><option value="vencido">Vencido</option></select><div style="display:flex;gap:10px;margin-top:20px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-cliente-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
 
 <div class="modal-overlay" id="modal-plano-overlay" style="display:none;" onclick="fecharModal(event,'modal-plano-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Plano</h3><form id="form-plano" onsubmit="salvarPlano(event)"><input type="hidden" id="plano-id"><label>Nome do plano</label><input type="text" id="plano-nome" required><label>Duração (dias)</label><input type="number" id="plano-duracao" required><label>Valor R$</label><input type="number" id="plano-valor" step="0.01"><label>Custo R$</label><input type="number" id="plano-custo" step="0.01"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-plano-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
 
-<div class="modal-overlay" id="modal-produto-overlay" style="display:none;" onclick="fecharModal(event,'modal-produto-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Produto</h3><form id="form-produto" onsubmit="salvarProduto(event)"><input type="hidden" id="produto-id"><label>Nome do produto</label><input type="text" id="produto-nome" required><div id="campo-qtd-inicial"><label>Quantidade inicial</label><input type="number" id="produto-qtd-inicial" value="0"></div><div id="aviso-edicao-produto" style="background:#fef9e3; padding:8px; border-radius:20px; margin:8px 0; display:none;">Edição: use movimentações para alterar estoque</div><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-produto-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
+<div class="modal-overlay" id="modal-produto-overlay" style="display:none;" onclick="fecharModal(event,'modal-produto-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Produto</h3><form id="form-produto" onsubmit="salvarProduto(event)"><input type="hidden" id="produto-id"><label>Nome do produto</label><input type="text" id="produto-nome" required><div id="campo-qtd-inicial"><label>Quantidade inicial</label><input type="number" id="produto-qtd-inicial" value="0"></div><div id="aviso-edicao-produto" style="background:#1a1a1a; padding:8px; border-radius:20px; margin:8px 0; display:none;">Edição: use movimentações para alterar estoque</div><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-produto-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
 
 <div class="modal-overlay" id="modal-movimentacao-overlay" style="display:none;" onclick="fecharModal(event,'modal-movimentacao-overlay')"><div class="modal"><h3>Movimentação</h3><form id="form-movimentacao" onsubmit="salvarMovimentacao(event)"><input type="hidden" id="mov-produto-id"><input type="hidden" id="mov-tipo"><p>Produto: <strong id="mov-produto-nome"></strong></p><label>Quantidade</label><input type="number" id="mov-quantidade" required><label>Data da movimentação</label><input type="date" id="mov-data"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-movimentacao-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Registrar</button></div></form></div></div>
 
 <div id="toast" style="display:none;"></div>
 
 <script>
-    // ================== SISTEMA COMPLETO (TEMA PROFISSIONAL) ==================
+    // ================== SISTEMA COMPLETO (TEMA PRETO) - MESMAS FUNÇÕES ==================
     const STORAGE_KEYS = { clientes: 'iptv_prof', planos: 'iptv_planos_prof', produtos: 'iptv_produtos_prof' };
     let clientes = [], planos = [], produtos = [];
     let ultimosClientesFiltrados = [];
@@ -770,7 +807,7 @@
             divPlanos.id = 'page-planos';
             divPlanos.className = 'page';
             divPlanos.innerHTML = `
-                <h2 style="color:#0f172a;">Planos</h2>
+                <h2>Planos</h2>
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
                     <button class="btn btn-primary" onclick="abrirModalPlano()">+ Novo Plano</button>
                 </div>
@@ -783,7 +820,7 @@
             divRel.id = 'page-relatorios';
             divRel.className = 'page';
             divRel.innerHTML = `
-                <h2 style="color:#0f172a;">Relatórios</h2>
+                <h2>Relatórios</h2>
                 <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center;">
                     <input type="date" id="rel-data-inicio" style="flex:1; min-width:130px;">
                     <input type="date" id="rel-data-fim" style="flex:1; min-width:130px;">
@@ -822,7 +859,7 @@
         const container = document.getElementById('relatorio-clientes-container');
         if (!container) return;
         if (fl.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">Nenhum cliente encontrado no período</div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum cliente encontrado no período</div>';
             return;
         }
         container.innerHTML = fl.map(c => {
@@ -835,10 +872,10 @@
                         <span class="relatorio-status ${statusClass}">${statusText}</span>
                     </div>
                     <div class="relatorio-info">
-                        <div class="relatorio-linha"><span class="relatorio-label">📞 Telefone</span><span>${escapeHTML(c.telefone)}</span></div>
-                        <div class="relatorio-linha"><span class="relatorio-label">📋 Plano</span><span>${escapeHTML(c.plano)}</span></div>
-                        <div class="relatorio-linha"><span class="relatorio-label">💰 Valor</span><span>R$ ${formatarMoeda(c.valor)}</span></div>
-                        <div class="relatorio-linha"><span class="relatorio-label">📅 Vencimento</span><span>${formatarData(c.vencimento)}</span></div>
+                        <div class="relatorio-linha"><span>📞 Telefone</span><span>${escapeHTML(c.telefone)}</span></div>
+                        <div class="relatorio-linha"><span>📋 Plano</span><span>${escapeHTML(c.plano)}</span></div>
+                        <div class="relatorio-linha"><span>💰 Valor</span><span>R$ ${formatarMoeda(c.valor)}</span></div>
+                        <div class="relatorio-linha"><span>📅 Vencimento</span><span>${formatarData(c.vencimento)}</span></div>
                     </div>
                 </div>
             `;
@@ -851,7 +888,7 @@
         if (!container) return;
         const avisos = getClientesAviso();
         if (avisos.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">✨ Nenhum aviso pendente! Todos os clientes estão em dia.</div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">✨ Nenhum aviso pendente! Todos os clientes estão em dia.</div>';
             return;
         }
         container.innerHTML = avisos.map(c => {
@@ -886,7 +923,7 @@
         const container = document.getElementById('planos-cards-container');
         if (!container) return;
         if (planos.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">Nenhum plano cadastrado</div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum plano cadastrado</div>';
             return;
         }
         container.innerHTML = planos.map(plano => {
@@ -916,7 +953,7 @@
         const container = document.getElementById('estoque-cards-container');
         if (!container) return;
         if (produtos.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">Nenhum produto cadastrado</div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum produto cadastrado</div>';
             return;
         }
         container.innerHTML = produtos.map(p => {
@@ -954,14 +991,14 @@
             return { ...plano, qtd, receita, lucro };
         }).filter(p => p.qtd > 0);
         if (resumo.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">Nenhum cliente ativo</div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum cliente ativo</div>';
             return;
         }
         container.innerHTML = resumo.map(plano => `
             <div class="plano-card">
                 <div class="plano-header" style="justify-content:space-between;">
-                    <strong style="font-size:1rem;">${escapeHTML(plano.nome)}</strong>
-                    <span style="background:#f97316; color:white; border-radius:40px; padding:2px 12px; font-size:0.7rem;">${plano.qtd} cliente(s)</span>
+                    <strong style="font-size:1rem; background:linear-gradient(135deg, #ffffff, #cbd5e1); -webkit-background-clip:text; background-clip:text; color:transparent;">${escapeHTML(plano.nome)}</strong>
+                    <span style="background:linear-gradient(135deg, #f97316, #ea580c); color:white; border-radius:40px; padding:2px 12px; font-size:0.7rem;">${plano.qtd} cliente(s)</span>
                 </div>
                 <div class="plano-detalhes">
                     <div class="detalhe-linha"><span>💰 Receita:</span><span>R$ ${formatarMoeda(plano.receita)}</span></div>
@@ -984,7 +1021,7 @@
             return matchBusca && matchStatus;
         });
         if (lista.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px; color:#64748b;">Nenhum cliente encontrado</div>';
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum cliente encontrado</div>';
             return;
         }
         container.innerHTML = lista.map(c => {
@@ -1010,7 +1047,7 @@
         }).join('');
     }
 
-    // CRUD Clientes
+    // CRUD Clientes (mesmas funções)
     function editarCliente(id){ let c=clientes.find(x=>x.id===id); if(!c)return; document.getElementById('cliente-id').value=c.id; document.getElementById('cliente-nome').value=c.nome; document.getElementById('cliente-telefone').value=c.telefone; preencherSelectPlanos(); document.getElementById('cliente-plano').value=c.plano; document.getElementById('cliente-valor').value=c.valor; document.getElementById('cliente-custo').value=c.custo; document.getElementById('cliente-vencimento').value=c.vencimento; document.getElementById('cliente-status').value=c.status; document.getElementById('modal-cliente-overlay').style.display='flex'; }
     function excluirCliente(id){ if(confirm('Excluir este cliente?')){ clientes=clientes.filter(c=>c.id!==id); salvar('clientes'); atualizarTudo(); mostrarToast('Cliente removido'); } }
     function salvarCliente(e){ e.preventDefault(); let id=document.getElementById('cliente-id').value; let status=document.getElementById('cliente-status').value; let venc=document.getElementById('cliente-vencimento').value; let hoje=hojeStr(); if(status==='ativo' && venc<hoje && !confirm('Data de vencimento anterior a hoje. Salvar como vencido?')) return; let c={id:id||gerarId(), nome:document.getElementById('cliente-nome').value.trim(), telefone:document.getElementById('cliente-telefone').value.trim(), plano:document.getElementById('cliente-plano').value, valor:parseFloat(document.getElementById('cliente-valor').value)||0, custo:parseFloat(document.getElementById('cliente-custo').value)||0, inicio:hoje, vencimento:venc, status:status==='ativo'&&venc<hoje?'vencido':status}; if(!c.nome||!c.telefone||!c.plano) return mostrarToast('Preencha todos os campos'); if(id) clientes=clientes.map(x=>x.id===id?c:x); else clientes.unshift(c); salvar('clientes'); fecharModal(null,'modal-cliente-overlay'); atualizarTudo(); mostrarToast('Cliente salvo'); }
