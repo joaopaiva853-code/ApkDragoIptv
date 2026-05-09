@@ -6,19 +6,24 @@
     <title>Barbearia Old School - Sistema Completo</title>
     <style>
         :root {
-            --bg: #111;
-            --bg2: #1a1a1a;
-            --card: #1e1e1e;
+            --bg-dark: #1a1a1a;
+            --bg-card: #242424;
             --gold: #c8a45c;
-            --gold2: #d4b06a;
+            --gold-hover: #d4b06a;
             --text: #e0e0e0;
-            --muted: #999;
-            --border: #333;
+            --text-light: #b0b0b0;
+            --border: #3a3a3a;
             --danger: #e74c3c;
             --success: #2ecc71;
-            --blue: #3498db;
-            --radius: 12px;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --white: #ffffff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --admin-bg: #0d0d0d;
+            --admin-card: #1e1e1e;
+            --admin-accent: #e67e22;
+            --admin-accent-hover: #f39c12;
         }
 
         * {
@@ -27,92 +32,506 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #111;
+            background-image: radial-gradient(ellipse at 50% 0%, #1f1f1f 0%, #111 70%);
             color: var(--text);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 16px;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.5;
         }
-        .app {
+
+        /* Container principal */
+        .app-container {
             width: 100%;
-            max-width: 1300px;
-            background: var(--bg2);
-            border-radius: 20px;
+            max-width: 1200px;
+            background: var(--bg-dark);
+            border-radius: 24px;
             border: 1px solid var(--border);
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             min-height: 90vh;
-            overflow: hidden;
+            position: relative;
         }
 
-        /* HEADER */
+        /* ========== HEADER ========== */
         .header {
+            background: linear-gradient(180deg, #1c1c1c 0%, #181818 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 24px;
-            border-bottom: 1px solid var(--border);
-            background: #1c1c1c;
             flex-wrap: wrap;
             gap: 12px;
         }
-        .logo {
+        .header-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
+            gap: 12px;
         }
-        .logo-icon {
-            width: 42px;
-            height: 42px;
+        .header-logo {
+            width: 44px;
+            height: 44px;
             background: var(--gold);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            color: #111;
+            color: #1a1a1a;
             font-weight: 900;
         }
-        .logo-text h2 {
-            font-size: 1.2rem;
-            color: #fff;
+        .header-info h1 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
             letter-spacing: 1px;
+            text-transform: uppercase;
+            line-height: 1.1;
         }
-        .logo-text span {
+        .header-info span {
             font-size: 0.7rem;
             color: var(--gold);
             letter-spacing: 2px;
+            text-transform: uppercase;
         }
-        .nav-btns {
+        .header-actions {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
         }
-        .btn {
-            padding: 10px 20px;
+        .btn-admin-toggle {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-light);
+            padding: 8px 16px;
             border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.9rem;
             cursor: pointer;
-            border: none;
-            transition: 0.2s;
+            font-weight: 600;
+            font-size: 0.8rem;
             letter-spacing: 0.5px;
-            display: inline-flex;
+            transition: var(--transition);
+            display: flex;
             align-items: center;
             gap: 6px;
+        }
+        .btn-admin-toggle:hover {
+            border-color: var(--admin-accent);
+            color: var(--admin-accent);
+        }
+        .btn-admin-toggle.active {
+            background: var(--admin-accent);
+            border-color: var(--admin-accent);
+            color: #000;
+        }
+        .header-badge {
+            background: var(--gold);
+            color: #1a1a1a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            animation: pulse-badge 2s infinite;
+        }
+        @keyframes pulse-badge {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(200, 164, 92, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(200, 164, 92, 0);
+            }
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .view-public,
+        .view-admin {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            flex: 1;
+        }
+        .view-public.active,
+        .view-admin.active {
+            display: flex;
+        }
+
+        /* ========== STEPS NAV (público) ========== */
+        .steps-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            padding: 12px 16px;
+            background: #181818;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .step-dot {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            background: transparent;
+            border: none;
+        }
+        .step-dot .num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        .step-dot.active {
+            color: var(--white);
+        }
+        .step-dot.active .num {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #1a1a1a;
+        }
+        .step-dot.done {
+            color: var(--gold);
+        }
+        .step-dot.done .num {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #1a1a1a;
+        }
+        .step-connector {
+            width: 30px;
+            height: 2px;
+            background: var(--border);
+            align-self: center;
+            border-radius: 1px;
+            margin: 0 2px;
+        }
+        .step-connector.done {
+            background: var(--gold);
+        }
+
+        /* ========== CARDS & GRID ========== */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+        .services-grid,
+        .barbers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        .service-card,
+        .barber-card {
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            user-select: none;
+        }
+        .service-card:hover,
+        .barber-card:hover {
+            border-color: #4a4a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .service-card.selected,
+        .barber-card.selected {
+            border-color: var(--gold);
+            background: #1f1c16;
+            box-shadow: 0 0 0 4px rgba(200, 164, 92, 0.08);
+        }
+        .service-card .check-mark,
+        .barber-card .check-mark {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #1a1a1a;
+            font-size: 0.65rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+        .service-card.selected .check-mark,
+        .barber-card.selected .check-mark {
+            display: flex;
+        }
+        .service-card .icon,
+        .barber-avatar {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+        .service-card .name,
+        .barber-name {
+            font-weight: 700;
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+        .service-card .price {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+        .service-card .duration {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+        .barber-specialty {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        .date-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 6px;
+        }
+        .date-btn {
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 10px 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .date-btn:hover {
+            border-color: #4a4a4a;
+        }
+        .date-btn.selected {
+            border-color: var(--gold);
+            background: #1f1c16;
+            color: var(--white);
+        }
+        .date-btn .day-num {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .date-btn .day-name {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+        .date-btn:disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 6px;
+        }
+        .time-btn {
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .time-btn:hover {
+            border-color: #4a4a4a;
+        }
+        .time-btn.selected {
+            border-color: var(--gold);
+            background: #1f1c16;
+            color: var(--white);
+        }
+        .time-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input,
+        .form-group textarea {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            color: var(--white);
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: var(--transition);
+            outline: none;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(200, 164, 92, 0.06);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .summary-box {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .link-copy-box {
+            display: flex;
+            gap: 6px;
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 5px 5px 5px 16px;
+            border: 2px solid var(--border);
+            align-items: center;
+        }
+        .link-copy-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--gold);
+            font-size: 0.8rem;
+            outline: none;
+            font-family: monospace;
+            min-width: 0;
+        }
+        .confirmation-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 30px 24px;
+            text-align: center;
+            border: 2px solid var(--success);
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .confirmation-card .check-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--success);
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #fff;
+            animation: pop-in 0.5s ease;
+        }
+        @keyframes pop-in {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
             font-family: inherit;
         }
-        .btn-gold {
+        .btn-primary {
             background: var(--gold);
-            color: #111;
+            color: #1a1a1a;
+            box-shadow: 0 4px 16px rgba(200, 164, 92, 0.25);
         }
-        .btn-gold:hover {
-            background: var(--gold2);
+        .btn-primary:hover {
+            background: var(--gold-hover);
             transform: translateY(-2px);
         }
         .btn-outline {
@@ -122,397 +541,354 @@
         }
         .btn-outline:hover {
             border-color: var(--gold);
-            color: #fff;
-        }
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 0.78rem;
-            border-radius: 18px;
+            color: var(--white);
         }
         .btn-danger {
             background: var(--danger);
             color: #fff;
         }
-        .btn-success {
-            background: var(--success);
-            color: #fff;
+        .btn-danger:hover {
+            opacity: 0.85;
         }
-        .btn-blue {
-            background: var(--blue);
-            color: #fff;
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.75rem;
         }
-
-        /* MAIN CONTENT */
-        .main {
-            flex: 1;
+        .btn-full {
+            width: 100%;
+            justify-content: center;
+        }
+        .actions-row {
             display: flex;
-            overflow: hidden;
-        }
-
-        /* SIDEBAR ADMIN */
-        .sidebar {
-            width: 220px;
-            background: #181818;
-            border-right: 1px solid var(--border);
-            padding: 16px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-        .sidebar a {
-            padding: 12px 20px;
-            color: var(--muted);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-        }
-        .sidebar a:hover,
-        .sidebar a.active {
-            color: #fff;
-            background: #222;
-            border-left-color: var(--gold);
-        }
-        .content-area {
-            flex: 1;
-            padding: 20px 24px;
-            overflow-y: auto;
-            max-height: 70vh;
-        }
-
-        /* CARDS */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .card h3 {
-            color: #fff;
-            margin-bottom: 12px;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin-top: 8px;
         }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+        .panel {
+            display: none;
         }
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+        .panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        @media (max-width: 800px) {
-            .grid-2,
-            .grid-3,
-            .grid-4 {
-                grid-template-columns: 1fr 1fr;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
             }
-            .sidebar {
-                width: 60px;
-            }
-            .sidebar a span {
-                display: none;
-            }
-            .sidebar a {
-                justify-content: center;
-                padding: 12px;
-            }
-        }
-        @media (max-width: 500px) {
-            .grid-2,
-            .grid-3,
-            .grid-4 {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                display: none;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* TABLE */
-        table {
+        /* ========== ADMIN PANEL ========== */
+        .admin-tabs {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0;
+        }
+        .admin-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 8px 8px 0 0;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+        }
+        .admin-tab:hover {
+            color: var(--white);
+            background: #222;
+        }
+        .admin-tab.active {
+            color: var(--admin-accent);
+            border-bottom: 3px solid var(--admin-accent);
+            background: #1a1a1a;
+        }
+        .admin-panel-content {
+            background: var(--admin-card);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            min-height: 300px;
+        }
+        .admin-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
         }
-        th,
-        td {
+        .admin-table th,
+        .admin-table td {
             padding: 10px 12px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
-        th {
-            color: var(--gold);
+        .admin-table th {
+            color: var(--admin-accent);
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.7rem;
             letter-spacing: 1px;
         }
-        tr:hover {
-            background: #222;
+        .admin-table tr:hover td {
+            background: #1a1a1a;
         }
-
-        /* FORM */
-        input,
-        select,
-        textarea {
-            width: 100%;
-            background: #2a2a2a;
+        .admin-form-row {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .admin-form-row input {
+            background: #111;
             border: 2px solid var(--border);
+            color: #fff;
+            padding: 8px 12px;
             border-radius: 8px;
-            padding: 10px 14px;
-            color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-family: inherit;
+            flex: 1;
+            min-width: 120px;
             outline: none;
-            transition: 0.2s;
         }
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border-color: var(--gold);
+        .admin-form-row input:focus {
+            border-color: var(--admin-accent);
         }
-        label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .form-group {
-            margin-bottom: 12px;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            animation: fadeIn 0.2s;
-        }
-        .modal {
-            background: var(--bg2);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow);
-        }
-        .modal h2 {
-            color: #fff;
-            margin-bottom: 16px;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 16px;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* TAGS */
-        .tag {
-            display: inline-block;
+        .badge-status {
             padding: 4px 10px;
-            border-radius: 12px;
+            border-radius: 15px;
+            font-weight: 600;
             font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
-        .tag-confirmed {
-            background: #1a3a2a;
-            color: var(--success);
+        .badge-confirmado {
+            background: #1e3a2f;
+            color: #2ecc71;
         }
-        .tag-pending {
-            background: #3a2a1a;
-            color: var(--gold);
+        .badge-cancelado {
+            background: #3a1e1e;
+            color: #e74c3c;
         }
-        .tag-cancelled {
-            background: #3a1a1a;
-            color: var(--danger);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .mb-16 {
-            margin-bottom: 16px;
-        }
-        .mt-16 {
-            margin-top: 16px;
+        .badge-pendente {
+            background: #3a351e;
+            color: #f39c12;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
-            transform: translateX(-50%);
-            background: #333;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success);
             color: #fff;
-            padding: 12px 24px;
+            padding: 12px 22px;
             border-radius: 30px;
             font-weight: 600;
-            z-index: 200;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.3s ease;
+            font-size: 0.85rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s ease;
             pointer-events: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
 
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 16px;
+                justify-content: center;
+                text-align: center;
+            }
+            .services-grid,
+            .barbers-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .date-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .time-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .admin-form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
-        .status-active {
-            background: #1a3a2a;
-            color: var(--success);
-        }
-        .status-inactive {
-            background: #3a1a1a;
-            color: var(--danger);
+        @media (max-width: 400px) {
+            .services-grid,
+            .barbers-grid {
+                grid-template-columns: 1fr;
+            }
+            .date-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .time-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app" id="appRoot">
+    <div class="app-container">
         <!-- HEADER -->
         <header class="header">
-            <div class="logo" onclick="navegar('cliente')">
-                <div class="logo-icon">✂</div>
-                <div class="logo-text">
-                    <h2>OLD SCHOOL</h2>
-                    <span>Barbearia</span>
+            <div class="header-brand">
+                <div class="header-logo">✂</div>
+                <div class="header-info">
+                    <h1>Old School</h1>
+                    <span>Barbearia Premium</span>
                 </div>
             </div>
-            <div class="nav-btns">
-                <button class="btn btn-outline btn-sm" onclick="navegar('cliente')">👤 Área do Cliente</button>
-                <button class="btn btn-gold btn-sm" onclick="navegar('admin')">⚙️ Administração</button>
+            <div class="header-actions">
+                <span class="header-badge" id="publicBadge">📅 Agende Online</span>
+                <button class="btn-admin-toggle" id="btnAdminToggle" onclick="toggleAdminView()">
+                    🔒 Administração
+                </button>
             </div>
         </header>
 
-        <!-- MAIN AREA -->
-        <div class="main" id="mainContainer">
-            <!-- Conteúdo dinâmico renderizado por JS -->
+        <!-- VIEW PÚBLICA -->
+        <div class="view-public active" id="viewPublic">
+            <nav class="steps-nav" id="stepsNav">
+                <button class="step-dot active" data-step="1"><span class="num">1</span> Serviço</button>
+                <span class="step-connector" id="conn1"></span>
+                <button class="step-dot" data-step="2"><span class="num">2</span> Barbeiro</button>
+                <span class="step-connector" id="conn2"></span>
+                <button class="step-dot" data-step="3"><span class="num">3</span> Data/Hora</button>
+                <span class="step-connector" id="conn3"></span>
+                <button class="step-dot" data-step="4"><span class="num">4</span> Seus Dados</button>
+                <span class="step-connector" id="conn4"></span>
+                <button class="step-dot" data-step="5"><span class="num">5</span> Confirmar</button>
+            </nav>
+            <main class="main-content" id="mainContentPublic">
+                <div class="panel active" id="panel-step1">
+                    <div class="section-title">Escolha o serviço</div>
+                    <div class="services-grid" id="servicesGrid"></div>
+                    <div class="actions-row"><button class="btn btn-primary" onclick="goToStep(2)" id="btnStep1" disabled>Próximo →</button></div>
+                </div>
+                <div class="panel" id="panel-step2">
+                    <div class="section-title">Escolha o barbeiro</div>
+                    <div class="barbers-grid" id="barbersGrid"></div>
+                    <div class="actions-row"><button class="btn btn-outline" onclick="goToStep(1)">← Voltar</button><button class="btn btn-primary" onclick="goToStep(3)" id="btnStep2" disabled>Próximo →</button></div>
+                </div>
+                <div class="panel" id="panel-step3">
+                    <div class="section-title">Escolha a data</div>
+                    <div class="date-grid" id="dateGrid"></div>
+                    <div class="section-title" style="margin-top:16px;">Escolha o horário</div>
+                    <div class="time-grid" id="timeGrid"><p style="color:var(--text-light);grid-column:1/-1;text-align:center;">Selecione uma data primeiro</p></div>
+                    <div class="actions-row"><button class="btn btn-outline" onclick="goToStep(2)">← Voltar</button><button class="btn btn-primary" onclick="goToStep(4)" id="btnStep3" disabled>Próximo →</button></div>
+                </div>
+                <div class="panel" id="panel-step4">
+                    <div class="section-title">Seus dados</div>
+                    <div style="display:flex;flex-direction:column;gap:14px;max-width:550px;">
+                        <div class="form-row">
+                            <div class="form-group"><label>Nome completo</label><input type="text" id="inputNome" placeholder="Seu nome" autocomplete="name"></div>
+                            <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="inputTelefone" placeholder="(11) 99999-9999" autocomplete="tel"></div>
+                        </div>
+                        <div class="form-group"><label>E-mail (opcional)</label><input type="email" id="inputEmail" placeholder="seu@email.com"></div>
+                        <div class="form-group"><label>Observação (opcional)</label><textarea id="inputObs" rows="2" placeholder="Alguma preferência..."></textarea></div>
+                    </div>
+                    <div class="actions-row"><button class="btn btn-outline" onclick="goToStep(3)">← Voltar</button><button class="btn btn-primary" onclick="goToStep(5)" id="btnStep4">Próximo →</button></div>
+                </div>
+                <div class="panel" id="panel-step5">
+                    <div class="section-title">Revise seu agendamento</div>
+                    <div class="summary-box" id="summaryBox"></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;max-width:550px;margin-top:8px;">
+                        <label style="font-weight:600;color:var(--text-light);font-size:0.8rem;text-transform:uppercase;">🔗 Link do agendamento</label>
+                        <div class="link-copy-box"><input type="text" id="linkAgendamento" readonly><button class="btn btn-primary btn-sm" onclick="copiarLink()">📋 Copiar</button></div>
+                    </div>
+                    <div class="actions-row" style="margin-top:12px;"><button class="btn btn-outline" onclick="goToStep(4)">← Voltar</button><button class="btn btn-primary" onclick="confirmarAgendamento()">✅ Confirmar</button></div>
+                </div>
+                <div class="panel" id="panel-done">
+                    <div class="confirmation-card">
+                        <div class="check-icon">✓</div>
+                        <h2>Agendamento Confirmado!</h2>
+                        <p>Seu horário foi reservado com sucesso.</p>
+                        <div class="confirmation-details" id="doneDetails" style="background:#1a1a1a;border-radius:10px;padding:14px;text-align:left;margin:16px 0;"></div>
+                        <button class="btn btn-primary btn-full" onclick="novoAgendamento()">🗓️ Novo agendamento</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- VIEW ADMIN -->
+        <div class="view-admin" id="viewAdmin">
+            <main class="main-content">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-admin-tab="tab-servicos">💈 Serviços</button>
+                    <button class="admin-tab" data-admin-tab="tab-barbeiros">👤 Barbeiros</button>
+                    <button class="admin-tab" data-admin-tab="tab-agendamentos">📋 Agendamentos</button>
+                    <button class="admin-tab" data-admin-tab="tab-config">⚙️ Configurações</button>
+                </div>
+                <div class="admin-panel-content" id="adminPanelContent">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+            </main>
         </div>
     </div>
-
-    <!-- TOAST -->
-    <div id="toast" class="toast hidden"></div>
-
-    <!-- MODAL CONTAINER -->
-    <div id="modalContainer"></div>
+    <div class="toast" id="toast">Mensagem</div>
 
     <script>
-        (() => {
-            // ========== DADOS INICIAIS ==========
-            const DEFAULT_DATA = {
-                servicos: [
-                    { id: 'c1', nome: 'Corte Clássico', icone: '💈', preco: 55, duracao: 30, ativo: true },
-                    { id: 'c2', nome: 'Degradê', icone: '🔥', preco: 65, duracao: 40, ativo: true },
-                    { id: 'c3', nome: 'Barba', icone: '🧔', preco: 40, duracao: 25, ativo: true },
-                    { id: 'c4', nome: 'Barba + Navalha', icone: '🪒', preco: 55, duracao: 35, ativo: true },
-                    { id: 'c5', nome: 'Combo Corte + Barba', icone: '⭐', preco: 90, duracao: 55, ativo: true },
-                    { id: 'c6', nome: 'Hidratação', icone: '💆', preco: 70, duracao: 30, ativo: true },
-                    { id: 'c7', nome: 'Sobrancelha', icone: '✂️', preco: 20, duracao: 10, ativo: true },
+        (function() {
+            // ============ STORAGE ============
+            const STORAGE_KEY = 'barbearia_old_school_data';
+            let db = {
+                services: [
+                    { id: 'corte', name: 'Corte Clássico', icon: '💈', price: 55, duration: 30 },
+                    { id: 'degrade', name: 'Corte Degradê', icon: '🔥', price: 65, duration: 40 },
+                    { id: 'barba', name: 'Barba', icon: '🧔', price: 40, duration: 25 },
+                    { id: 'barba-nav', name: 'Barba + Navalha', icon: '🪒', price: 55, duration: 35 },
+                    { id: 'combo', name: 'Combo Corte + Barba', icon: '⭐', price: 90, duration: 55 },
+                    { id: 'hidratacao', name: 'Hidratação Capilar', icon: '💆', price: 70, duration: 30 },
                 ],
-                barbeiros: [
-                    { id: 'b1', nome: 'Marcos', avatar: '🧔‍♂️', especialidade: 'Cortes Clássicos', ativo: true },
-                    { id: 'b2', nome: 'Lucas', avatar: '💇‍♂️', especialidade: 'Degradê & Moderno', ativo: true },
-                    { id: 'b3', nome: 'Pedro', avatar: '🪒', especialidade: 'Barba & Navalha', ativo: true },
-                    { id: 'b4', nome: 'André', avatar: '🎯', especialidade: 'Todos os estilos', ativo: true },
+                barbers: [
+                    { id: 'marcos', name: 'Marcos', avatar: '🧔‍♂️', specialty: 'Cortes Clássicos' },
+                    { id: 'lucas', name: 'Lucas', avatar: '💇‍♂️', specialty: 'Degradê & Moderno' },
+                    { id: 'pedro', name: 'Pedro', avatar: '🪒', specialty: 'Barba & Navalha' },
                 ],
                 agendamentos: [],
                 config: {
-                    horaAbertura: '09:00',
-                    horaFechamento: '20:00',
-                    intervaloMinutos: 30,
-                    diasFolga: [0], // 0=domingo
+                    horaAbertura: 9,
+                    horaFechamento: 19,
+                    diasFolga: [0], // 0 = domingo
                     senhaAdmin: 'admin123',
                 }
             };
 
-            // ========== PERSISTÊNCIA ==========
-            function carregarDados() {
-                const raw = localStorage.getItem('barbearia_data');
-                if (raw) {
-                    try {
-                        return JSON.parse(raw);
-                    } catch (e) {}
-                }
-                return JSON.parse(JSON.stringify(DEFAULT_DATA));
+            function loadDB() {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        db.services = parsed.services || db.services;
+                        db.barbers = parsed.barbers || db.barbers;
+                        db.agendamentos = parsed.agendamentos || [];
+                        db.config = { ...db.config, ...(parsed.config || {}) };
+                    }
+                } catch (e) { /* usa default */ }
             }
 
-            function salvarDados(data) {
-                localStorage.setItem('barbearia_data', JSON.stringify(data));
+            function saveDB() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
             }
+            loadDB();
 
-            let DATA = carregarDados();
-
-            // Garantir IDs únicos
-            function gerarId() {
-                return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            }
-
-            // ========== ESTADO DA UI ==========
-            let paginaAtual = 'cliente'; // 'cliente' | 'admin' | 'admin_login'
-            let secaoAdmin = 'dashboard'; // dashboard | servicos | barbeiros | agendamentos | config
-            let adminLogado = false;
-
-            // Estado do agendamento (cliente)
+            // ============ STATE ============
             let state = {
                 step: 1,
+                maxStepReached: 1,
                 selectedService: null,
                 selectedBarber: null,
                 selectedDate: null,
@@ -521,302 +897,232 @@
                 telefone: '',
                 email: '',
                 obs: '',
+                confirmed: false,
+                isAdmin: false,
+                adminTab: 'tab-servicos',
             };
 
-            // ========== RENDER PRINCIPAL ==========
-            const $main = document.getElementById('mainContainer');
-            const $modal = document.getElementById('modalContainer');
+            // ============ DOM REFS ============
+            const $viewPublic = document.getElementById('viewPublic');
+            const $viewAdmin = document.getElementById('viewAdmin');
+            const $btnAdminToggle = document.getElementById('btnAdminToggle');
+            const $publicBadge = document.getElementById('publicBadge');
+            const $servicesGrid = document.getElementById('servicesGrid');
+            const $barbersGrid = document.getElementById('barbersGrid');
+            const $dateGrid = document.getElementById('dateGrid');
+            const $timeGrid = document.getElementById('timeGrid');
+            const $summaryBox = document.getElementById('summaryBox');
+            const $linkAgendamento = document.getElementById('linkAgendamento');
             const $toast = document.getElementById('toast');
+            const $adminPanelContent = document.getElementById('adminPanelContent');
 
-            function toast(msg) {
+            function showToast(msg, isError = false) {
                 $toast.textContent = msg;
-                $toast.classList.remove('hidden');
-                setTimeout(() => $toast.classList.add('hidden'), 2500);
+                $toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
+                $toast.classList.add('show');
+                setTimeout(() => $toast.classList.remove('show'), 2200);
             }
 
-            function navegar(destino) {
-                if (destino === 'admin' && !adminLogado) {
-                    paginaAtual = 'admin_login';
-                } else if (destino === 'admin' && adminLogado) {
-                    paginaAtual = 'admin';
-                    secaoAdmin = 'dashboard';
-                } else if (destino === 'cliente') {
-                    paginaAtual = 'cliente';
-                    state = { step: 1, selectedService: null, selectedBarber: null, selectedDate: null,
-                        selectedTime: null, nome: '', telefone: '', email: '', obs: '' };
-                }
-                render();
-            }
-
-            function loginAdmin(senha) {
-                if (senha === DATA.config.senhaAdmin) {
-                    adminLogado = true;
-                    paginaAtual = 'admin';
-                    secaoAdmin = 'dashboard';
-                    render();
-                    toast('✅ Login realizado com sucesso!');
+            // ============ ADMIN TOGGLE ============
+            window.toggleAdminView = function() {
+                if (state.isAdmin) {
+                    // Sair do admin
+                    state.isAdmin = false;
+                    updateViewVisibility();
+                    $btnAdminToggle.classList.remove('active');
+                    $btnAdminToggle.innerHTML = '🔒 Administração';
                 } else {
-                    toast('❌ Senha incorreta!');
+                    // Login simples
+                    const senha = prompt('Digite a senha de administrador:');
+                    if (senha === db.config.senhaAdmin) {
+                        state.isAdmin = true;
+                        updateViewVisibility();
+                        $btnAdminToggle.classList.add('active');
+                        $btnAdminToggle.innerHTML = '🔓 Sair do Admin';
+                        renderAdminPanel();
+                        showToast('Acesso liberado! Bem-vindo, admin.');
+                    } else if (senha !== null) {
+                        alert('Senha incorreta!');
+                    }
+                }
+            };
+
+            function updateViewVisibility() {
+                if (state.isAdmin) {
+                    $viewPublic.classList.remove('active');
+                    $viewAdmin.classList.add('active');
+                    $publicBadge.style.display = 'none';
+                } else {
+                    $viewPublic.classList.add('active');
+                    $viewAdmin.classList.remove('active');
+                    $publicBadge.style.display = '';
                 }
             }
 
-            function logoutAdmin() {
-                adminLogado = false;
-                paginaAtual = 'cliente';
-                render();
-            }
-
-            // ========== RENDER COMPLETO ==========
-            function render() {
-                if (paginaAtual === 'cliente') {
-                    renderCliente();
-                } else if (paginaAtual === 'admin_login') {
-                    renderLoginAdmin();
-                } else if (paginaAtual === 'admin') {
-                    renderAdmin();
-                }
-            }
-
-            // ========== ÁREA CLIENTE ==========
-            function renderCliente() {
-                let html = '';
-                if (state.step === 1) html = renderStep1();
-                else if (state.step === 2) html = renderStep2();
-                else if (state.step === 3) html = renderStep3();
-                else if (state.step === 4) html = renderStep4();
-                else if (state.step === 5) html = renderStep5();
-                else if (state.step === 6) html = renderStepConfirmado();
-                $main.innerHTML = html;
-                if (state.step === 3) {
-                    renderizarHorarios();
-                }
-                if (state.step === 5) {
-                    preencherResumo();
-                }
-            }
-
-            function servicosAtivos() {
-                return DATA.servicos.filter(s => s.ativo);
-            }
-
-            function barbeirosAtivos() {
-                return DATA.barbeiros.filter(b => b.ativo);
-            }
-
-            function renderStep1() {
-                const servicos = servicosAtivos();
-                return `
-              <div style="padding:20px;">
-                <h3 style="color:#fff;margin-bottom:16px;">1️⃣ Escolha o serviço</h3>
-                <div class="grid-3">
-                  ${servicos.map(s => `
-                    <div class="card" style="cursor:pointer;text-align:center;border:2px solid ${state.selectedService===s.id?'var(--gold)':'var(--border)'};" 
-                         onclick="selectService('${s.id}')">
-                      <div style="font-size:2rem;">${s.icone}</div>
-                      <div style="font-weight:700;color:#fff;">${s.nome}</div>
-                      <div style="color:var(--gold);font-weight:700;">R$ ${s.preco.toFixed(2)}</div>
-                      <div style="color:var(--muted);font-size:0.8rem;">⏱ ${s.duracao} min</div>
-                      ${state.selectedService===s.id?'<div style="color:var(--gold);margin-top:6px;">✓ Selecionado</div>':''}
-                    </div>
-                  `).join('')}
-                </div>
-                <div style="margin-top:16px;text-align:right;">
-                  <button class="btn btn-gold" ${!state.selectedService?'disabled':''} onclick="nextStep()">Próximo →</button>
-                </div>
-              </div>`;
-            }
-
-            function renderStep2() {
-                const barbeiros = barbeirosAtivos();
-                return `
-              <div style="padding:20px;">
-                <h3 style="color:#fff;margin-bottom:16px;">2️⃣ Escolha o barbeiro</h3>
-                <div class="grid-3">
-                  ${barbeiros.map(b => `
-                    <div class="card" style="cursor:pointer;text-align:center;border:2px solid ${state.selectedBarber===b.id?'var(--gold)':'var(--border)'};"
-                         onclick="selectBarber('${b.id}')">
-                      <div style="font-size:2.5rem;">${b.avatar}</div>
-                      <div style="font-weight:700;color:#fff;">${b.nome}</div>
-                      <div style="color:var(--muted);font-size:0.8rem;">${b.especialidade}</div>
-                      ${state.selectedBarber===b.id?'<div style="color:var(--gold);margin-top:6px;">✓ Selecionado</div>':''}
-                    </div>
-                  `).join('')}
-                </div>
-                <div style="margin-top:16px;display:flex;justify-content:space-between;">
-                  <button class="btn btn-outline" onclick="prevStep()">← Voltar</button>
-                  <button class="btn btn-gold" ${!state.selectedBarber?'disabled':''} onclick="nextStep()">Próximo →</button>
-                </div>
-              </div>`;
-            }
-
+            // ============ RENDER PÚBLICO ============
             function gerarDatas() {
                 const datas = [];
                 const hoje = new Date();
                 for (let i = 1; i <= 14; i++) {
                     const d = new Date(hoje);
                     d.setDate(d.getDate() + i);
-                    if (DATA.config.diasFolga.includes(d.getDay())) continue;
+                    if (db.config.diasFolga.includes(d.getDay())) continue;
                     datas.push({
+                        dateObj: new Date(d),
+                        dayName: d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', ''),
+                        dayNum: d.getDate(),
+                        month: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
                         iso: d.toISOString().split('T')[0],
-                        diaSemana: d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', ''),
-                        dia: d.getDate(),
-                        mes: d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', ''),
                     });
                 }
                 return datas.slice(0, 12);
             }
 
-            function gerarHorariosDisponiveis(dataIso) {
-                const todos = [];
-                const [hA, mA] = DATA.config.horaAbertura.split(':').map(Number);
-                const [hF, mF] = DATA.config.horaFechamento.split(':').map(Number);
-                const inicio = hA * 60 + mA;
-                const fim = hF * 60 + mF;
-                const intervalo = DATA.config.intervaloMinutos;
-                for (let m = inicio; m < fim; m += intervalo) {
-                    const hh = String(Math.floor(m / 60)).padStart(2, '0');
-                    const mm = String(m % 60).padStart(2, '0');
-                    todos.push(`${hh}:${mm}`);
+            function gerarHorarios() {
+                const horarios = [];
+                for (let h = db.config.horaAbertura; h <= db.config.horaFechamento; h++) {
+                    horarios.push(`${String(h).padStart(2,'0')}:00`);
+                    if (h < db.config.horaFechamento) horarios.push(`${String(h).padStart(2,'0')}:30`);
                 }
-                // Remover horários já agendados para esta data
-                const ocupados = DATA.agendamentos
-                    .filter(a => a.data === dataIso && a.status !== 'cancelado')
+                return horarios;
+            }
+
+            function horariosIndisponiveis(dataIso) {
+                const ocupados = db.agendamentos
+                    .filter(a => a.data === dataIso && a.status === 'confirmado')
                     .map(a => a.hora);
-                return todos.filter(t => !ocupados.includes(t));
+                return new Set(ocupados);
             }
 
-            function renderStep3() {
+            function renderServices() {
+                $servicesGrid.innerHTML = db.services.map(s => `
+                <div class="service-card ${state.selectedService === s.id ? 'selected' : ''}" onclick="selectService('${s.id}')">
+                  <span class="check-mark">✓</span>
+                  <div class="icon">${s.icon}</div>
+                  <div class="name">${s.name}</div>
+                  <div class="price">R$ ${s.price.toFixed(2)}</div>
+                  <div class="duration">⏱ ${s.duration} min</div>
+                </div>`).join('');
+            }
+
+            function renderBarbers() {
+                $barbersGrid.innerHTML = db.barbers.map(b => `
+                <div class="barber-card ${state.selectedBarber === b.id ? 'selected' : ''}" onclick="selectBarber('${b.id}')">
+                  <span class="check-mark">✓</span>
+                  <div class="barber-avatar">${b.avatar}</div>
+                  <div class="barber-name">${b.name}</div>
+                  <div class="barber-specialty">${b.specialty}</div>
+                </div>`).join('');
+            }
+
+            function renderDates() {
                 const datas = gerarDatas();
-                return `
-              <div style="padding:20px;">
-                <h3 style="color:#fff;margin-bottom:12px;">3️⃣ Escolha a data</h3>
-                <div class="grid-4" id="dateGridClient">
-                  ${datas.map(d => `
-                    <button class="btn ${state.selectedDate===d.iso?'btn-gold':'btn-outline'} btn-sm" 
-                            style="flex-direction:column;gap:2px;padding:10px;"
-                            onclick="selectDate('${d.iso}')">
-                      <span style="font-size:0.65rem;text-transform:uppercase;">${d.diaSemana}</span>
-                      <span style="font-size:1.3rem;font-weight:900;">${d.dia}</span>
-                      <span style="font-size:0.65rem;">${d.mes}</span>
-                    </button>
-                  `).join('')}
-                </div>
-                <h3 style="color:#fff;margin:16px 0 8px;">🕐 Horário</h3>
-                <div class="grid-4" id="timeGridClient">
-                  <p style="color:var(--muted);grid-column:1/-1;">Selecione uma data primeiro</p>
-                </div>
-                <div style="margin-top:16px;display:flex;justify-content:space-between;">
-                  <button class="btn btn-outline" onclick="prevStep()">← Voltar</button>
-                  <button class="btn btn-gold" id="btnStep3" ${!state.selectedDate||!state.selectedTime?'disabled':''} onclick="nextStep()">Próximo →</button>
-                </div>
-              </div>`;
+                $dateGrid.innerHTML = datas.map(d => `
+                <button class="date-btn ${state.selectedDate === d.iso ? 'selected' : ''}" onclick="selectDate('${d.iso}')">
+                  <div class="day-name">${d.dayName}</div>
+                  <div class="day-num">${d.dayNum}</div>
+                  <div class="month">${d.month}</div>
+                </button>`).join('');
             }
 
-            function renderizarHorarios() {
-                const container = document.getElementById('timeGridClient');
-                if (!container) return;
+            function renderTimes() {
                 if (!state.selectedDate) {
-                    container.innerHTML =
-                        '<p style="color:var(--muted);grid-column:1/-1;">Selecione uma data primeiro</p>';
+                    $timeGrid.innerHTML =
+                        '<p style="color:var(--text-light);grid-column:1/-1;text-align:center;">Selecione uma data primeiro</p>';
                     return;
                 }
-                const horarios = gerarHorariosDisponiveis(state.selectedDate);
-                if (horarios.length === 0) {
-                    container.innerHTML =
-                        '<p style="color:var(--danger);grid-column:1/-1;">Nenhum horário disponível nesta data.</p>';
-                } else {
-                    container.innerHTML = horarios.map(h => `
-                <button class="btn ${state.selectedTime===h?'btn-gold':'btn-outline'} btn-sm"
-                        onclick="selectTime('${h}')">${h}</button>
-              `).join('');
-                }
+                const indisponiveis = horariosIndisponiveis(state.selectedDate);
+                const todos = gerarHorarios();
+                $timeGrid.innerHTML = todos.map(t => {
+                    const indisp = indisponiveis.has(t);
+                    return `<button class="time-btn ${state.selectedTime===t?'selected':''}" ${indisp?'disabled':''} onclick="selectTime('${t}')">${t} ${indisp?'🔒':''}</button>`;
+                }).join('');
+            }
+
+            function renderSummary() {
+                const serv = db.services.find(s => s.id === state.selectedService);
+                const barb = db.barbers.find(b => b.id === state.selectedBarber);
+                const dataFmt = state.selectedDate ? new Date(state.selectedDate + 'T00:00:00')
+                    .toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) :
+                    '—';
+                $summaryBox.innerHTML = `
+                <div class="summary-row"><span>Serviço</span><span>${serv?.icon||''} ${serv?.name||'—'}</span></div>
+                <div class="summary-row"><span>Barbeiro</span><span>${barb?.avatar||''} ${barb?.name||'—'}</span></div>
+                <div class="summary-row"><span>Data</span><span>📅 ${dataFmt}</span></div>
+                <div class="summary-row"><span>Horário</span><span>🕐 ${state.selectedTime||'—'}</span></div>
+                <div class="summary-row"><span>Duração</span><span>⏱ ${serv?.duration||'—'} min</span></div>
+                <div class="summary-row"><span>Nome</span><span>${state.nome||'—'}</span></div>
+                <div class="summary-row"><span>Telefone</span><span>${state.telefone||'—'}</span></div>
+                <div class="summary-row" style="color:var(--gold);font-weight:700;"><span>💰 Total</span><span>R$ ${serv?.price?.toFixed(2)||'0.00'}</span></div>`;
+                const base = window.location.origin + window.location.pathname;
+                const link = base + '?ref=' + btoa(JSON.stringify({ s: state.selectedService, b: state
+                    .selectedBarber, d: state.selectedDate, t: state.selectedTime }));
+                $linkAgendamento.value = link;
+            }
+
+            function updateButtons() {
+                document.getElementById('btnStep1').disabled = !state.selectedService;
+                document.getElementById('btnStep2').disabled = !state.selectedBarber;
                 document.getElementById('btnStep3').disabled = !(state.selectedDate && state.selectedTime);
             }
 
-            function renderStep4() {
-                return `
-              <div style="padding:20px;max-width:550px;">
-                <h3 style="color:#fff;margin-bottom:16px;">4️⃣ Seus dados</h3>
-                <div class="form-row">
-                  <div class="form-group"><label>Nome completo *</label><input id="inpNome" value="${state.nome}" placeholder="Seu nome"></div>
-                  <div class="form-group"><label>Telefone *</label><input id="inpTel" value="${state.telefone}" placeholder="(11) 99999-9999"></div>
-                </div>
-                <div class="form-group"><label>E-mail</label><input id="inpEmail" value="${state.email}" placeholder="opcional@email.com"></div>
-                <div class="form-group"><label>Observação</label><textarea id="inpObs" rows="2">${state.obs}</textarea></div>
-                <div style="display:flex;justify-content:space-between;margin-top:16px;">
-                  <button class="btn btn-outline" onclick="prevStep()">← Voltar</button>
-                  <button class="btn btn-gold" onclick="validarDados()">Próximo →</button>
-                </div>
-              </div>`;
-            }
+            window.selectService = function(id) {
+                state.selectedService = id;
+                state.maxStepReached = Math.max(state.maxStepReached, 1);
+                renderServices();
+                updateButtons();
+            };
+            window.selectBarber = function(id) {
+                state.selectedBarber = id;
+                state.maxStepReached = Math.max(state.maxStepReached, 2);
+                renderBarbers();
+                updateButtons();
+            };
+            window.selectDate = function(iso) {
+                state.selectedDate = iso;
+                state.selectedTime = null;
+                state.maxStepReached = Math.max(state.maxStepReached, 3);
+                renderDates();
+                renderTimes();
+                updateButtons();
+            };
+            window.selectTime = function(time) {
+                state.selectedTime = time;
+                state.maxStepReached = Math.max(state.maxStepReached, 3);
+                renderTimes();
+                updateButtons();
+            };
 
-            function validarDados() {
-                const nome = document.getElementById('inpNome').value.trim();
-                const tel = document.getElementById('inpTel').value.trim();
-                if (!nome) return toast('⚠️ Informe seu nome.');
-                if (!tel) return toast('⚠️ Informe seu telefone.');
-                state.nome = nome;
-                state.telefone = tel;
-                state.email = document.getElementById('inpEmail').value.trim();
-                state.obs = document.getElementById('inpObs').value.trim();
-                state.step = 5;
-                render();
-            }
-
-            function preencherResumo() {
-                const servico = DATA.servicos.find(s => s.id === state.selectedService);
-                const barbeiro = DATA.barbeiros.find(b => b.id === state.selectedBarber);
-                const dataF = state.selectedDate ? new Date(state.selectedDate + 'T00:00:00')
-                    .toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }) : '—';
-                const resumo = document.getElementById('resumoBox');
-                if (resumo) {
-                    resumo.innerHTML = `
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span>Serviço</span><strong>${servico?.icone||''} ${servico?.nome||'—'}</strong></div>
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span>Barbeiro</span><strong>${barbeiro?.avatar||''} ${barbeiro?.nome||'—'}</strong></div>
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span>Data</span><strong>📅 ${dataF}</strong></div>
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span>Horário</span><strong>🕐 ${state.selectedTime||'—'}</strong></div>
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span>Duração</span><strong>⏱ ${servico?.duracao||'—'} min</strong></div>
-                <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span>Nome</span><strong>${state.nome}</strong></div>
-                <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:1.1rem;color:var(--gold);"><span>💰 Total</span><strong>R$ ${servico?.preco?.toFixed(2)||'0.00'}</strong></div>
-              `;
+            window.goToStep = function(step) {
+                if (step > state.maxStepReached) {
+                    if (step === 2 && !state.selectedService) return;
+                    if (step === 3 && !state.selectedBarber) return;
+                    if (step === 4 && !(state.selectedDate && state.selectedTime)) return;
+                    if (step === 5) {
+                        state.nome = document.getElementById('inputNome').value.trim();
+                        state.telefone = document.getElementById('inputTelefone').value.trim();
+                        state.email = document.getElementById('inputEmail').value.trim();
+                        state.obs = document.getElementById('inputObs').value.trim();
+                        if (!state.nome) { alert('Informe seu nome.'); return; }
+                        if (!state.telefone) { alert('Informe seu telefone.'); return; }
+                        renderSummary();
+                    }
+                    state.maxStepReached = Math.max(state.maxStepReached, step - 1);
                 }
-                const linkInput = document.getElementById('linkAgendamento');
-                if (linkInput) {
-                    const params = new URLSearchParams();
-                    params.set('s', state.selectedService);
-                    params.set('b', state.selectedBarber);
-                    params.set('d', state.selectedDate);
-                    params.set('t', state.selectedTime);
-                    params.set('n', state.nome);
-                    linkInput.value = window.location.origin + window.location.pathname +
-                        '?agendamento=' + btoa(params.toString());
-                }
-            }
+                state.step = step;
+                if (step === 5) renderSummary();
+                updateUIPublic();
+            };
 
-            function renderStep5() {
-                return `
-              <div style="padding:20px;max-width:600px;">
-                <h3 style="color:#fff;margin-bottom:16px;">5️⃣ Confirme seu agendamento</h3>
-                <div class="card" id="resumoBox"></div>
-                <div style="margin-top:12px;">
-                  <label>🔗 Link do agendamento</label>
-                  <div style="display:flex;gap:8px;">
-                    <input id="linkAgendamento" readonly style="flex:1;font-size:0.8rem;">
-                    <button class="btn btn-gold btn-sm" onclick="copiarLink()">📋 Copiar</button>
-                  </div>
-                </div>
-                <div style="display:flex;justify-content:space-between;margin-top:16px;">
-                  <button class="btn btn-outline" onclick="prevStep()">← Voltar</button>
-                  <button class="btn btn-success" onclick="confirmarAgendamento()">✅ Confirmar</button>
-                </div>
-              </div>`;
-            }
-
-            function confirmarAgendamento() {
+            window.confirmarAgendamento = function() {
+                const serv = db.services.find(s => s.id === state.selectedService);
                 const novo = {
-                    id: gerarId(),
+                    id: 'ag_' + Date.now(),
                     servicoId: state.selectedService,
+                    servicoNome: serv?.name || '',
+                    servicoPreco: serv?.price || 0,
                     barbeiroId: state.selectedBarber,
+                    barbeiroNome: db.barbers.find(b => b.id === state.selectedBarber)?.name || '',
                     data: state.selectedDate,
                     hora: state.selectedTime,
                     nome: state.nome,
@@ -826,429 +1132,402 @@
                     status: 'confirmado',
                     criadoEm: new Date().toISOString(),
                 };
-                DATA.agendamentos.push(novo);
-                salvarDados(DATA);
+                db.agendamentos.push(novo);
+                saveDB();
+                state.confirmed = true;
                 state.step = 6;
-                render();
-                toast('✅ Agendamento confirmado com sucesso!');
-            }
+                const dataFmt = new Date(state.selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long',
+                    day: 'numeric', month: 'long' });
+                document.getElementById('doneDetails').innerHTML = `
+                <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Serviço:</span><strong>${serv?.name}</strong></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Barbeiro:</span><strong>${novo.barbeiroNome}</strong></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Data:</span><strong>${dataFmt}</strong></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;"><span>Horário:</span><strong>${state.selectedTime}</strong></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;color:var(--gold);"><span>Total:</span><strong>R$ ${serv?.price?.toFixed(2)}</strong></div>`;
+                updateUIPublic();
+                document.getElementById('mainContentPublic').scrollTop = 0;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
 
-            function renderStepConfirmado() {
-                const servico = DATA.servicos.find(s => s.id === state.selectedService);
-                const barbeiro = DATA.barbeiros.find(b => b.id === state.selectedBarber);
-                const dataF = state.selectedDate ? new Date(state.selectedDate + 'T00:00:00')
-                    .toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }) : '—';
-                return `
-              <div style="padding:40px;text-align:center;">
-                <div style="width:70px;height:70px;border-radius:50%;background:var(--success);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:2rem;">✓</div>
-                <h2 style="color:#fff;">Agendamento Confirmado!</h2>
-                <p style="color:var(--muted);">Seu horário foi reservado.</p>
-                <div class="card" style="text-align:left;max-width:400px;margin:16px auto;">
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Serviço:</span><strong>${servico?.nome}</strong></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Barbeiro:</span><strong>${barbeiro?.nome}</strong></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Data:</span><strong>${dataF}</strong></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;"><span>Horário:</span><strong>${state.selectedTime}</strong></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;color:var(--gold);"><span>Total:</span><strong>R$ ${servico?.preco?.toFixed(2)}</strong></div>
-                </div>
-                <button class="btn btn-gold" onclick="novoAgendamento()">🗓️ Novo Agendamento</button>
-              </div>`;
-            }
+            window.novoAgendamento = function() {
+                state = {
+                    step: 1,
+                    maxStepReached: 1,
+                    selectedService: null,
+                    selectedBarber: null,
+                    selectedDate: null,
+                    selectedTime: null,
+                    nome: '',
+                    telefone: '',
+                    email: '',
+                    obs: '',
+                    confirmed: false,
+                    isAdmin: state.isAdmin,
+                    adminTab: state.adminTab,
+                };
+                ['inputNome', 'inputTelefone', 'inputEmail', 'inputObs'].forEach(id => document.getElementById(id)
+                    .value = '');
+                renderAllPublic();
+                updateUIPublic();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
 
-            function novoAgendamento() {
-                state = { step: 1, selectedService: null, selectedBarber: null, selectedDate: null, selectedTime: null,
-                    nome: '', telefone: '', email: '', obs: '' };
-                render();
-            }
-
-            function copiarLink() {
+            window.copiarLink = function() {
                 const inp = document.getElementById('linkAgendamento');
-                if (inp) {
-                    inp.select();
-                    document.execCommand('copy');
-                    toast('📋 Link copiado!');
-                }
-            }
+                inp.select();
+                inp.setSelectionRange(0, 99999);
+                try { navigator.clipboard.writeText(inp.value); } catch (e) {}
+                showToast('Link copiado! 📋');
+            };
 
-            // ========== ÁREA ADMIN ==========
-            function renderLoginAdmin() {
-                $main.innerHTML = `
-              <div style="display:flex;align-items:center;justify-content:center;min-height:300px;">
-                <div class="card" style="width:350px;">
-                  <h3 style="color:#fff;text-align:center;">🔐 Acesso Administrativo</h3>
-                  <div class="form-group"><label>Senha</label><input type="password" id="senhaAdmin" placeholder="Digite a senha"></div>
-                  <button class="btn btn-gold" style="width:100%;" onclick="loginAdmin(document.getElementById('senhaAdmin').value)">Entrar</button>
-                  <p style="color:var(--muted);font-size:0.7rem;text-align:center;margin-top:8px;">Senha padrão: admin123</p>
-                </div>
-              </div>`;
-            }
-
-            function renderAdmin() {
-                $main.innerHTML = `
-              <div style="display:flex;height:100%;">
-                <div class="sidebar">
-                  <a class="${secaoAdmin==='dashboard'?'active':''}" onclick="setSecao('dashboard')">📊 Dashboard</a>
-                  <a class="${secaoAdmin==='servicos'?'active':''}" onclick="setSecao('servicos')">💈 Serviços</a>
-                  <a class="${secaoAdmin==='barbeiros'?'active':''}" onclick="setSecao('barbeiros')">👤 Barbeiros</a>
-                  <a class="${secaoAdmin==='agendamentos'?'active':''}" onclick="setSecao('agendamentos')">📅 Agendamentos</a>
-                  <a class="${secaoAdmin==='config'?'active':''}" onclick="setSecao('config')">⚙️ Configurações</a>
-                  <a onclick="logoutAdmin()" style="color:var(--danger);">🚪 Sair</a>
-                </div>
-                <div class="content-area" id="adminContent"></div>
-              </div>`;
-                renderAdminContent();
-            }
-
-            function setSecao(secao) {
-                secaoAdmin = secao;
-                render();
-            }
-
-            function renderAdminContent() {
-                const container = document.getElementById('adminContent');
-                if (!container) return;
-                if (secaoAdmin === 'dashboard') renderDashboard(container);
-                else if (secaoAdmin === 'servicos') renderAdminServicos(container);
-                else if (secaoAdmin === 'barbeiros') renderAdminBarbeiros(container);
-                else if (secaoAdmin === 'agendamentos') renderAdminAgendamentos(container);
-                else if (secaoAdmin === 'config') renderAdminConfig(container);
-            }
-
-            function renderDashboard(container) {
-                const totalAgendamentos = DATA.agendamentos.length;
-                const confirmados = DATA.agendamentos.filter(a => a.status === 'confirmado').length;
-                const hoje = new Date().toISOString().split('T')[0];
-                const agendamentosHoje = DATA.agendamentos.filter(a => a.data === hoje && a.status !== 'cancelado');
-                container.innerHTML = `
-              <h3 style="color:#fff;">📊 Dashboard</h3>
-              <div class="grid-3 mb-16">
-                <div class="card text-center"><div style="font-size:2rem;">📋</div><div style="font-size:1.5rem;font-weight:900;">${totalAgendamentos}</div><div>Total de agendamentos</div></div>
-                <div class="card text-center"><div style="font-size:2rem;">✅</div><div style="font-size:1.5rem;font-weight:900;">${confirmados}</div><div>Confirmados</div></div>
-                <div class="card text-center"><div style="font-size:2rem;">📅</div><div style="font-size:1.5rem;font-weight:900;">${agendamentosHoje.length}</div><div>Agendamentos hoje</div></div>
-              </div>
-              <h4 style="color:var(--gold);">Hoje (${new Date().toLocaleDateString('pt-BR')})</h4>
-              <table>${agendamentosHoje.map(a => {
-                const s = DATA.servicos.find(s=>s.id===a.servicoId);
-                const b = DATA.barbeiros.find(b=>b.id===a.barbeiroId);
-                return `<tr><td>🕐 ${a.hora}</td><td>${s?.nome||'?'}</td><td>${b?.nome||'?'}</td><td>${a.nome}</td><td><span class="tag tag-${a.status==='confirmado'?'confirmed':'pending'}">${a.status}</span></td></tr>`;
-              }).join('') || '<tr><td colspan="5">Nenhum agendamento hoje.</td></tr>'}</table>
-            `;
-            }
-
-            function renderAdminServicos(container) {
-                container.innerHTML = `
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="color:#fff;">💈 Serviços</h3>
-                <button class="btn btn-gold btn-sm" onclick="abrirModalServico()">+ Novo Serviço</button>
-              </div>
-              <table class="mt-16">
-                <thead><tr><th>Ícone</th><th>Nome</th><th>Preço</th><th>Duração</th><th>Status</th><th>Ações</th></tr></thead>
-                <tbody>${DATA.servicos.map(s => `
-                  <tr>
-                    <td style="font-size:1.5rem;">${s.icone}</td>
-                    <td>${s.nome}</td>
-                    <td>R$ ${s.preco.toFixed(2)}</td>
-                    <td>${s.duracao} min</td>
-                    <td><span class="status-badge ${s.ativo?'status-active':'status-inactive'}">${s.ativo?'Ativo':'Inativo'}</span></td>
-                    <td>
-                      <button class="btn btn-outline btn-sm" onclick="abrirModalServico('${s.id}')">✏️</button>
-                      <button class="btn btn-danger btn-sm" onclick="excluirServico('${s.id}')">🗑️</button>
-                    </td>
-                  </tr>`).join('')}</tbody>
-              </table>`;
-            }
-
-            function abrirModalServico(id = null) {
-                const servico = id ? DATA.servicos.find(s => s.id === id) : null;
-                const titulo = servico ? 'Editar Serviço' : 'Novo Serviço';
-                $modal.innerHTML = `
-              <div class="modal-overlay" onclick="if(event.target===this) fecharModal()">
-                <div class="modal">
-                  <h2>${titulo}</h2>
-                  <div class="form-group"><label>Ícone (emoji)</label><input id="modIcone" value="${servico?.icone||'💈'}"></div>
-                  <div class="form-group"><label>Nome</label><input id="modNome" value="${servico?.nome||''}"></div>
-                  <div class="form-row">
-                    <div class="form-group"><label>Preço (R$)</label><input type="number" id="modPreco" value="${servico?.preco||0}" step="0.01"></div>
-                    <div class="form-group"><label>Duração (min)</label><input type="number" id="modDuracao" value="${servico?.duracao||30}"></div>
-                  </div>
-                  <div class="form-group"><label>Ativo</label><select id="modAtivo"><option value="1" ${servico&&servico.ativo?'selected':''}>Sim</option><option value="0" ${servico&&!servico.ativo?'selected':''}>Não</option></select></div>
-                  <div class="modal-actions">
-                    <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
-                    <button class="btn btn-gold" onclick="salvarServico('${id||''}')">Salvar</button>
-                  </div>
-                </div>
-              </div>`;
-            }
-
-            function salvarServico(id) {
-                const icone = document.getElementById('modIcone').value.trim() || '💈';
-                const nome = document.getElementById('modNome').value.trim();
-                const preco = parseFloat(document.getElementById('modPreco').value) || 0;
-                const duracao = parseInt(document.getElementById('modDuracao').value) || 30;
-                const ativo = document.getElementById('modAtivo').value === '1';
-                if (!nome) return toast('⚠️ Nome é obrigatório.');
-                if (id) {
-                    const idx = DATA.servicos.findIndex(s => s.id === id);
-                    if (idx >= 0) {
-                        DATA.servicos[idx] = { ...DATA.servicos[idx], icone, nome, preco, duracao, ativo };
-                    }
-                } else {
-                    DATA.servicos.push({ id: gerarId(), icone, nome, preco, duracao, ativo });
-                }
-                salvarDados(DATA);
-                fecharModal();
-                render();
-                toast('✅ Serviço salvo!');
-            }
-
-            function excluirServico(id) {
-                if (!confirm('Excluir este serviço?')) return;
-                DATA.servicos = DATA.servicos.filter(s => s.id !== id);
-                salvarDados(DATA);
-                render();
-                toast('🗑️ Serviço excluído.');
-            }
-
-            function renderAdminBarbeiros(container) {
-                container.innerHTML = `
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="color:#fff;">👤 Barbeiros</h3>
-                <button class="btn btn-gold btn-sm" onclick="abrirModalBarbeiro()">+ Novo Barbeiro</button>
-              </div>
-              <table class="mt-16">
-                <thead><tr><th>Avatar</th><th>Nome</th><th>Especialidade</th><th>Status</th><th>Ações</th></tr></thead>
-                <tbody>${DATA.barbeiros.map(b => `
-                  <tr>
-                    <td style="font-size:1.8rem;">${b.avatar}</td>
-                    <td>${b.nome}</td>
-                    <td>${b.especialidade}</td>
-                    <td><span class="status-badge ${b.ativo?'status-active':'status-inactive'}">${b.ativo?'Ativo':'Inativo'}</span></td>
-                    <td>
-                      <button class="btn btn-outline btn-sm" onclick="abrirModalBarbeiro('${b.id}')">✏️</button>
-                      <button class="btn btn-danger btn-sm" onclick="excluirBarbeiro('${b.id}')">🗑️</button>
-                    </td>
-                  </tr>`).join('')}</tbody>
-              </table>`;
-            }
-
-            function abrirModalBarbeiro(id = null) {
-                const barbeiro = id ? DATA.barbeiros.find(b => b.id === id) : null;
-                $modal.innerHTML = `
-              <div class="modal-overlay" onclick="if(event.target===this) fecharModal()">
-                <div class="modal">
-                  <h2>${barbeiro?'Editar Barbeiro':'Novo Barbeiro'}</h2>
-                  <div class="form-group"><label>Avatar (emoji)</label><input id="modAvatar" value="${barbeiro?.avatar||'🧔'}"></div>
-                  <div class="form-group"><label>Nome</label><input id="modNomeB" value="${barbeiro?.nome||''}"></div>
-                  <div class="form-group"><label>Especialidade</label><input id="modEsp" value="${barbeiro?.especialidade||''}"></div>
-                  <div class="form-group"><label>Ativo</label><select id="modAtivoB"><option value="1" ${barbeiro&&barbeiro.ativo?'selected':''}>Sim</option><option value="0" ${barbeiro&&!barbeiro.ativo?'selected':''}>Não</option></select></div>
-                  <div class="modal-actions">
-                    <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
-                    <button class="btn btn-gold" onclick="salvarBarbeiro('${id||''}')">Salvar</button>
-                  </div>
-                </div>
-              </div>`;
-            }
-
-            function salvarBarbeiro(id) {
-                const avatar = document.getElementById('modAvatar').value.trim() || '🧔';
-                const nome = document.getElementById('modNomeB').value.trim();
-                const especialidade = document.getElementById('modEsp').value.trim();
-                const ativo = document.getElementById('modAtivoB').value === '1';
-                if (!nome) return toast('⚠️ Nome é obrigatório.');
-                if (id) {
-                    const idx = DATA.barbeiros.findIndex(b => b.id === id);
-                    if (idx >= 0) DATA.barbeiros[idx] = { ...DATA.barbeiros[idx], avatar, nome, especialidade,
-                        ativo };
-                } else {
-                    DATA.barbeiros.push({ id: gerarId(), avatar, nome, especialidade, ativo });
-                }
-                salvarDados(DATA);
-                fecharModal();
-                render();
-                toast('✅ Barbeiro salvo!');
-            }
-
-            function excluirBarbeiro(id) {
-                if (!confirm('Excluir este barbeiro?')) return;
-                DATA.barbeiros = DATA.barbeiros.filter(b => b.id !== id);
-                salvarDados(DATA);
-                render();
-                toast('🗑️ Barbeiro excluído.');
-            }
-
-            function renderAdminAgendamentos(container) {
-                const lista = [...DATA.agendamentos].sort((a, b) => b.data.localeCompare(a.data) || b.hora.localeCompare(
-                    a.hora));
-                container.innerHTML = `
-              <h3 style="color:#fff;">📅 Agendamentos</h3>
-              <div style="margin-bottom:12px;">
-                <button class="btn btn-outline btn-sm" onclick="filtrarAgendamentos('todos')">Todos</button>
-                <button class="btn btn-outline btn-sm" onclick="filtrarAgendamentos('confirmado')">Confirmados</button>
-                <button class="btn btn-outline btn-sm" onclick="filtrarAgendamentos('cancelado')">Cancelados</button>
-              </div>
-              <table>
-                <thead><tr><th>Data</th><th>Hora</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th>Status</th><th>Ações</th></tr></thead>
-                <tbody id="tabelaAgendamentos">${lista.map(a => {
-                  const s = DATA.servicos.find(s=>s.id===a.servicoId);
-                  const b = DATA.barbeiros.find(b=>b.id===a.barbeiroId);
-                  const dataF = new Date(a.data+'T00:00:00').toLocaleDateString('pt-BR');
-                  return `<tr data-status="${a.status}">
-                    <td>${dataF}</td><td>${a.hora}</td><td>${a.nome}</td><td>${s?.nome||'?'}</td><td>${b?.nome||'?'}</td>
-                    <td><span class="tag tag-${a.status==='confirmado'?'confirmed':a.status==='cancelado'?'cancelled':'pending'}">${a.status}</span></td>
-                    <td>
-                      ${a.status==='confirmado'?`<button class="btn btn-danger btn-sm" onclick="cancelarAgendamento('${a.id}')">❌ Cancelar</button>`:''}
-                      ${a.status==='cancelado'?`<button class="btn btn-success btn-sm" onclick="reativarAgendamento('${a.id}')">🔄 Reativar</button>`:''}
-                      <button class="btn btn-outline btn-sm" onclick="excluirAgendamento('${a.id}')">🗑️</button>
-                    </td>
-                  </tr>`;
-                }).join('')}</tbody>
-              </table>`;
-            }
-
-            function filtrarAgendamentos(filtro) {
-                const rows = document.querySelectorAll('#tabelaAgendamentos tr');
-                rows.forEach(row => {
-                    if (filtro === 'todos') row.style.display = '';
-                    else row.style.display = row.dataset.status === filtro ? '' : 'none';
+            function updateUIPublic() {
+                const panels = ['panel-step1', 'panel-step2', 'panel-step3', 'panel-step4', 'panel-step5', 'panel-done'];
+                panels.forEach((id, i) => {
+                    document.getElementById(id).classList.toggle('active', (i + 1 === state.step) || (state.step ===
+                        6 && id === 'panel-done'));
                 });
+                const dots = document.querySelectorAll('#stepsNav .step-dot');
+                dots.forEach((dot, i) => {
+                    const s = i + 1;
+                    dot.classList.remove('active', 'done');
+                    if (state.step === 6) { if (s <= 5) dot.classList.add('done'); } else if (s === state.step)
+                        dot.classList.add('active');
+                    else if (s < state.step) dot.classList.add('done');
+                });
+                for (let c = 1; c <= 4; c++) {
+                    document.getElementById('conn' + c).classList.toggle('done', state.step > c || state.step === 6);
+                }
+                if (state.step >= 4) {
+                    document.getElementById('inputNome').value = state.nome;
+                    document.getElementById('inputTelefone').value = state.telefone;
+                    document.getElementById('inputEmail').value = state.email;
+                    document.getElementById('inputObs').value = state.obs;
+                }
+                updateButtons();
             }
 
-            function cancelarAgendamento(id) {
-                if (!confirm('Cancelar este agendamento?')) return;
-                const ag = DATA.agendamentos.find(a => a.id === id);
-                if (ag) ag.status = 'cancelado';
-                salvarDados(DATA);
-                render();
-                toast('❌ Agendamento cancelado.');
+            function renderAllPublic() {
+                renderServices();
+                renderBarbers();
+                renderDates();
+                renderTimes();
             }
 
-            function reativarAgendamento(id) {
-                const ag = DATA.agendamentos.find(a => a.id === id);
-                if (ag) ag.status = 'confirmado';
-                salvarDados(DATA);
-                render();
-                toast('🔄 Agendamento reativado.');
+            // ============ ADMIN PANEL ============
+            function renderAdminPanel() {
+                switch (state.adminTab) {
+                    case 'tab-servicos':
+                        renderAdminServicos();
+                        break;
+                    case 'tab-barbeiros':
+                        renderAdminBarbeiros();
+                        break;
+                    case 'tab-agendamentos':
+                        renderAdminAgendamentos();
+                        break;
+                    case 'tab-config':
+                        renderAdminConfig();
+                        break;
+                }
             }
 
-            function excluirAgendamento(id) {
-                if (!confirm('Excluir permanentemente este agendamento?')) return;
-                DATA.agendamentos = DATA.agendamentos.filter(a => a.id !== id);
-                salvarDados(DATA);
-                render();
-                toast('🗑️ Agendamento excluído.');
-            }
-
-            function renderAdminConfig(container) {
-                const c = DATA.config;
-                container.innerHTML = `
-              <h3 style="color:#fff;">⚙️ Configurações</h3>
-              <div class="card">
-                <div class="form-row">
-                  <div class="form-group"><label>Horário de abertura</label><input type="time" id="cfgAbertura" value="${c.horaAbertura}"></div>
-                  <div class="form-group"><label>Horário de fechamento</label><input type="time" id="cfgFechamento" value="${c.horaFechamento}"></div>
+            function renderAdminServicos() {
+                let html = `
+                <h3 style="color:var(--white);margin-bottom:12px;">Gerenciar Serviços</h3>
+                <div class="admin-form-row" style="margin-bottom:16px;">
+                  <input type="text" id="newServNome" placeholder="Nome do serviço" style="flex:2;">
+                  <input type="text" id="newServIcon" placeholder="Ícone (emoji)" style="flex:0.5;min-width:60px;" maxlength="2">
+                  <input type="number" id="newServPreco" placeholder="Preço R$" step="0.01" style="flex:1;">
+                  <input type="number" id="newServDur" placeholder="Duração (min)" style="flex:1;">
+                  <button class="btn btn-primary btn-sm" onclick="adminAddServico()">➕ Adicionar</button>
                 </div>
-                <div class="form-group"><label>Intervalo entre horários (minutos)</label><input type="number" id="cfgIntervalo" value="${c.intervaloMinutos}" min="15" step="5"></div>
-                <div class="form-group"><label>Dias de folga (0=domingo, 1=segunda, ...)</label><input id="cfgFolgas" value="${c.diasFolga.join(',')}" placeholder="0,6"></div>
-                <div class="form-group"><label>Senha do admin</label><input type="text" id="cfgSenha" value="${c.senhaAdmin}"></div>
-                <button class="btn btn-gold" onclick="salvarConfig()">💾 Salvar Configurações</button>
-                <button class="btn btn-danger btn-sm mt-16" onclick="resetarDados()">⚠️ Resetar todos os dados</button>
-              </div>`;
+                <table class="admin-table">
+                  <thead><tr><th>Ícone</th><th>Nome</th><th>Preço</th><th>Duração</th><th>Ações</th></tr></thead>
+                  <tbody>`;
+                db.services.forEach(s => {
+                    html += `
+                    <tr>
+                      <td>${s.icon}</td>
+                      <td>${s.name}</td>
+                      <td>R$ ${s.price.toFixed(2)}</td>
+                      <td>${s.duration} min</td>
+                      <td>
+                        <button class="btn btn-outline btn-sm" onclick="adminEditServico('${s.id}')">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="adminRemoveServico('${s.id}')">🗑️</button>
+                      </td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                $adminPanelContent.innerHTML = html;
             }
 
-            function salvarConfig() {
-                DATA.config.horaAbertura = document.getElementById('cfgAbertura').value;
-                DATA.config.horaFechamento = document.getElementById('cfgFechamento').value;
-                DATA.config.intervaloMinutos = parseInt(document.getElementById('cfgIntervalo').value) || 30;
-                DATA.config.diasFolga = document.getElementById('cfgFolgas').value.split(',').map(n => parseInt(n.trim()))
-                    .filter(n => !isNaN(n));
-                DATA.config.senhaAdmin = document.getElementById('cfgSenha').value.trim() || 'admin123';
-                salvarDados(DATA);
-                render();
-                toast('✅ Configurações salvas!');
+            window.adminAddServico = function() {
+                const nome = document.getElementById('newServNome').value.trim();
+                const icon = document.getElementById('newServIcon').value.trim() || '✂️';
+                const preco = parseFloat(document.getElementById('newServPreco').value);
+                const dur = parseInt(document.getElementById('newServDur').value);
+                if (!nome || isNaN(preco) || isNaN(dur)) { showToast('Preencha todos os campos!', true); return; }
+                const id = 'serv_' + Date.now();
+                db.services.push({ id, name: nome, icon, price: preco, duration: dur });
+                saveDB();
+                renderAdminServicos();
+                renderAllPublic();
+                showToast('Serviço adicionado!');
+            };
+
+            window.adminRemoveServico = function(id) {
+                if (!confirm('Remover este serviço?')) return;
+                db.services = db.services.filter(s => s.id !== id);
+                saveDB();
+                renderAdminServicos();
+                renderAllPublic();
+                showToast('Serviço removido.');
+            };
+
+            window.adminEditServico = function(id) {
+                const s = db.services.find(s => s.id === id);
+                if (!s) return;
+                const nome = prompt('Nome:', s.name);
+                if (nome === null) return;
+                const icon = prompt('Ícone:', s.icon);
+                if (icon === null) return;
+                const preco = parseFloat(prompt('Preço:', s.price));
+                if (isNaN(preco)) return;
+                const dur = parseInt(prompt('Duração (min):', s.duration));
+                if (isNaN(dur)) return;
+                s.name = nome.trim();
+                s.icon = icon.trim() || '✂️';
+                s.price = preco;
+                s.duration = dur;
+                saveDB();
+                renderAdminServicos();
+                renderAllPublic();
+                showToast('Serviço atualizado!');
+            };
+
+            function renderAdminBarbeiros() {
+                let html = `
+                <h3 style="color:var(--white);margin-bottom:12px;">Gerenciar Barbeiros</h3>
+                <div class="admin-form-row" style="margin-bottom:16px;">
+                  <input type="text" id="newBarbNome" placeholder="Nome" style="flex:2;">
+                  <input type="text" id="newBarbAvatar" placeholder="Avatar (emoji)" style="flex:0.5;min-width:60px;" maxlength="2">
+                  <input type="text" id="newBarbSpec" placeholder="Especialidade" style="flex:2;">
+                  <button class="btn btn-primary btn-sm" onclick="adminAddBarbeiro()">➕ Adicionar</button>
+                </div>
+                <table class="admin-table">
+                  <thead><tr><th>Avatar</th><th>Nome</th><th>Especialidade</th><th>Ações</th></tr></thead>
+                  <tbody>`;
+                db.barbers.forEach(b => {
+                    html += `
+                    <tr>
+                      <td>${b.avatar}</td>
+                      <td>${b.name}</td>
+                      <td>${b.specialty}</td>
+                      <td>
+                        <button class="btn btn-outline btn-sm" onclick="adminEditBarbeiro('${b.id}')">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="adminRemoveBarbeiro('${b.id}')">🗑️</button>
+                      </td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                $adminPanelContent.innerHTML = html;
             }
 
-            function resetarDados() {
-                if (!confirm('Tem certeza? Isso apagará TODOS os dados e restaurará o padrão.')) return;
-                DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
-                salvarDados(DATA);
-                adminLogado = false;
-                paginaAtual = 'cliente';
-                state = { step: 1, selectedService: null, selectedBarber: null, selectedDate: null, selectedTime: null,
-                    nome: '', telefone: '', email: '', obs: '' };
-                render();
-                toast('🔄 Dados resetados.');
+            window.adminAddBarbeiro = function() {
+                const nome = document.getElementById('newBarbNome').value.trim();
+                const avatar = document.getElementById('newBarbAvatar').value.trim() || '👤';
+                const spec = document.getElementById('newBarbSpec').value.trim();
+                if (!nome || !spec) { showToast('Preencha nome e especialidade!', true); return; }
+                const id = 'barb_' + Date.now();
+                db.barbers.push({ id, name: nome, avatar, specialty: spec });
+                saveDB();
+                renderAdminBarbeiros();
+                renderAllPublic();
+                showToast('Barbeiro adicionado!');
+            };
+
+            window.adminRemoveBarbeiro = function(id) {
+                if (!confirm('Remover este barbeiro?')) return;
+                db.barbers = db.barbers.filter(b => b.id !== id);
+                saveDB();
+                renderAdminBarbeiros();
+                renderAllPublic();
+                showToast('Barbeiro removido.');
+            };
+
+            window.adminEditBarbeiro = function(id) {
+                const b = db.barbers.find(b => b.id === id);
+                if (!b) return;
+                const nome = prompt('Nome:', b.name);
+                if (nome === null) return;
+                const avatar = prompt('Avatar:', b.avatar);
+                if (avatar === null) return;
+                const spec = prompt('Especialidade:', b.specialty);
+                if (spec === null) return;
+                b.name = nome.trim();
+                b.avatar = avatar.trim() || '👤';
+                b.specialty = spec.trim();
+                saveDB();
+                renderAdminBarbeiros();
+                renderAllPublic();
+                showToast('Barbeiro atualizado!');
+            };
+
+            function renderAdminAgendamentos() {
+                const ags = [...db.agendamentos].sort((a, b) => {
+                    if (a.data !== b.data) return a.data.localeCompare(b.data);
+                    return a.hora.localeCompare(b.hora);
+                });
+                let html = `<h3 style="color:var(--white);margin-bottom:12px;">Agendamentos (${ags.length})</h3>`;
+                if (ags.length === 0) {
+                    html += '<p style="color:var(--text-light);">Nenhum agendamento realizado ainda.</p>';
+                } else {
+                    html +=
+                        `<table class="admin-table"><thead><tr><th>Data</th><th>Hora</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th>Status</th><th>Ações</th></tr></thead><tbody>`;
+                    ags.forEach(a => {
+                        const statusClass = a.status === 'confirmado' ? 'badge-confirmado' : a.status ===
+                            'cancelado' ? 'badge-cancelado' : 'badge-pendente';
+                        html += `
+                        <tr>
+                          <td>${new Date(a.data+'T00:00:00').toLocaleDateString('pt-BR')}</td>
+                          <td>${a.hora}</td>
+                          <td>${a.nome}<br><small>${a.telefone}</small></td>
+                          <td>${a.servicoNome}</td>
+                          <td>${a.barbeiroNome}</td>
+                          <td><span class="badge-status ${statusClass}">${a.status}</span></td>
+                          <td>
+                            ${a.status==='confirmado' ? `<button class="btn btn-danger btn-sm" onclick="adminCancelarAgendamento('${a.id}')">❌ Cancelar</button>` : `<button class="btn btn-outline btn-sm" onclick="adminReativarAgendamento('${a.id}')">🔄 Reativar</button>`}
+                          </td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table>';
+                }
+                $adminPanelContent.innerHTML = html;
             }
 
-            function fecharModal() {
-                $modal.innerHTML = '';
+            window.adminCancelarAgendamento = function(id) {
+                if (!confirm('Cancelar este agendamento?')) return;
+                const ag = db.agendamentos.find(a => a.id === id);
+                if (ag) ag.status = 'cancelado';
+                saveDB();
+                renderAdminAgendamentos();
+                renderAllPublic();
+                showToast('Agendamento cancelado.');
+            };
+
+            window.adminReativarAgendamento = function(id) {
+                const ag = db.agendamentos.find(a => a.id === id);
+                if (!ag) return;
+                // Verificar conflito
+                const conflito = db.agendamentos.some(a => a.id !== id && a.data === ag.data && a.hora === ag.hora && a
+                    .status === 'confirmado');
+                if (conflito) { showToast('Horário já ocupado!', true); return; }
+                ag.status = 'confirmado';
+                saveDB();
+                renderAdminAgendamentos();
+                renderAllPublic();
+                showToast('Agendamento reativado.');
+            };
+
+            function renderAdminConfig() {
+                const cfg = db.config;
+                const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+                let html = `
+                <h3 style="color:var(--white);margin-bottom:12px;">⚙️ Configurações da Barbearia</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:500px;">
+                  <div class="form-group"><label>Horário de Abertura</label><input type="number" id="cfgAbertura" value="${cfg.horaAbertura}" min="0" max="23"></div>
+                  <div class="form-group"><label>Horário de Fechamento</label><input type="number" id="cfgFechamento" value="${cfg.horaFechamento}" min="1" max="23"></div>
+                </div>
+                <div class="form-group" style="margin-top:12px;max-width:500px;">
+                  <label>Dias de Folga (selecione os dias que a barbearia NÃO abre)</label>
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;">`;
+                diasSemana.forEach((nome, idx) => {
+                    const checked = cfg.diasFolga.includes(idx) ? 'checked' : '';
+                    html +=
+                        `<label style="display:flex;align-items:center;gap:4px;font-size:0.8rem;color:var(--text);"><input type="checkbox" value="${idx}" ${checked} class="cfg-dia-folga"> ${nome}</label>`;
+                });
+                html += `</div></div>
+                <div class="form-group" style="margin-top:12px;max-width:500px;">
+                  <label>Senha do Administrador</label>
+                  <input type="text" id="cfgSenha" value="${cfg.senhaAdmin}">
+                </div>
+                <button class="btn btn-primary" style="margin-top:16px;" onclick="adminSalvarConfig()">💾 Salvar Configurações</button>`;
+                $adminPanelContent.innerHTML = html;
             }
 
-            // ========== NAVEGAÇÃO STEPS CLIENTE ==========
-            function nextStep() {
-                if (state.step < 5) state.step++;
-                render();
-            }
+            window.adminSalvarConfig = function() {
+                const abertura = parseInt(document.getElementById('cfgAbertura').value);
+                const fechamento = parseInt(document.getElementById('cfgFechamento').value);
+                const senha = document.getElementById('cfgSenha').value.trim();
+                if (isNaN(abertura) || isNaN(fechamento) || abertura >= fechamento || !senha) {
+                    showToast('Verifique os valores!', true);
+                    return;
+                }
+                const diasFolga = [];
+                document.querySelectorAll('.cfg-dia-folga:checked').forEach(cb => diasFolga.push(parseInt(cb.value)));
+                db.config.horaAbertura = abertura;
+                db.config.horaFechamento = fechamento;
+                db.config.diasFolga = diasFolga;
+                db.config.senhaAdmin = senha;
+                saveDB();
+                renderAllPublic();
+                showToast('Configurações salvas!');
+            };
 
-            function prevStep() {
-                if (state.step > 1) state.step--;
-                render();
-            }
+            // Admin tabs click
+            document.getElementById('adminPanelContent').addEventListener('click', function(e) {
+                // delegado para tabs? tabs estão fora, então listener no container pai
+            });
+            document.querySelector('.admin-tabs').addEventListener('click', function(e) {
+                const tab = e.target.closest('.admin-tab');
+                if (!tab) return;
+                const tabId = tab.dataset.adminTab;
+                state.adminTab = tabId;
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderAdminPanel();
+            });
 
-            function selectService(id) {
-                state.selectedService = id;
-                render();
-            }
+            // Steps nav público
+            document.getElementById('stepsNav').addEventListener('click', function(e) {
+                const dot = e.target.closest('.step-dot');
+                if (!dot) return;
+                const step = parseInt(dot.dataset.step);
+                if (step && step <= state.maxStepReached + 1) {
+                    if (step === 5) {
+                        state.nome = document.getElementById('inputNome').value.trim();
+                        state.telefone = document.getElementById('inputTelefone').value.trim();
+                        if (!state.nome || !state.telefone) { goToStep(4); return; }
+                        renderSummary();
+                    }
+                    goToStep(step);
+                }
+            });
 
-            function selectBarber(id) {
-                state.selectedBarber = id;
-                render();
-            }
+            // ============ INIT ============
+            renderAllPublic();
+            updateUIPublic();
+            updateViewVisibility();
 
-            function selectDate(iso) {
-                state.selectedDate = iso;
-                state.selectedTime = null;
-                render();
-            }
-
-            function selectTime(hora) {
-                state.selectedTime = hora;
-                render();
-            }
-
-            // ========== EXPOR PARA ESCOPO GLOBAL ==========
-            window.navegar = navegar;
-            window.loginAdmin = loginAdmin;
-            window.logoutAdmin = logoutAdmin;
-            window.setSecao = setSecao;
-            window.nextStep = nextStep;
-            window.prevStep = prevStep;
-            window.selectService = selectService;
-            window.selectBarber = selectBarber;
-            window.selectDate = selectDate;
-            window.selectTime = selectTime;
-            window.validarDados = validarDados;
-            window.confirmarAgendamento = confirmarAgendamento;
-            window.novoAgendamento = novoAgendamento;
-            window.copiarLink = copiarLink;
-            window.abrirModalServico = abrirModalServico;
-            window.salvarServico = salvarServico;
-            window.excluirServico = excluirServico;
-            window.abrirModalBarbeiro = abrirModalBarbeiro;
-            window.salvarBarbeiro = salvarBarbeiro;
-            window.excluirBarbeiro = excluirBarbeiro;
-            window.cancelarAgendamento = cancelarAgendamento;
-            window.reativarAgendamento = reativarAgendamento;
-            window.excluirAgendamento = excluirAgendamento;
-            window.filtrarAgendamentos = filtrarAgendamentos;
-            window.salvarConfig = salvarConfig;
-            window.resetarDados = resetarDados;
-            window.fecharModal = fecharModal;
-
-            // ========== INIT ==========
-            render();
-            console.log('✨ Sistema Barbearia Old School pronto.');
-            console.log('👤 Área Cliente: agendamento passo a passo.');
-            console.log('⚙️ Admin: clique em Administração (senha padrão: admin123).');
-            console.log('💾 Todos os dados salvos no localStorage do navegador.');
+            // Expor funções globais adicionais
+            window.adminAddServico = window.adminAddServico;
+            window.adminRemoveServico = window.adminRemoveServico;
+            window.adminEditServico = window.adminEditServico;
+            window.adminAddBarbeiro = window.adminAddBarbeiro;
+            window.adminRemoveBarbeiro = window.adminRemoveBarbeiro;
+            window.adminEditBarbeiro = window.adminEditBarbeiro;
+            window.adminCancelarAgendamento = window.adminCancelarAgendamento;
+            window.adminReativarAgendamento = window.adminReativarAgendamento;
+            window.adminSalvarConfig = window.adminSalvarConfig;
+            window.goToStep = window.goToStep;
+            window.selectService = window.selectService;
+            window.selectBarber = window.selectBarber;
+            window.selectDate = window.selectDate;
+            window.selectTime = window.selectTime;
+            window.confirmarAgendamento = window.confirmarAgendamento;
+            window.novoAgendamento = window.novoAgendamento;
+            window.copiarLink = window.copiarLink;
+            window.toggleAdminView = window.toggleAdminView;
         })();
     </script>
 </body>
