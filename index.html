@@ -146,29 +146,15 @@
             transform: scale(0.94);
         }
 
-        /* ========== GRADE DOS CARDS (AJUSTADA PARA 4 COLUNAS) ========== */
+        /* Cards grid aprimorado para o dashboard */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
             margin-bottom: 32px;
         }
 
-        /* Responsividade da grade */
-        @media (max-width: 1024px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-            }
-        }
-        @media (max-width: 640px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-        }
-
-        /* Cards premium (todos os tipos) */
+        /* Estilo unificado para todos os cards */
         .card, .client-card, .plano-card, .produto-card, .aviso-card, .relatorio-card {
             background: rgba(18, 18, 18, 0.85);
             backdrop-filter: blur(4px);
@@ -183,9 +169,18 @@
             box-shadow: 0 20px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(249,115,22,0.25);
         }
 
+        /* Cards do dashboard com ícone maior e centralização */
+        .card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
         .card-icon {
-            font-size: 2.4rem;
-            margin-bottom: 14px;
+            font-size: 2.6rem;
+            margin-bottom: 12px;
             display: inline-block;
             filter: drop-shadow(0 2px 6px rgba(249,115,22,0.4));
         }
@@ -197,16 +192,18 @@
             background-clip: text;
             color: transparent;
             letter-spacing: -0.02em;
+            line-height: 1.2;
         }
         .card-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #cbd5e1;
             font-weight: 500;
-            margin-top: 6px;
+            margin-top: 8px;
             letter-spacing: 0.2px;
         }
 
-        /* Cliente card */
+        /* Demais estilos (clientes, planos, estoque, avisos, relatórios) permanecem iguais ao anterior */
+        /* Cards de clientes */
         .client-card .card-header {
             display: flex;
             justify-content: space-between;
@@ -256,7 +253,7 @@
             padding-top: 16px;
         }
 
-        /* Planos card */
+        /* Cards de planos */
         .plano-card .plano-header {
             display: flex;
             justify-content: space-between;
@@ -304,7 +301,7 @@
             color: #86efac;
         }
 
-        /* Produto card */
+        /* Cards de produtos */
         .produto-header {
             display: flex;
             justify-content: space-between;
@@ -344,7 +341,7 @@
             gap: 12px;
         }
 
-        /* Avisos card */
+        /* Cards de avisos */
         .aviso-card {
             border-left: 4px solid #f97316;
         }
@@ -377,8 +374,14 @@
             justify-content: space-between;
             font-size: 0.85rem;
         }
+        .aviso-acoes {
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 14px;
+        }
 
-        /* Relatório card */
+        /* Cards de relatórios */
         .relatorio-card {
             border-left: 3px solid #f97316;
         }
@@ -398,8 +401,18 @@
             background-clip: text;
             color: transparent;
         }
+        .relatorio-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .relatorio-linha {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
 
-        /* Botões e ações */
+        /* Botões */
         .btn-icon {
             background: rgba(30,30,30,0.9);
             border: 1px solid rgba(255,255,255,0.1);
@@ -411,7 +424,6 @@
             transition: 0.2s;
             color: #e2e8f0;
         }
-        .btn-edit:hover, .btn-delete:hover { background: rgba(255,255,255,0.08); }
         .btn-whatsapp-card {
             background: linear-gradient(135deg, #25D366, #128C7E);
             color: white;
@@ -510,7 +522,7 @@
             transition: height 0.3s;
         }
 
-        /* Modal refinado */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -580,10 +592,12 @@
         }
         @media (max-width: 640px) {
             .pages-container { padding: 20px 16px 85px; }
+            .cards-grid { gap: 16px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
             .card, .client-card, .plano-card, .produto-card, .aviso-card { padding: 16px; }
             .logo-image { width: 32px; height: 32px; }
             .logo-text { font-size: 1.2rem; }
-            .cards-grid { gap: 14px; }
+            .card-value { font-size: 1.6rem; }
+            .card-icon { font-size: 2rem; }
         }
     </style>
 </head>
@@ -672,7 +686,7 @@
 
 <div class="modal-overlay" id="modal-plano-overlay" style="display:none;" onclick="fecharModal(event,'modal-plano-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Plano</h3><form id="form-plano" onsubmit="salvarPlano(event)"><input type="hidden" id="plano-id"><label>Nome do plano</label><input type="text" id="plano-nome" required><label>Duração (dias)</label><input type="number" id="plano-duracao" required><label>Valor R$</label><input type="number" id="plano-valor" step="0.01"><label>Custo R$</label><input type="number" id="plano-custo" step="0.01"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-plano-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
 
-<div class="modal-overlay" id="modal-produto-overlay" style="display:none;" onclick="fecharModal(event,'modal-produto-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Produto</h3><form id="form-produto" onsubmit="salvarProduto(event)"><input type="hidden" id="produto-id"><label>Nome do produto</label><input type="text" id="produto-nome" required><div id="campo-qtd-inicial"><label>Quantidade inicial</label><input type="number" id="produto-qtd-inicial" value="0"></div><div id="aviso-edicao-produto" style="background:#1a1a1a; padding:8px; border-radius:20px; margin:8px 0; display:none;">Edição: use movimentações</div><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-produto-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
+<div class="modal-overlay" id="modal-produto-overlay" style="display:none;" onclick="fecharModal(event,'modal-produto-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Produto</h3><form id="form-produto" onsubmit="salvarProduto(event)"><input type="hidden" id="produto-id"><label>Nome do produto</label><input type="text" id="produto-nome" required><div id="campo-qtd-inicial"><label>Quantidade inicial</label><input type="number" id="produto-qtd-inicial" value="0"></div><div id="aviso-edicao-produto" style="background:#1a1a1a; padding:8px; border-radius:20px; margin:8px 0; display:none;">Edição: use movimentações para alterar estoque</div><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-produto-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
 
 <div class="modal-overlay" id="modal-movimentacao-overlay" style="display:none;" onclick="fecharModal(event,'modal-movimentacao-overlay')"><div class="modal"><h3>Movimentação</h3><form id="form-movimentacao" onsubmit="salvarMovimentacao(event)"><input type="hidden" id="mov-produto-id"><input type="hidden" id="mov-tipo"><p>Produto: <strong id="mov-produto-nome"></strong></p><label>Quantidade</label><input type="number" id="mov-quantidade" required><label>Data</label><input type="date" id="mov-data"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-movimentacao-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Registrar</button></div></form></div></div>
 
