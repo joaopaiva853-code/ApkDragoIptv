@@ -6,9 +6,10 @@
     <meta name="theme-color" content="#0a0a0a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="IPTV Manager">
-    <title>IPTV Manager | Dark Theme</title>
+    <meta name="apple-mobile-web-app-title" content="Gestão">
+    <title>Gestão | Dark Theme</title>
     <style>
+        /* ========== TODOS OS ESTILOS ANTERIORES FORAM MANTIDOS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -45,12 +46,11 @@
             align-items: center;
             gap: 12px;
         }
-        .logo-icon {
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .logo-image {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 8px;
         }
         .logo-text {
             font-weight: 700;
@@ -649,6 +649,8 @@
             .card, .client-card, .plano-card, .produto-card, .aviso-card { padding: 16px; }
             .produto-actions, .plano-actions, .aviso-acoes { flex-direction: column; align-items: stretch; }
             .btn-produto, .btn-icon, .btn-whatsapp-card { justify-content: center; }
+            .logo-image { width: 28px; height: 28px; }
+            .logo-text { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -656,8 +658,9 @@
 
 <div class="app-header">
     <div class="logo-area">
-        <span class="logo-icon">📺</span>
-        <span class="logo-text">IPTV Manager</span>
+        <!-- Imagem do logo mantida -->
+        <img src="https://i.im.ge/QMqruep/ChatGPT_Image_12_05_2026_00_07_55.png" alt="Logo Gestão" class="logo-image" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23f97316\'/%3E%3Ctext x=\'50\' y=\'68\' font-size=\'50\' text-anchor=\'middle\' fill=\'white\'%3E📺%3C/text%3E%3C/svg%3E';">
+        <span class="logo-text">Gestão</span>
     </div>
     <div class="header-actions">
         <button class="icon-btn" onclick="abrirMenuMais()">⚙️ Mais</button>
@@ -744,7 +747,7 @@
 <div id="toast" style="display:none;"></div>
 
 <script>
-    // ================== SISTEMA COMPLETO (TEMA PRETO) - MESMAS FUNÇÕES ==================
+    // ================== SISTEMA COMPLETO (TEMA PRETO) - FUNCIONALIDADES INTACTAS ==================
     const STORAGE_KEYS = { clientes: 'iptv_prof', planos: 'iptv_planos_prof', produtos: 'iptv_produtos_prof' };
     let clientes = [], planos = [], produtos = [];
     let ultimosClientesFiltrados = [];
