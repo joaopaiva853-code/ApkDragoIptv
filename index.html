@@ -102,7 +102,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Bottom Bar refinada */
+        /* Bottom Tab Bar refinada com badge */
         .bottom-tab-bar {
             position: fixed;
             bottom: 0;
@@ -133,6 +133,7 @@
             border-radius: 40px;
             transition: all 0.2s;
             cursor: pointer;
+            position: relative;
         }
         .tab-item .tab-icon {
             font-size: 1.6rem;
@@ -145,11 +146,25 @@
         .tab-item:active .tab-icon {
             transform: scale(0.94);
         }
+        .tab-badge {
+            position: absolute;
+            top: -2px;
+            right: 5px;
+            background: #ef4444;
+            color: white;
+            border-radius: 30px;
+            padding: 2px 6px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: 0 0 6px rgba(239,68,68,0.6);
+        }
 
-        /* Cards grid aprimorado para o dashboard */
+        /* Cards grid aprimorado */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 32px;
         }
@@ -169,7 +184,7 @@
             box-shadow: 0 20px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(249,115,22,0.25);
         }
 
-        /* Cards do dashboard com ícone maior e centralização */
+        /* Cards do dashboard */
         .card {
             text-align: center;
             display: flex;
@@ -202,8 +217,7 @@
             letter-spacing: 0.2px;
         }
 
-        /* Demais estilos (clientes, planos, estoque, avisos, relatórios) permanecem iguais ao anterior */
-        /* Cards de clientes */
+        /* Cards de clientes com destaque e botões centralizados */
         .client-card .card-header {
             display: flex;
             justify-content: space-between;
@@ -245,15 +259,36 @@
             min-width: 60px;
             font-weight: 600;
         }
+        /* Botões centralizados */
         .card-actions {
             display: flex;
-            justify-content: flex-end;
-            gap: 14px;
+            justify-content: center;
+            gap: 12px;
             border-top: 1px solid rgba(255,255,255,0.08);
             padding-top: 16px;
+            flex-wrap: wrap;
+        }
+        .btn-renovar {
+            background: rgba(34,197,94,0.2);
+            color: #86efac;
+            border: 1px solid #4ade80;
+        }
+        .btn-renovar:hover {
+            background: rgba(34,197,94,0.4);
         }
 
-        /* Cards de planos */
+        /* Destaque para clientes vencidos ou próximos ao vencimento */
+        .client-card.vencido-destaque {
+            border-left: 5px solid #ef4444;
+            background: rgba(239,68,68,0.08);
+            box-shadow: 0 0 12px rgba(239,68,68,0.2);
+        }
+        .client-card.proximo-destaque {
+            border-left: 5px solid #f97316;
+            background: rgba(249,115,22,0.05);
+        }
+
+        /* Cards de planos, produtos, avisos, relatórios (mantidos) */
         .plano-card .plano-header {
             display: flex;
             justify-content: space-between;
@@ -300,8 +335,6 @@
         .lucro-destaque {
             color: #86efac;
         }
-
-        /* Cards de produtos */
         .produto-header {
             display: flex;
             justify-content: space-between;
@@ -340,8 +373,6 @@
             justify-content: center;
             gap: 12px;
         }
-
-        /* Cards de avisos */
         .aviso-card {
             border-left: 4px solid #f97316;
         }
@@ -369,19 +400,12 @@
             gap: 10px;
             margin-bottom: 18px;
         }
-        .aviso-linha {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
         .aviso-acoes {
             display: flex;
             justify-content: flex-end;
             border-top: 1px solid rgba(255,255,255,0.08);
             padding-top: 14px;
         }
-
-        /* Cards de relatórios */
         .relatorio-card {
             border-left: 3px solid #f97316;
         }
@@ -412,17 +436,20 @@
             font-size: 0.8rem;
         }
 
-        /* Botões */
+        /* Botões genéricos */
         .btn-icon {
             background: rgba(30,30,30,0.9);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 40px;
-            padding: 6px 16px;
+            padding: 8px 16px;
             font-size: 0.75rem;
             font-weight: 500;
             cursor: pointer;
             transition: 0.2s;
             color: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-whatsapp-card {
             background: linear-gradient(135deg, #25D366, #128C7E);
@@ -592,12 +619,19 @@
         }
         @media (max-width: 640px) {
             .pages-container { padding: 20px 16px 85px; }
-            .cards-grid { gap: 16px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+            .cards-grid { gap: 16px; grid-template-columns: 1fr; }
             .card, .client-card, .plano-card, .produto-card, .aviso-card { padding: 16px; }
             .logo-image { width: 32px; height: 32px; }
             .logo-text { font-size: 1.2rem; }
             .card-value { font-size: 1.6rem; }
             .card-icon { font-size: 2rem; }
+            .card-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-icon {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -672,16 +706,20 @@
     </div>
 </div>
 
-<!-- Bottom Tab Bar -->
+<!-- Bottom Tab Bar com badge -->
 <div class="bottom-tab-bar">
     <button class="tab-item" data-page="dashboard"><span class="tab-icon">📊</span><span>Início</span></button>
-    <button class="tab-item" data-page="clientes"><span class="tab-icon">👥</span><span>Clientes</span></button>
+    <button class="tab-item" data-page="clientes" id="tab-clientes">
+        <span class="tab-icon">👥</span>
+        <span>Clientes</span>
+        <span id="clientes-badge" class="tab-badge" style="display:none;">0</span>
+    </button>
     <button class="tab-item" data-page="financeiro"><span class="tab-icon">💰</span><span>Financeiro</span></button>
     <button class="tab-item" data-page="estoque"><span class="tab-icon">📦</span><span>Estoque</span></button>
     <button class="tab-item" data-page="avisos"><span class="tab-icon">💬</span><span>Avisos</span></button>
 </div>
 
-<!-- Modais (mesma estrutura) -->
+<!-- Modais (incluindo o novo modal de renovação) -->
 <div class="modal-overlay" id="modal-cliente-overlay" style="display:none;" onclick="fecharModal(event,'modal-cliente-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Dados do Cliente</h3><form id="form-cliente" onsubmit="salvarCliente(event)"><input type="hidden" id="cliente-id"><label>Nome completo</label><input type="text" id="cliente-nome" required><label>Telefone (com DDD)</label><input type="text" id="cliente-telefone" required><label>Plano</label><select id="cliente-plano" required onchange="atualizarValoresPlano()"></select><div style="display:flex;gap:10px;"><div style="flex:1"><label>Valor R$</label><input type="number" id="cliente-valor" step="0.01"></div><div style="flex:1"><label>Custo R$</label><input type="number" id="cliente-custo" step="0.01"></div></div><label>Data de vencimento</label><input type="date" id="cliente-vencimento" required><label>Status</label><select id="cliente-status"><option value="ativo">Ativo</option><option value="vencido">Vencido</option></select><div style="display:flex;gap:10px;margin-top:20px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-cliente-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
 
 <div class="modal-overlay" id="modal-plano-overlay" style="display:none;" onclick="fecharModal(event,'modal-plano-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Plano</h3><form id="form-plano" onsubmit="salvarPlano(event)"><input type="hidden" id="plano-id"><label>Nome do plano</label><input type="text" id="plano-nome" required><label>Duração (dias)</label><input type="number" id="plano-duracao" required><label>Valor R$</label><input type="number" id="plano-valor" step="0.01"><label>Custo R$</label><input type="number" id="plano-custo" step="0.01"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-plano-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
@@ -690,10 +728,35 @@
 
 <div class="modal-overlay" id="modal-movimentacao-overlay" style="display:none;" onclick="fecharModal(event,'modal-movimentacao-overlay')"><div class="modal"><h3>Movimentação</h3><form id="form-movimentacao" onsubmit="salvarMovimentacao(event)"><input type="hidden" id="mov-produto-id"><input type="hidden" id="mov-tipo"><p>Produto: <strong id="mov-produto-nome"></strong></p><label>Quantidade</label><input type="number" id="mov-quantidade" required><label>Data</label><input type="date" id="mov-data"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-movimentacao-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Registrar</button></div></form></div></div>
 
+<!-- Modal de Renovação -->
+<div class="modal-overlay" id="modal-renovar-overlay" style="display:none;" onclick="fecharModal(event,'modal-renovar-overlay')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <h3>✨ Renovar Assinatura</h3>
+        <form id="form-renovar" onsubmit="salvarRenovacao(event)">
+            <input type="hidden" id="renovar-cliente-id">
+            <label>Cliente</label>
+            <input type="text" id="renovar-cliente-nome" readonly style="background:#2a2a2a;">
+            <label>Plano atual</label>
+            <input type="text" id="renovar-plano-nome" readonly style="background:#2a2a2a;">
+            <label>Valor do plano (R$)</label>
+            <input type="number" id="renovar-valor" step="0.01" required>
+            <label>Data de vencimento atual</label>
+            <input type="date" id="renovar-vencimento-atual" readonly style="background:#2a2a2a;">
+            <label>Nova data de vencimento (após renovação)</label>
+            <input type="date" id="renovar-nova-data" required>
+            <div class="info-row" style="margin-top: 8px; color:#fcd34d;">⏱️ Serão adicionados os dias do plano à data atual de vencimento.</div>
+            <div class="btn-row" style="display:flex; gap:10px; margin-top:20px;">
+                <button type="button" class="btn" onclick="fecharModal(null,'modal-renovar-overlay')">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Confirmar Renovação</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div id="toast" style="display:none;"></div>
 
 <script>
-    // ========== SISTEMA COMPLETO (TODAS AS FUNÇÕES ORIGINAIS) ==========
+    // ========== SISTEMA COMPLETO COM RENOVAÇÃO E BOTÕES CENTRALIZADOS ==========
     const STORAGE_KEYS = { clientes: 'iptv_prof', planos: 'iptv_planos_prof', produtos: 'iptv_produtos_prof' };
     let clientes = [], planos = [], produtos = [];
     let ultimosClientesFiltrados = [];
@@ -770,6 +833,110 @@
 
     function atualizarTudo(){
         atualizarDashboard(); atualizarFinanceiro(); renderClientesCards(); renderPlanosCards(); renderEstoqueCards(); renderAvisosCards(); preencherSelectPlanos(); if(document.getElementById('page-relatorios').classList.contains('active')) atualizarRelatorios();
+        atualizarBadgeClientes();
+    }
+
+    // Atualiza o badge no botão Clientes com a quantidade de vencidos
+    function atualizarBadgeClientes() {
+        const vencidos = clientes.filter(c => c.status === 'vencido').length;
+        const badge = document.getElementById('clientes-badge');
+        if (badge) {
+            if (vencidos > 0) {
+                badge.textContent = vencidos;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    }
+
+    // ========== RENOVAÇÃO DE CLIENTE ==========
+    function abrirModalRenovar(id) {
+        const cliente = clientes.find(c => c.id === id);
+        if (!cliente) return;
+        const plano = planos.find(p => p.nome === cliente.plano);
+        if (!plano) {
+            mostrarToast('Plano não encontrado para este cliente');
+            return;
+        }
+        const novaData = addDias(cliente.vencimento, plano.duracao);
+        document.getElementById('renovar-cliente-id').value = cliente.id;
+        document.getElementById('renovar-cliente-nome').value = cliente.nome;
+        document.getElementById('renovar-plano-nome').value = cliente.plano;
+        document.getElementById('renovar-valor').value = cliente.valor;
+        document.getElementById('renovar-vencimento-atual').value = cliente.vencimento;
+        document.getElementById('renovar-nova-data').value = novaData;
+        document.getElementById('modal-renovar-overlay').style.display = 'flex';
+    }
+
+    function salvarRenovacao(e) {
+        e.preventDefault();
+        const id = document.getElementById('renovar-cliente-id').value;
+        const cliente = clientes.find(c => c.id === id);
+        if (!cliente) return;
+        const novaData = document.getElementById('renovar-nova-data').value;
+        const valorPago = parseFloat(document.getElementById('renovar-valor').value) || cliente.valor;
+        cliente.vencimento = novaData;
+        cliente.status = 'ativo';
+        if (valorPago !== cliente.valor) {
+            cliente.valor = valorPago;
+        }
+        salvar('clientes');
+        fecharModal(null, 'modal-renovar-overlay');
+        atualizarTudo();
+        mostrarToast(`✅ Cliente ${cliente.nome} renovado com sucesso! Nova validade: ${formatarData(novaData)}`);
+    }
+
+    // ========== CLIENTES EM CARDS COM BOTÕES CENTRALIZADOS ==========
+    function renderClientesCards() {
+        const container = document.getElementById('clientes-cards-container');
+        if (!container) return;
+        const busca = document.getElementById('search-clientes')?.value.toLowerCase() || '';
+        const filtro = document.getElementById('filtro-status-clientes')?.value || 'todos';
+        let lista = clientes.filter(c => 
+            (!busca || c.nome.toLowerCase().includes(busca) || c.telefone.includes(busca)) && 
+            (filtro === 'todos' || c.status === filtro)
+        );
+        if (lista.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:40px;">Nenhum cliente encontrado</div>';
+            return;
+        }
+
+        function isProximoVencimento(vencimento) {
+            const hoje = new Date(); hoje.setHours(0,0,0,0);
+            const venc = new Date(vencimento + 'T00:00:00');
+            const diff = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
+            return diff >= 0 && diff <= DIAS_AVISO_PREVIO;
+        }
+
+        container.innerHTML = lista.map(c => {
+            const statusClass = c.status === 'ativo' ? 'status-ativo' : 'status-vencido';
+            let destaqueClass = '';
+            if (c.status === 'vencido') {
+                destaqueClass = 'vencido-destaque';
+            } else if (c.status === 'ativo' && isProximoVencimento(c.vencimento)) {
+                destaqueClass = 'proximo-destaque';
+            }
+            return `
+                <div class="client-card ${destaqueClass}">
+                    <div class="card-header">
+                        <span class="client-name">${escapeHTML(c.nome)}</span>
+                        <span class="client-status ${statusClass}">${c.status === 'ativo' ? 'Ativo' : 'Vencido'}</span>
+                    </div>
+                    <div class="client-info">
+                        <div class="info-row"><strong>📞 Tel:</strong> ${escapeHTML(c.telefone)}</div>
+                        <div class="info-row"><strong>📋 Plano:</strong> ${escapeHTML(c.plano)}</div>
+                        <div class="info-row"><strong>💰 Valor:</strong> R$ ${formatarMoeda(c.valor)}</div>
+                        <div class="info-row"><strong>📅 Venc:</strong> ${formatarData(c.vencimento)}</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-icon btn-renovar" onclick="abrirModalRenovar('${c.id}')">🔄 Renovar</button>
+                        <button class="btn-icon btn-edit" onclick="editarCliente('${c.id}')">✏️ Editar</button>
+                        <button class="btn-icon btn-delete" onclick="excluirCliente('${c.id}')">🗑️ Excluir</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     // ========== RELATÓRIOS ==========
@@ -796,7 +963,7 @@
     function getClientesAviso(){ let hoje=new Date(); hoje.setHours(0,0,0,0); return clientes.filter(c=>{ if(c.status==='cancelado')return false; if(c.status==='vencido')return true; if(c.status==='ativo'){ let venc=new Date(c.vencimento+'T00:00:00'); let dias=Math.ceil((venc-hoje)/86400000); return dias>=0 && dias<=DIAS_AVISO_PREVIO; } return false; }); }
     function getSituacaoAviso(c){ if(c.status==='vencido')return {texto:'Vencido',classe:'aviso-urgente'}; let hoje=new Date(); let dias=Math.ceil((new Date(c.vencimento+'T00:00:00')-hoje)/86400000); if(dias===0)return {texto:'Vence hoje',classe:'aviso-urgente'}; return {texto:`Vence em ${dias} dias`,classe:'aviso-alerta'}; }
     function getMensagemAviso(c){ let hoje=new Date(); let dias=Math.ceil((new Date(c.vencimento+'T00:00:00')-hoje)/86400000); if(c.status==='vencido'||dias<0) return `Olá ${c.nome}, seu plano *${c.plano}* está VENCIDO! Renove agora: R$ ${formatarMoeda(c.valor)}`; else if(dias===0) return `⚠️ ${c.nome}, seu plano vence HOJE! Renove: R$ ${formatarMoeda(c.valor)}`; else return `🔔 ${c.nome}, seu plano vence em ${dias} dias (${formatarData(c.vencimento)}). Renove: R$ ${formatarMoeda(c.valor)}`; }
-    function renderAvisosCards(){ const cont=document.getElementById('avisos-cards-container'); if(!cont)return; let av=getClientesAviso(); if(av.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">✨ Nenhum aviso pendente</div>'; return; } cont.innerHTML=av.map(c=>{const s=getSituacaoAviso(c); return `<div class="aviso-card"><div class="aviso-header"><span class="aviso-nome">${escapeHTML(c.nome)}</span><span class="aviso-status ${s.classe}">${s.texto}</span></div><div class="aviso-info"><div class="aviso-linha"><span>📞 Telefone</span><span>${escapeHTML(c.telefone)}</span></div><div class="aviso-linha"><span>📋 Plano</span><span>${escapeHTML(c.plano)}</span></div><div class="aviso-linha"><span>💰 Valor</span><span>R$ ${formatarMoeda(c.valor)}</span></div><div class="aviso-linha"><span>📅 Vencimento</span><span>${formatarData(c.vencimento)}</span></div></div><div class="aviso-acoes"><button class="btn-whatsapp-card" onclick="abrirWhatsApp('${c.telefone}','${getMensagemAviso(c).replace(/'/g,"\\'")}')">📱 Enviar mensagem</button></div></div>`;}).join(''); }
+    function renderAvisosCards(){ const cont=document.getElementById('avisos-cards-container'); if(!cont)return; let av=getClientesAviso(); if(av.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">✨ Nenhum aviso pendente</div>'; return; } cont.innerHTML=av.map(c=>{const s=getSituacaoAviso(c); return `<div class="aviso-card"><div class="aviso-header"><span class="aviso-nome">${escapeHTML(c.nome)}</span><span class="aviso-status ${s.classe}">${s.texto}</span></div><div class="aviso-info"><div class="aviso-linha"><span>📞 Telefone</span><span>${escapeHTML(c.telefone)}</span></div><div class="aviso-linha"><span>📋 Plano</span><span>${escapeHTML(c.plano)}</span></div><div class="aviso-linha"><span>💰 Valor</span><span>R$ ${formatarMoeda(c.valor)}</span></div><div class="aviso-linha"><span>📅 Vencimento</span><span>${formatarData(c.vencimento)}</span></div></div><div class="aviso-acoes"><button class="btn-whatsapp-card" onclick="abrirWhatsApp('${c.telefone}','${getMensagemAviso(c).replace(/'/g,"\\'")}')">📱 Enviar mensagem</button></div></div>`; }).join(''); }
     function abrirWhatsApp(tel,msg){ window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank'); }
     function enviarAvisosWeb(){ let av=getClientesAviso(); if(!av.length){mostrarToast('Nenhum aviso');return;} av.forEach(c=>setTimeout(()=>abrirWhatsApp(c.telefone,getMensagemAviso(c)),500)); mostrarToast(`Enviando para ${av.length} cliente(s)`); }
 
@@ -816,8 +983,7 @@
     function abrirMovimentacao(pid,tipo){ let p=produtos.find(x=>x.id===pid); document.getElementById('mov-produto-id').value=pid; document.getElementById('mov-tipo').value=tipo; document.getElementById('mov-produto-nome').innerText=p.nome; document.getElementById('form-movimentacao').reset(); document.getElementById('mov-data').value=hojeStr(); document.getElementById('modal-movimentacao-overlay').style.display='flex'; }
     function salvarMovimentacao(e){ e.preventDefault(); let pid=document.getElementById('mov-produto-id').value; let tipo=document.getElementById('mov-tipo').value; let qtd=parseInt(document.getElementById('mov-quantidade').value); let p=produtos.find(x=>x.id===pid); if(tipo==='saida' && qtd>p.quantidade){mostrarToast('Estoque insuficiente'); return;} p.movimentacoes.push({tipo, quantidade:qtd, data:document.getElementById('mov-data').value, obs:''}); p.quantidade+=tipo==='entrada'?qtd:-qtd; salvar('produtos'); fecharModal(null,'modal-movimentacao-overlay'); atualizarTudo(); mostrarToast('Registrado'); }
 
-    // ========== CLIENTES ==========
-    function renderClientesCards(){ const cont=document.getElementById('clientes-cards-container'); if(!cont)return; const busca=document.getElementById('search-clientes')?.value.toLowerCase()||''; const filtro=document.getElementById('filtro-status-clientes')?.value||'todos'; let lista=clientes.filter(c=>(!busca||c.nome.toLowerCase().includes(busca)||c.telefone.includes(busca)) && (filtro==='todos'||c.status===filtro)); if(lista.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">Nenhum cliente</div>'; return; } cont.innerHTML=lista.map(c=>`<div class="client-card"><div class="card-header"><span class="client-name">${escapeHTML(c.nome)}</span><span class="client-status ${c.status==='ativo'?'status-ativo':'status-vencido'}">${c.status==='ativo'?'Ativo':'Vencido'}</span></div><div class="client-info"><div class="info-row"><strong>📞 Tel:</strong> ${escapeHTML(c.telefone)}</div><div class="info-row"><strong>📋 Plano:</strong> ${escapeHTML(c.plano)}</div><div class="info-row"><strong>💰 Valor:</strong> R$ ${formatarMoeda(c.valor)}</div><div class="info-row"><strong>📅 Venc:</strong> ${formatarData(c.vencimento)}</div></div><div class="card-actions"><button class="btn-icon btn-edit" onclick="editarCliente('${c.id}')">✏️ Editar</button><button class="btn-icon btn-delete" onclick="excluirCliente('${c.id}')">🗑️ Excluir</button></div></div>`).join(''); }
+    // ========== CRUD Clientes (editar, excluir, salvar) ==========
     function editarCliente(id){ let c=clientes.find(x=>x.id===id); if(!c)return; document.getElementById('cliente-id').value=c.id; document.getElementById('cliente-nome').value=c.nome; document.getElementById('cliente-telefone').value=c.telefone; preencherSelectPlanos(); document.getElementById('cliente-plano').value=c.plano; document.getElementById('cliente-valor').value=c.valor; document.getElementById('cliente-custo').value=c.custo; document.getElementById('cliente-vencimento').value=c.vencimento; document.getElementById('cliente-status').value=c.status; document.getElementById('modal-cliente-overlay').style.display='flex'; }
     function excluirCliente(id){ if(confirm('Excluir cliente?')){ clientes=clientes.filter(c=>c.id!==id); salvar('clientes'); atualizarTudo(); mostrarToast('Cliente removido'); } }
     function salvarCliente(e){ e.preventDefault(); let id=document.getElementById('cliente-id').value; let status=document.getElementById('cliente-status').value; let venc=document.getElementById('cliente-vencimento').value; let hoje=hojeStr(); if(status==='ativo' && venc<hoje && !confirm('Vencido, salvar como vencido?')) return; let c={id:id||gerarId(), nome:document.getElementById('cliente-nome').value.trim(), telefone:document.getElementById('cliente-telefone').value.trim(), plano:document.getElementById('cliente-plano').value, valor:parseFloat(document.getElementById('cliente-valor').value)||0, custo:parseFloat(document.getElementById('cliente-custo').value)||0, inicio:hoje, vencimento:venc, status:status==='ativo'&&venc<hoje?'vencido':status}; if(!c.nome||!c.telefone||!c.plano) return mostrarToast('Preencha todos'); if(id) clientes=clientes.map(x=>x.id===id?c:x); else clientes.unshift(c); salvar('clientes'); fecharModal(null,'modal-cliente-overlay'); atualizarTudo(); mostrarToast('Salvo'); }
