@@ -164,7 +164,7 @@
         /* Cards grid aprimorado */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr); /* 4 colunas em desktop */
             gap: 24px;
             margin-bottom: 32px;
         }
@@ -259,7 +259,6 @@
             min-width: 60px;
             font-weight: 600;
         }
-        /* Botões centralizados */
         .card-actions {
             display: flex;
             justify-content: center;
@@ -617,14 +616,23 @@
             color: transparent;
             margin-bottom: 6px;
         }
+        /* Responsividade: tablets e celulares */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
+            }
+        }
         @media (max-width: 640px) {
             .pages-container { padding: 20px 16px 85px; }
-            .cards-grid { gap: 16px; grid-template-columns: 1fr; }
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr); /* GRADE 2 COLUNAS NO CELULAR */
+                gap: 14px;
+            }
             .card, .client-card, .plano-card, .produto-card, .aviso-card { padding: 16px; }
             .logo-image { width: 32px; height: 32px; }
             .logo-text { font-size: 1.2rem; }
-            .card-value { font-size: 1.6rem; }
-            .card-icon { font-size: 2rem; }
+            .card-value { font-size: 1.4rem; }
+            .card-icon { font-size: 1.8rem; }
             .card-actions {
                 flex-direction: column;
                 align-items: stretch;
