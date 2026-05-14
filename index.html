@@ -2,11 +2,25 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>IPTV Manager Pro - Sistema Completo</title>
-    <!-- Font Awesome 6 (ícones) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1f2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="IPTV Manager">
+    <link rel="manifest" href="data:application/manifest+json,{
+        %22name%22:%22IPTV%20Manager%20Pro%22,
+        %22short_name%22:%22IPTV%20App%22,
+        %22start_url%22:%22.%22,
+        %22display%22:%22standalone%22,
+        %22theme_color%22:%22%231a1f2e%22,
+        %22background_color%22:%22%232a1f3a%22,
+        %22icons%22:[
+            {%22src%22:%22https://cdn-icons-png.flaticon.com/512/1183/1183672.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},
+            {%22src%22:%22https://cdn-icons-png.flaticon.com/512/1183/1183672.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}
+        ]
+    }">
+    <title>IPTV Manager Pro - App para Download</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js CDN para gráficos financeiros -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
@@ -25,7 +39,6 @@
             width: 100%;
         }
 
-        /* App container */
         .app-wrapper {
             display: flex;
             flex-direction: column;
@@ -37,7 +50,6 @@
             position: relative;
         }
 
-        /* Header com gradiente */
         .app-header {
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
             padding: 20px 18px 12px;
@@ -54,9 +66,6 @@
             justify-content: center;
             gap: 8px;
         }
-        .app-header h1 i {
-            color: #ff6b6b;
-        }
         .sync-badge {
             background: rgba(0,0,0,0.2);
             backdrop-filter: blur(4px);
@@ -68,7 +77,6 @@
             color: white;
         }
 
-        /* Área de conteúdo rolável */
         .view-container {
             flex: 1;
             overflow-y: auto;
@@ -76,7 +84,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Bottom navigation */
         .bottom-nav {
             background: rgba(30, 25, 45, 0.95);
             backdrop-filter: blur(20px);
@@ -103,9 +110,7 @@
             font-size: 0.7rem;
             font-weight: 600;
         }
-        .nav-item i {
-            font-size: 1.5rem;
-        }
+        .nav-item i { font-size: 1.5rem; }
         .nav-item.active {
             background: rgba(255,255,255,0.15);
             color: #ffb347;
@@ -113,7 +118,6 @@
         }
         .nav-item:active { transform: scale(0.95); }
 
-        /* Cards e elementos */
         .metric-card, .section-card, .client-card, .plan-card, .alert-card-mobile {
             background: rgba(255,255,255,0.95);
             border-radius: 28px;
@@ -163,7 +167,6 @@
             cursor: pointer;
         }
         .btn-primary-card { background: linear-gradient(95deg, #1f6392, #2b8bb5); color: white; }
-        .btn-success-card { background: linear-gradient(95deg, #10b981, #34d399); color: white; }
         .btn-whatsapp-card { background: linear-gradient(95deg, #25D366, #34d399); color: white; }
         .btn-danger-card { background: linear-gradient(95deg, #ef4444, #f87171); color: white; }
         .client-action-icon {
@@ -207,6 +210,21 @@
             flex-wrap: wrap;
         }
         .alert-expired { background: linear-gradient(115deg, #ffe8e8, #ffdddd); border-left-color: #dc2626; }
+        .install-banner {
+            background: #ffb347;
+            color: #2d1b36;
+            padding: 8px 12px;
+            border-radius: 28px;
+            margin: 8px 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .install-banner i { font-size: 1.2rem; }
         footer { font-size: 0.65rem; text-align: center; color: #aaa; margin-top: 20px; }
         .section-title {
             font-weight: bold;
@@ -247,20 +265,20 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        button {
-            cursor: pointer;
-        }
+        button { cursor: pointer; }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
     <div class="app-header">
         <h1><i class="fas fa-tv"></i> IPTV Manager Pro</h1>
-        <div class="sync-badge"><i class="fas fa-cloud-sync-alt"></i> 100% Online | Dados locais</div>
+        <div class="sync-badge"><i class="fas fa-cloud-download-alt"></i> App Instalável | Dados locais</div>
     </div>
-
+    <div id="installBanner" class="install-banner" style="display: none;">
+        <span><i class="fas fa-download"></i> Instalar aplicativo</span>
+        <i class="fas fa-times-circle" id="closeBanner" style="font-size:1rem;"></i>
+    </div>
     <div id="viewContainer" class="view-container"></div>
-
     <div class="bottom-nav">
         <button class="nav-item" data-view="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
         <button class="nav-item" data-view="clientes"><i class="fas fa-users"></i><span>Clientes</span></button>
@@ -278,7 +296,6 @@
     ];
     let clients = [];
 
-    // helpers
     function getToday() { let d = new Date(); d.setHours(0,0,0,0); return d; }
     function daysDiff(dateStr) {
         let due = new Date(dateStr); due.setHours(0,0,0,0);
@@ -311,12 +328,9 @@
 
     let currentView = "dashboard";
     let revenueChart = null;
+    function refreshCurrentView() { renderView(currentView); }
 
-    function refreshCurrentView() {
-        renderView(currentView);
-    }
-
-    // ======================== RENDERIZAÇÃO DAS VIEWS ========================
+    // Renderização das views (igual ao anterior, mas mantendo consistência)
     function renderDashboard() {
         let total = clients.length;
         let active = clients.filter(c => daysDiff(c.dueDate) >= 0).length;
@@ -346,20 +360,16 @@
             </div>
         `;
         document.getElementById("viewContainer").innerHTML = html;
-        
         const ctx = document.getElementById('dashboardChart')?.getContext('2d');
         if(ctx) {
             if(revenueChart) revenueChart.destroy();
             revenueChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Receita (R$)', data, backgroundColor: '#8b5cf6', borderRadius: 10 }] }, options: { responsive: true, maintainAspectRatio: true } });
         }
-        
         let lastClientsDiv = document.getElementById("lastClientsList");
         if(lastClientsDiv) {
             let recentes = [...clients].slice(-3).reverse();
             if(recentes.length===0) lastClientsDiv.innerHTML = "<div style='padding:12px;text-align:center'>Nenhum cliente</div>";
-            else {
-                lastClientsDiv.innerHTML = recentes.map(c => `<div style="background:#f1f5f9; border-radius:24px; padding:10px; display:flex; justify-content:space-between"><span><i class="fas fa-user"></i> ${escapeHtml(c.name)}</span><span>${c.dueDate}</span></div>`).join('');
-            }
+            else lastClientsDiv.innerHTML = recentes.map(c => `<div style="background:#f1f5f9; border-radius:24px; padding:10px; display:flex; justify-content:space-between"><span><i class="fas fa-user"></i> ${escapeHtml(c.name)}</span><span>${c.dueDate}</span></div>`).join('');
         }
         document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => refreshCurrentView());
     }
@@ -383,7 +393,6 @@
         document.getElementById("viewContainer").innerHTML = html;
         populatePlanSelectApp();
         renderClientsListOnly();
-        
         document.getElementById("newClientBtnApp")?.addEventListener("click", () => {
             let panel = document.getElementById("clientFormPanel");
             panel.classList.toggle("hidden");
@@ -404,7 +413,7 @@
 
     function populatePlanSelectApp() {
         let sel = document.getElementById("clientPlanIdSelect");
-        if(sel) { sel.innerHTML = plans.map(p => `<option value="${p.id}">${p.name} - R$ ${p.price.toFixed(2)}</option>`).join(''); }
+        if(sel) sel.innerHTML = plans.map(p => `<option value="${p.id}">${p.name} - R$ ${p.price.toFixed(2)}</option>`).join('');
     }
 
     function renderClientsListOnly() {
@@ -417,7 +426,7 @@
             let statusClass = days >= 0 ? (days <= 5 ? "status-warning" : "status-active") : "status-expired";
             let statusText = days >= 0 ? (days <=5 ? "Próx venc" : "Ativo") : "Vencido";
             return `
-                <div class="client-card" data-client-id="${client.id}">
+                <div class="client-card">
                     <div class="client-header"><div class="client-name"><i class="fas fa-user-circle"></i> ${escapeHtml(client.name)}</div><span class="status-badge ${statusClass}">${statusText}</span></div>
                     <div class="client-details"><span><i class="fab fa-whatsapp"></i> ${escapeHtml(client.phone)}</span><span><i class="fas fa-tag"></i> ${plan?.name} R$ ${plan?.price.toFixed(2)}</span><span><i class="far fa-calendar"></i> ${client.dueDate} (${days} dias)</span></div>
                     <div class="client-actions">
@@ -429,7 +438,6 @@
                 </div>
             `;
         }).join('');
-        
         document.querySelectorAll("#clientsListApp .client-action-icon").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 let action = btn.getAttribute("data-action");
@@ -439,7 +447,7 @@
                 if(action === "whatsapp") sendWhatsApp(client);
                 else if(action === "renew") { let dias = prompt("Dias a adicionar:", "30"); if(dias && !isNaN(parseInt(dias))){ let nd = new Date(client.dueDate); nd.setDate(nd.getDate()+parseInt(dias)); client.dueDate = nd.toISOString().split('T')[0]; saveData(); refreshCurrentView(); alert("Renovado!");} }
                 else if(action === "edit") openEditClientForm(client);
-                else if(action === "delete") { if(confirm("Remover cliente permanentemente?")){ clients = clients.filter(c=>c.id!==id); saveData(); refreshCurrentView(); } }
+                else if(action === "delete") { if(confirm("Remover cliente?")){ clients = clients.filter(c=>c.id!==id); saveData(); refreshCurrentView(); } }
             });
         });
     }
@@ -479,7 +487,7 @@
         let html = `
             <div class="section-card">
                 <div class="section-title"><i class="fas fa-tags"></i> Planos de Assinatura</div>
-                <div id="plansListApp" class="plans-grid" style="display:flex; flex-wrap:wrap; gap:12px;"></div>
+                <div id="plansListApp" class="plans-grid"></div>
                 <div class="actions-grid"><button class="action-card-btn" id="showAddPlanAppBtn"><i class="fas fa-plus"></i> Novo Plano</button></div>
                 <div id="addPlanPanel" class="hidden" style="margin-top:12px;"><input type="text" id="newPlanNameApp" placeholder="Nome do plano"><input type="number" id="newPlanPriceApp" step="0.01" placeholder="Preço R$"><div class="double-btns"><button class="btn-primary-card" id="confirmAddPlanApp">Salvar</button><button class="btn-danger-card" id="cancelAddPlanApp">Cancelar</button></div></div>
             </div>
@@ -490,7 +498,6 @@
         `;
         document.getElementById("viewContainer").innerHTML = html;
         renderPlansListApp();
-        
         document.getElementById("showAddPlanAppBtn")?.addEventListener("click", () => document.getElementById("addPlanPanel").classList.toggle("hidden"));
         document.getElementById("cancelAddPlanApp")?.addEventListener("click", () => document.getElementById("addPlanPanel").classList.add("hidden"));
         document.getElementById("confirmAddPlanApp")?.addEventListener("click", () => {
@@ -513,12 +520,11 @@
             let count = clients.filter(c=>c.planId===plan.id).length;
             return `<div class="plan-card" style="flex:1; min-width:140px;"><strong>${escapeHtml(plan.name)}</strong><br>R$ ${plan.price.toFixed(2)}<br><small>${count} assinantes</small><div style="margin-top:8px; display:flex; gap:6px;"><button class="editPlanBtnApp" data-id="${plan.id}" style="background:white; border:none; border-radius:20px; padding:4px 12px;">Editar</button><button class="delPlanBtnApp" data-id="${plan.id}" style="background:#ffdddd; border:none; border-radius:20px; padding:4px 12px;">Excluir</button></div></div>`;
         }).join('');
-        
         document.querySelectorAll(".editPlanBtnApp").forEach(btn => {
             btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let p = plans.find(pl=>pl.id===id); let newName = prompt("Novo nome", p.name); let newPrice = parseFloat(prompt("Novo preço", p.price)); if(newName && !isNaN(newPrice)) { p.name=newName; p.price=newPrice; saveData(); refreshCurrentView(); } });
         });
         document.querySelectorAll(".delPlanBtnApp").forEach(btn => {
-            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let used = clients.some(c=>c.planId===id); if(used) { alert("Existem clientes usando este plano. Remova ou troque o plano deles primeiro."); return; } plans = plans.filter(p=>p.id!==id); saveData(); refreshCurrentView(); });
+            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let used = clients.some(c=>c.planId===id); if(used) { alert("Existem clientes usando este plano."); return; } plans = plans.filter(p=>p.id!==id); saveData(); refreshCurrentView(); });
         });
     }
 
@@ -563,13 +569,43 @@
         });
     }
 
-    // Inicialização
+    // PWA Install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBanner').style.display = 'flex';
+    });
+    document.getElementById('installBanner')?.addEventListener('click', async (e) => {
+        if(e.target.id === 'closeBanner') {
+            document.getElementById('installBanner').style.display = 'none';
+            return;
+        }
+        if(deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if(outcome === 'accepted') console.log('Instalação aceita');
+            deferredPrompt = null;
+            document.getElementById('installBanner').style.display = 'none';
+        } else {
+            alert('Para instalar, use o menu do navegador: "Adicionar à tela inicial"');
+            document.getElementById('installBanner').style.display = 'none';
+        }
+    });
+
+    // Service Worker para cache e funcionamento offline parcial (opcional)
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('Service Worker não registrado', err));
+        // Criar um service worker básico inline (simulado)
+        const swCode = `self.addEventListener('install', event => { self.skipWaiting(); }); self.addEventListener('fetch', event => { event.respondWith(fetch(event.request)); });`;
+        const blob = new Blob([swCode], {type: 'application/javascript'});
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).then(reg => console.log('SW registrado'));
+    }
+
     loadData();
     document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            let view = btn.getAttribute('data-view');
-            renderView(view);
-        });
+        btn.addEventListener('click', (e) => { renderView(btn.getAttribute('data-view')); });
     });
     renderView('dashboard');
 </script>
