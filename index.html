@@ -203,17 +203,17 @@
         .btn-whatsapp-card { background: linear-gradient(95deg, #25D366, #128C7E); color: white; }
         .btn-danger-card { background: linear-gradient(95deg, #dc2626, #ef4444); color: white; }
 
-        /* Clientes grid */
+        /* CLIENTES - CARDS COM LETRAS MAIORES */
         .clients-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 18px;
             align-items: start;
         }
         .client-card {
             background: white;
             border-radius: 32px;
-            padding: 16px;
+            padding: 20px 18px;
             transition: all 0.2s;
             box-shadow: 0 12px 25px -10px rgba(0, 0, 0, 0.15);
             display: flex;
@@ -228,16 +228,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
         }
         .client-name {
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: linear-gradient(145deg, #0f172a, #312e81);
             background-clip: text;
             -webkit-background-clip: text;
@@ -245,9 +245,9 @@
             word-break: break-word;
         }
         .status-badge {
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: 50px;
-            font-size: 0.65rem;
+            font-size: 0.8rem;
             font-weight: 700;
             white-space: nowrap;
         }
@@ -258,40 +258,45 @@
         .client-details {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin: 12px 0;
-            font-size: 0.75rem;
-            color: #334155;
+            gap: 12px;
+            margin: 16px 0;
+            font-size: 0.9rem;
+            color: #1f2937;
         }
         .client-details span {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             word-break: break-word;
+            font-size: 0.95rem;
         }
         .client-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             justify-content: flex-start;
             margin-top: auto;
             border-top: 1px solid #eef2ff;
-            padding-top: 12px;
+            padding-top: 16px;
         }
         .client-action-icon {
             background: rgba(0,0,0,0.04);
-            padding: 6px 12px;
+            padding: 10px 14px;
             border-radius: 40px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.7rem;
+            gap: 8px;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             border: none;
             transition: 0.15s;
             flex: 1;
             justify-content: center;
+        }
+        .client-action-icon:active {
+            background: rgba(0,0,0,0.1);
+            transform: scale(0.97);
         }
 
         .chart-wrapper { height: 210px; margin-top: 12px; }
@@ -623,7 +628,6 @@
         }
     }
 
-    // Mensagem elegante sem site
     function sendWhatsApp(client) {
         let plan = getPlanById(client.planId);
         let days = daysDiff(client.dueDate);
@@ -666,12 +670,11 @@
         });
     }
 
-    // PWA (sem banner de instalação no topo, mas mantendo o service worker)
+    // PWA sem banner
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        // Não exibimos mais nenhum banner, mas mantemos a possibilidade de instalação via menu do navegador
     });
 
     if ('serviceWorker' in navigator) {
