@@ -52,11 +52,11 @@
             position: relative;
         }
 
-        /* Header com gradiente elegante */
+        /* Header sem banner */
         .app-header {
             background: linear-gradient(145deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9), rgba(236, 72, 153, 0.85));
             backdrop-filter: blur(12px);
-            padding: 22px 18px 16px;
+            padding: 22px 18px 20px;
             border-radius: 0 0 40px 40px;
             color: white;
             text-align: center;
@@ -71,15 +71,6 @@
             justify-content: center;
             gap: 10px;
             letter-spacing: -0.5px;
-        }
-        .sync-badge {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(8px);
-            padding: 5px 14px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-top: 10px;
         }
 
         .view-container {
@@ -123,7 +114,7 @@
             transform: translateY(-2px);
         }
 
-        /* Cards das métricas agora lado a lado (grid) */
+        /* Cards das métricas lado a lado */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -169,7 +160,6 @@
             opacity: 0.7;
         }
 
-        /* Responsividade: empilha os cards em telas muito pequenas */
         @media (max-width: 420px) {
             .metrics-grid {
                 grid-template-columns: 1fr;
@@ -177,7 +167,7 @@
             }
         }
 
-        /* Demais cards (seção, planos, alertas) mantidos */
+        /* Demais cards */
         .section-card, .plan-card, .alert-card-mobile {
             background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(248,250,252,0.92));
             border-radius: 32px;
@@ -188,7 +178,6 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        /* AÇÕES GLOBAIS */
         .actions-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -214,7 +203,7 @@
         .btn-whatsapp-card { background: linear-gradient(95deg, #25D366, #128C7E); color: white; }
         .btn-danger-card { background: linear-gradient(95deg, #dc2626, #ef4444); color: white; }
 
-        /* CLIENTES: CARDS LADO A LADO (GRID) */
+        /* Clientes grid */
         .clients-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -304,12 +293,7 @@
             flex: 1;
             justify-content: center;
         }
-        .client-action-icon:active {
-            background: rgba(0,0,0,0.1);
-            transform: scale(0.97);
-        }
 
-        /* Outros componentes (planos, alertas, formulários) mantidos */
         .chart-wrapper { height: 210px; margin-top: 12px; }
         .hidden { display: none; }
         input, select {
@@ -332,20 +316,6 @@
             flex-wrap: wrap;
         }
         .alert-expired { background: linear-gradient(115deg, #fef2f2, #fee2e2); border-left-color: #dc2626; }
-        .install-banner {
-            background: linear-gradient(95deg, #f97316, #f59e0b);
-            color: white;
-            padding: 10px 16px;
-            border-radius: 60px;
-            margin: 8px 16px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
         footer { font-size: 0.65rem; text-align: center; color: #64748b; margin-top: 24px; }
         .section-title {
             font-weight: 800;
@@ -366,11 +336,6 @@
 <div class="app-wrapper">
     <div class="app-header">
         <h1><i class="fas fa-tv"></i> GESTÃO IPTV PRO</h1>
-        <div class="sync-badge"><i class="fas fa-cloud-download-alt"></i> Cards Lado a Lado | App Instalável</div>
-    </div>
-    <div id="installBanner" class="install-banner" style="display: none;">
-        <span><i class="fas fa-download"></i> Instalar aplicativo</span>
-        <i class="fas fa-times-circle" id="closeBanner" style="font-size:1rem;"></i>
     </div>
     <div id="viewContainer" class="view-container"></div>
     <div class="bottom-nav">
@@ -658,13 +623,33 @@
         }
     }
 
+    // Mensagem elegante sem site
     function sendWhatsApp(client) {
         let plan = getPlanById(client.planId);
         let days = daysDiff(client.dueDate);
-        let msg = `Olá ${client.name}, sua assinatura IPTV (${plan?.name}) ${days <=0 ? "está VENCIDA! Renove imediatamente." : `vence em ${days} dias.`} Acesse nosso site para renovar.`;
-        let phone = client.phone.replace(/\D/g,'');
-        if(phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-        else alert("Número de WhatsApp inválido");
+        
+        let statusMsg;
+        if (days <= 0) {
+            statusMsg = "⚠️ *ATENÇÃO:* Sua assinatura está *VENCIDA*! ⚠️\nPara não perder o acesso, realize a renovação o quanto antes.";
+        } else if (days <= 5) {
+            statusMsg = `📅 *Seu plano vence em ${days} dia${days !== 1 ? 's' : ''}.*\nAproveite e garanta a continuidade do serviço.`;
+        } else {
+            statusMsg = `📅 *Sua assinatura está ativa* e vencerá em ${days} dias.\nFique atento à data de renovação.`;
+        }
+        
+        let message = `*Olá ${client.name}!* 👋\n\n` +
+                      `Seu plano *${plan?.name}* - R$ ${plan?.price.toFixed(2)}.\n\n` +
+                      `${statusMsg}\n\n` +
+                      `📞 *Entre em contato conosco* para renovar ou tirar dúvidas.\n\n` +
+                      `✨ *Equipe de Suporte* ✨`;
+        
+        let encoded = encodeURIComponent(message);
+        let phone = client.phone.replace(/\D/g, '');
+        if (phone) {
+            window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
+        } else {
+            alert("Número de WhatsApp inválido");
+        }
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
@@ -681,28 +666,12 @@
         });
     }
 
-    // ======================== PWA (INALTERADO) ========================
+    // PWA (sem banner de instalação no topo, mas mantendo o service worker)
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        document.getElementById('installBanner').style.display = 'flex';
-    });
-    document.getElementById('installBanner')?.addEventListener('click', async (e) => {
-        if(e.target.id === 'closeBanner') {
-            document.getElementById('installBanner').style.display = 'none';
-            return;
-        }
-        if(deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if(outcome === 'accepted') console.log('Instalação aceita');
-            deferredPrompt = null;
-            document.getElementById('installBanner').style.display = 'none';
-        } else {
-            alert('Para instalar, use o menu do navegador: "Adicionar à tela inicial"');
-            document.getElementById('installBanner').style.display = 'none';
-        }
+        // Não exibimos mais nenhum banner, mas mantemos a possibilidade de instalação via menu do navegador
     });
 
     if ('serviceWorker' in navigator) {
