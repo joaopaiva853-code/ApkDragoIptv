@@ -2,14 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#1a1f2e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="IPTV Manager">
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22IPTV%20Manager%20Pro%22,%22short_name%22:%22IPTV%20App%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22theme_color%22:%22%231a1f2e%22,%22background_color%22:%22%232a1f3a%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/1183/1183672.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]}">
-    <title>IPTV Manager - App Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>IPTV Manager Pro - Sistema Completo</title>
+    <!-- Font Awesome 6 (ícones) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js CDN para gráficos financeiros -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
@@ -28,7 +25,7 @@
             width: 100%;
         }
 
-        /* App container com estrutura flex */
+        /* App container */
         .app-wrapper {
             display: flex;
             flex-direction: column;
@@ -40,7 +37,7 @@
             position: relative;
         }
 
-        /* Header do app */
+        /* Header com gradiente */
         .app-header {
             background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
             padding: 20px 18px 12px;
@@ -79,7 +76,7 @@
             scroll-behavior: smooth;
         }
 
-        /* Bottom navigation (estilo app) */
+        /* Bottom navigation */
         .bottom-nav {
             background: rgba(30, 25, 45, 0.95);
             backdrop-filter: blur(20px);
@@ -116,7 +113,7 @@
         }
         .nav-item:active { transform: scale(0.95); }
 
-        /* Cards e elementos (mesmo estilo degradê) */
+        /* Cards e elementos */
         .metric-card, .section-card, .client-card, .plan-card, .alert-card-mobile {
             background: rgba(255,255,255,0.95);
             border-radius: 28px;
@@ -163,6 +160,7 @@
             align-items: center;
             gap: 6px;
             font-size: 0.8rem;
+            cursor: pointer;
         }
         .btn-primary-card { background: linear-gradient(95deg, #1f6392, #2b8bb5); color: white; }
         .btn-success-card { background: linear-gradient(95deg, #10b981, #34d399); color: white; }
@@ -177,6 +175,7 @@
             gap: 6px;
             font-size: 0.7rem;
             cursor: pointer;
+            border: none;
         }
         .status-badge {
             padding: 4px 12px;
@@ -195,28 +194,73 @@
             border-radius: 28px;
             border: 1px solid #ccc;
             margin-bottom: 10px;
+            font-size: 0.9rem;
         }
         .double-btns { display: flex; gap: 12px; margin-top: 6px; }
         .plan-card { background: linear-gradient(145deg, #fff6e5, #ffe6c7); }
         .alert-card-mobile {
             background: linear-gradient(115deg, #fff9e6, #fff2d7);
             border-left: 5px solid #f59e0b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
         .alert-expired { background: linear-gradient(115deg, #ffe8e8, #ffdddd); border-left-color: #dc2626; }
         footer { font-size: 0.65rem; text-align: center; color: #aaa; margin-top: 20px; }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .client-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0;
+            font-size: 0.75rem;
+        }
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .client-name {
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .client-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+        .plans-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        button {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
     <div class="app-header">
-        <h1><i class="fas fa-tv"></i> IPTV Manager</h1>
-        <div class="sync-badge"><i class="fas fa-cloud-sync-alt"></i> Tempo real | App Mobile</div>
+        <h1><i class="fas fa-tv"></i> IPTV Manager Pro</h1>
+        <div class="sync-badge"><i class="fas fa-cloud-sync-alt"></i> 100% Online | Dados locais</div>
     </div>
 
-    <!-- Container das views (conteúdo dinâmico) -->
     <div id="viewContainer" class="view-container"></div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <button class="nav-item" data-view="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
         <button class="nav-item" data-view="clientes"><i class="fas fa-users"></i><span>Clientes</span></button>
@@ -265,7 +309,6 @@
     }
     function getPlanById(id) { return plans.find(p => p.id === id); }
 
-    // Atualiza modelo e re-renderiza a view atual
     let currentView = "dashboard";
     let revenueChart = null;
 
@@ -275,12 +318,10 @@
 
     // ======================== RENDERIZAÇÃO DAS VIEWS ========================
     function renderDashboard() {
-        // Métricas
         let total = clients.length;
         let active = clients.filter(c => daysDiff(c.dueDate) >= 0).length;
         let monthly = clients.reduce((acc, c) => { let p = getPlanById(c.planId); if(p && daysDiff(c.dueDate)>=0) return acc + p.price; return acc; }, 0);
         
-        // Estatísticas planos para gráfico
         let planStats = new Map();
         plans.forEach(p => planStats.set(p.id, { plan:p, revenue:0 }));
         clients.forEach(c => { let p = getPlanById(c.planId); if(p && daysDiff(c.dueDate)>=0) { let stat = planStats.get(p.id); if(stat) stat.revenue += p.price; } });
@@ -295,7 +336,7 @@
                 <div class="metric-card" style="border-left-color:#8b5cf6"><div><div class="metric-title"><i class="fas fa-calendar-week"></i> Anual (proj)</div><div class="metric-value">R$ ${(monthly*12).toFixed(2)}</div></div><i class="fas fa-chart-simple"></i></div>
             </div>
             <div class="section-card">
-                <div class="section-title" style="font-weight:bold; margin-bottom:8px;"><i class="fas fa-chart-bar"></i> Receita por Plano</div>
+                <div class="section-title"><i class="fas fa-chart-bar"></i> Receita por Plano</div>
                 <div class="chart-wrapper"><canvas id="dashboardChart"></canvas></div>
                 <div class="actions-grid" style="margin-top:12px"><button class="action-card-btn btn-primary-card" id="refreshDashboardBtn"><i class="fas fa-sync-alt"></i> Atualizar</button></div>
             </div>
@@ -305,19 +346,19 @@
             </div>
         `;
         document.getElementById("viewContainer").innerHTML = html;
-        // Gráfico
+        
         const ctx = document.getElementById('dashboardChart')?.getContext('2d');
         if(ctx) {
             if(revenueChart) revenueChart.destroy();
             revenueChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Receita (R$)', data, backgroundColor: '#8b5cf6', borderRadius: 10 }] }, options: { responsive: true, maintainAspectRatio: true } });
         }
-        // Últimos clientes
+        
         let lastClientsDiv = document.getElementById("lastClientsList");
         if(lastClientsDiv) {
             let recentes = [...clients].slice(-3).reverse();
             if(recentes.length===0) lastClientsDiv.innerHTML = "<div style='padding:12px;text-align:center'>Nenhum cliente</div>";
             else {
-                lastClientsDiv.innerHTML = recentes.map(c => `<div style="background:#f1f5f9; border-radius:24px; padding:10px; display:flex; justify-content:space-between"><span><i class="fas fa-user"></i> ${c.name}</span><span>${c.dueDate}</span></div>`).join('');
+                lastClientsDiv.innerHTML = recentes.map(c => `<div style="background:#f1f5f9; border-radius:24px; padding:10px; display:flex; justify-content:space-between"><span><i class="fas fa-user"></i> ${escapeHtml(c.name)}</span><span>${c.dueDate}</span></div>`).join('');
             }
         }
         document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => refreshCurrentView());
@@ -342,7 +383,7 @@
         document.getElementById("viewContainer").innerHTML = html;
         populatePlanSelectApp();
         renderClientsListOnly();
-        // Eventos
+        
         document.getElementById("newClientBtnApp")?.addEventListener("click", () => {
             let panel = document.getElementById("clientFormPanel");
             panel.classList.toggle("hidden");
@@ -378,8 +419,8 @@
             return `
                 <div class="client-card" data-client-id="${client.id}">
                     <div class="client-header"><div class="client-name"><i class="fas fa-user-circle"></i> ${escapeHtml(client.name)}</div><span class="status-badge ${statusClass}">${statusText}</span></div>
-                    <div class="client-details" style="display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; font-size:0.75rem"><span><i class="fab fa-whatsapp"></i> ${client.phone}</span><span><i class="fas fa-tag"></i> ${plan?.name} R$ ${plan?.price.toFixed(2)}</span><span><i class="far fa-calendar"></i> ${client.dueDate} (${days} dias)</span></div>
-                    <div class="client-actions" style="display:flex; gap:8px; justify-content:flex-end;">
+                    <div class="client-details"><span><i class="fab fa-whatsapp"></i> ${escapeHtml(client.phone)}</span><span><i class="fas fa-tag"></i> ${plan?.name} R$ ${plan?.price.toFixed(2)}</span><span><i class="far fa-calendar"></i> ${client.dueDate} (${days} dias)</span></div>
+                    <div class="client-actions">
                         <button class="client-action-icon" data-action="whatsapp" data-id="${client.id}"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                         <button class="client-action-icon" data-action="renew" data-id="${client.id}"><i class="fas fa-calendar-plus"></i> Renovar</button>
                         <button class="client-action-icon" data-action="edit" data-id="${client.id}"><i class="fas fa-edit"></i> Editar</button>
@@ -388,7 +429,7 @@
                 </div>
             `;
         }).join('');
-        // Delegar eventos
+        
         document.querySelectorAll("#clientsListApp .client-action-icon").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 let action = btn.getAttribute("data-action");
@@ -398,7 +439,7 @@
                 if(action === "whatsapp") sendWhatsApp(client);
                 else if(action === "renew") { let dias = prompt("Dias a adicionar:", "30"); if(dias && !isNaN(parseInt(dias))){ let nd = new Date(client.dueDate); nd.setDate(nd.getDate()+parseInt(dias)); client.dueDate = nd.toISOString().split('T')[0]; saveData(); refreshCurrentView(); alert("Renovado!");} }
                 else if(action === "edit") openEditClientForm(client);
-                else if(action === "delete") { if(confirm("Remover?")){ clients = clients.filter(c=>c.id!==id); saveData(); refreshCurrentView(); } }
+                else if(action === "delete") { if(confirm("Remover cliente permanentemente?")){ clients = clients.filter(c=>c.id!==id); saveData(); refreshCurrentView(); } }
             });
         });
     }
@@ -431,7 +472,7 @@
         saveData();
         document.getElementById("clientFormPanel").classList.add("hidden");
         refreshCurrentView();
-        alert("Cliente salvo");
+        alert("Cliente salvo com sucesso!");
     }
 
     function renderPlanos() {
@@ -440,7 +481,7 @@
                 <div class="section-title"><i class="fas fa-tags"></i> Planos de Assinatura</div>
                 <div id="plansListApp" class="plans-grid" style="display:flex; flex-wrap:wrap; gap:12px;"></div>
                 <div class="actions-grid"><button class="action-card-btn" id="showAddPlanAppBtn"><i class="fas fa-plus"></i> Novo Plano</button></div>
-                <div id="addPlanPanel" class="hidden" style="margin-top:12px;"><input type="text" id="newPlanNameApp" placeholder="Nome"><input type="number" id="newPlanPriceApp" placeholder="Preço R$"><div class="double-btns"><button class="btn-primary-card" id="confirmAddPlanApp">Salvar</button><button class="btn-danger-card" id="cancelAddPlanApp">Cancelar</button></div></div>
+                <div id="addPlanPanel" class="hidden" style="margin-top:12px;"><input type="text" id="newPlanNameApp" placeholder="Nome do plano"><input type="number" id="newPlanPriceApp" step="0.01" placeholder="Preço R$"><div class="double-btns"><button class="btn-primary-card" id="confirmAddPlanApp">Salvar</button><button class="btn-danger-card" id="cancelAddPlanApp">Cancelar</button></div></div>
             </div>
             <div class="section-card">
                 <div class="section-title"><i class="fas fa-chart-line"></i> Resumo Financeiro</div>
@@ -449,13 +490,13 @@
         `;
         document.getElementById("viewContainer").innerHTML = html;
         renderPlansListApp();
-        // Eventos plano
+        
         document.getElementById("showAddPlanAppBtn")?.addEventListener("click", () => document.getElementById("addPlanPanel").classList.toggle("hidden"));
         document.getElementById("cancelAddPlanApp")?.addEventListener("click", () => document.getElementById("addPlanPanel").classList.add("hidden"));
         document.getElementById("confirmAddPlanApp")?.addEventListener("click", () => {
             let name = document.getElementById("newPlanNameApp").value.trim();
             let price = parseFloat(document.getElementById("newPlanPriceApp").value);
-            if(!name || isNaN(price)) { alert("Inválido"); return; }
+            if(!name || isNaN(price)) { alert("Nome e preço válidos"); return; }
             plans.push({ id: "plan_"+Date.now(), name, price });
             saveData();
             refreshCurrentView();
@@ -470,13 +511,14 @@
         if(!container) return;
         container.innerHTML = plans.map(plan => {
             let count = clients.filter(c=>c.planId===plan.id).length;
-            return `<div class="plan-card" style="flex:1; min-width:140px;"><strong>${plan.name}</strong><br>R$ ${plan.price.toFixed(2)}<br><small>${count} assinantes</small><div style="margin-top:8px; display:flex; gap:6px;"><button class="editPlanBtnApp" data-id="${plan.id}" style="background:white; border:none; border-radius:20px; padding:4px 12px;">Editar</button><button class="delPlanBtnApp" data-id="${plan.id}" style="background:#ffdddd; border:none; border-radius:20px; padding:4px 12px;">Excluir</button></div></div>`;
+            return `<div class="plan-card" style="flex:1; min-width:140px;"><strong>${escapeHtml(plan.name)}</strong><br>R$ ${plan.price.toFixed(2)}<br><small>${count} assinantes</small><div style="margin-top:8px; display:flex; gap:6px;"><button class="editPlanBtnApp" data-id="${plan.id}" style="background:white; border:none; border-radius:20px; padding:4px 12px;">Editar</button><button class="delPlanBtnApp" data-id="${plan.id}" style="background:#ffdddd; border:none; border-radius:20px; padding:4px 12px;">Excluir</button></div></div>`;
         }).join('');
+        
         document.querySelectorAll(".editPlanBtnApp").forEach(btn => {
-            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let p = plans.find(pl=>pl.id===id); let newName = prompt("Nome", p.name); let newPrice = parseFloat(prompt("Preço", p.price)); if(newName && !isNaN(newPrice)) { p.name=newName; p.price=newPrice; saveData(); refreshCurrentView(); } });
+            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let p = plans.find(pl=>pl.id===id); let newName = prompt("Novo nome", p.name); let newPrice = parseFloat(prompt("Novo preço", p.price)); if(newName && !isNaN(newPrice)) { p.name=newName; p.price=newPrice; saveData(); refreshCurrentView(); } });
         });
         document.querySelectorAll(".delPlanBtnApp").forEach(btn => {
-            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let used = clients.some(c=>c.planId===id); if(used) { alert("Clientes usam esse plano"); return; } plans = plans.filter(p=>p.id!==id); saveData(); refreshCurrentView(); });
+            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let used = clients.some(c=>c.planId===id); if(used) { alert("Existem clientes usando este plano. Remova ou troque o plano deles primeiro."); return; } plans = plans.filter(p=>p.id!==id); saveData(); refreshCurrentView(); });
         });
     }
 
@@ -490,7 +532,7 @@
             container.innerHTML = near.map(c => {
                 let days = daysDiff(c.dueDate);
                 let msg = days<0 ? `Vencido há ${Math.abs(days)} dias` : `Vence em ${days} dias`;
-                return `<div class="alert-card-mobile ${days<0 ? 'alert-expired':''}"><div><strong>${c.name}</strong><br>${msg}<br><small>${c.phone}</small></div><button class="tiny-btn" style="background:#25D366; border:none; padding:8px 16px; border-radius:40px; color:white;" data-waid="${c.id}"><i class="fab fa-whatsapp"></i> Notificar</button></div>`;
+                return `<div class="alert-card-mobile ${days<0 ? 'alert-expired':''}"><div><strong>${escapeHtml(c.name)}</strong><br>${msg}<br><small>${escapeHtml(c.phone)}</small></div><button class="tiny-btn" style="background:#25D366; border:none; padding:8px 16px; border-radius:40px; color:white;" data-waid="${c.id}"><i class="fab fa-whatsapp"></i> Notificar</button></div>`;
             }).join('');
             document.querySelectorAll("[data-waid]").forEach(btn => {
                 btn.addEventListener("click", (e) => { let id = btn.getAttribute("data-waid"); let cli = clients.find(c=>c.id===id); if(cli) sendWhatsApp(cli); });
@@ -501,22 +543,20 @@
     function sendWhatsApp(client) {
         let plan = getPlanById(client.planId);
         let days = daysDiff(client.dueDate);
-        let msg = `Olá ${client.name}, sua assinatura IPTV (${plan?.name}) ${days <=0 ? "está VENCIDA! Renove já." : `vence em ${days} dias.`} Acesse: https://seudominio.com`;
+        let msg = `Olá ${client.name}, sua assinatura IPTV (${plan?.name}) ${days <=0 ? "está VENCIDA! Renove imediatamente." : `vence em ${days} dias.`} Acesse nosso site para renovar.`;
         let phone = client.phone.replace(/\D/g,'');
         if(phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-        else alert("Número inválido");
+        else alert("Número de WhatsApp inválido");
     }
 
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-    // ======================== Navegação principal ========================
     function renderView(view) {
         currentView = view;
         if(view === 'dashboard') renderDashboard();
         else if(view === 'clientes') renderClientes();
         else if(view === 'planos') renderPlanos();
         else if(view === 'alertas') renderAlertas();
-        // Marca nav ativo
         document.querySelectorAll('.nav-item').forEach(btn => {
             if(btn.getAttribute('data-view') === view) btn.classList.add('active');
             else btn.classList.remove('active');
@@ -525,7 +565,6 @@
 
     // Inicialização
     loadData();
-    // Setup navegação
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.addEventListener('click', (e) => {
             let view = btn.getAttribute('data-view');
