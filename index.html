@@ -201,7 +201,7 @@
             }
         }
 
-        /* ===== CARDS DE ESTATÍSTICAS ===== */
+        /* ===== CARDS DE ESTATÍSTICAS (DASHBOARD) ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -312,29 +312,25 @@
             color: #b0b0c8;
         }
 
-        /* ===== TABELA ===== */
-        .table-wrapper {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(12px);
+        /* ===== SEÇÃO CLIENTES (CARDS) ===== */
+        .clients-wrapper {
+            background: transparent;
             border-radius: var(--radius);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            padding: 12px 14px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 0;
             align-items: center;
-            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 14px;
         }
         .search-box {
             display: flex;
             align-items: center;
             gap: 8px;
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 8px 14px;
             flex: 1;
@@ -364,13 +360,30 @@
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
             font-size: 0.8rem;
             font-family: var(--font);
             outline: none;
             color: #fff;
-            max-width: 130px;
+            max-width: 120px;
         }
         .filter-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .sort-select {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            font-size: 0.8rem;
+            font-family: var(--font);
+            outline: none;
+            color: #fff;
+            max-width: 140px;
+        }
+        .sort-select option {
             background: #1a1a2e;
             color: #fff;
         }
@@ -415,84 +428,180 @@
             color: #fff;
         }
         .btn-sm {
-            padding: 6px 10px;
+            padding: 6px 12px;
             font-size: 0.7rem;
             border-radius: 14px;
         }
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+
+        /* ===== GRADE DE CARDS DE CLIENTES ===== */
+        .clients-cards-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
         }
-        .table-responsive::-webkit-scrollbar {
-            display: none;
-        }
-        table {
+        .client-card {
             width: 100%;
-            min-width: 600px;
-            border-collapse: collapse;
-            font-size: 0.8rem;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(14px);
+            border-radius: var(--radius);
+            padding: 18px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.25s;
             color: #e0e0e0;
+            position: relative;
+            overflow: hidden;
         }
-        table thead th {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px 10px;
-            text-align: left;
+        .client-card:active {
+            transform: scale(0.98);
+        }
+        /* Barra lateral colorida baseada no status */
+        .client-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 0 2px 2px 0;
+        }
+        .client-card.status-ativo::before {
+            background: var(--gradient-success);
+        }
+        .client-card.status-vencido::before {
+            background: var(--gradient-danger);
+        }
+        .client-card.status-pendente::before {
+            background: var(--gradient-warning);
+        }
+        .client-card.status-cancelado::before {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .client-card .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .client-card .client-name-avatar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+        .client-card .avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: 700;
-            color: #c0c0d8;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-            cursor: pointer;
+            font-size: 1.1rem;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(123, 92, 255, 0.4);
+        }
+        .client-card .client-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        table tbody td {
-            padding: 10px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            vertical-align: middle;
-        }
-        table tbody tr:active {
-            background: rgba(123, 92, 255, 0.15);
-        }
-        .badge {
-            display: inline-block;
+        .client-card .status-badge {
+            flex-shrink: 0;
             padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 0.68rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.3px;
+            text-transform: uppercase;
         }
-        .badge-active {
+        .badge-ativo {
             background: rgba(0, 214, 143, 0.2);
             color: #00d68f;
             border: 1px solid rgba(0, 214, 143, 0.3);
         }
-        .badge-expired {
+        .badge-vencido {
             background: rgba(255, 61, 113, 0.2);
             color: #ff3d71;
             border: 1px solid rgba(255, 61, 113, 0.3);
         }
-        .badge-pending {
+        .badge-pendente {
             background: rgba(255, 170, 0, 0.2);
             color: #ffaa00;
             border: 1px solid rgba(255, 170, 0, 0.3);
         }
-        .badge-canceled {
+        .badge-cancelado {
             background: rgba(255, 255, 255, 0.1);
             color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .actions-cell {
+        .client-card .card-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 14px;
+            font-size: 0.8rem;
+        }
+        .client-card .info-item {
             display: flex;
-            gap: 5px;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .client-card .info-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #a0a0b8;
+            font-weight: 600;
+        }
+        .client-card .info-value {
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+        .client-card .info-value.highlight {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .client-card .card-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 4px;
             flex-wrap: wrap;
         }
+        .client-card .card-actions .btn {
+            flex: 1;
+            min-width: 60px;
+            justify-content: center;
+            font-size: 0.7rem;
+            padding: 7px 10px;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px 14px;
             color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
         }
 
         /* ===== PLANOS ===== */
@@ -500,6 +609,8 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 14px;
+            max-width: 500px;
+            margin: 0 auto;
         }
         .plan-card {
             background: rgba(255, 255, 255, 0.06);
@@ -779,7 +890,7 @@
 
         <!-- Clientes -->
         <section class="page" id="page-clientes">
-            <div class="table-wrapper">
+            <div class="clients-wrapper">
                 <div class="toolbar">
                     <div class="search-box">
                         <span>🔍</span>
@@ -792,31 +903,26 @@
                         <option value="Pendente">Pendentes</option>
                         <option value="Cancelado">Cancelados</option>
                     </select>
-                    <button class="btn btn-primary btn-sm" id="btnAddClient">➕</button>
+                    <select class="sort-select" id="sortSelect">
+                        <option value="nome">Nome A-Z</option>
+                        <option value="data_vencimento">Vencimento</option>
+                        <option value="valor">Valor</option>
+                        <option value="status">Status</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" id="btnAddClient">➕ Novo</button>
                 </div>
-                <div class="table-responsive">
-                    <table id="clientsTable">
-                        <thead>
-                            <tr>
-                                <th data-sort="nome">Nome ↕</th>
-                                <th data-sort="telefone">Telefone ↕</th>
-                                <th data-sort="plano_nome">Plano ↕</th>
-                                <th data-sort="valor">R$ ↕</th>
-                                <th data-sort="data_vencimento">Vencimento ↕</th>
-                                <th data-sort="status">Status ↕</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clientsTableBody"></tbody>
-                    </table>
+                <div class="clients-cards-grid" id="clientsCardsGrid"></div>
+                <div class="empty-state" id="emptyState" style="display:none;">
+                    <div class="empty-icon">📭</div>
+                    <p>Nenhum cliente encontrado</p>
+                    <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="btnEmptyAdd">➕ Adicionar cliente</button>
                 </div>
-                <div class="empty-state" id="emptyState" style="display:none;">📭 Nenhum cliente encontrado</div>
             </div>
         </section>
 
         <!-- Planos -->
         <section class="page" id="page-planos">
-            <button class="btn btn-primary" id="btnAddPlan" style="margin-bottom:14px;">➕ Novo Plano</button>
+            <button class="btn btn-primary" id="btnAddPlan" style="margin-bottom:14px; display:block; margin-left:auto; margin-right:auto; max-width:200px;">➕ Novo Plano</button>
             <div class="plans-grid" id="plansGrid"></div>
         </section>
     </main>
@@ -922,14 +1028,27 @@
 
             function getDefaultClients() {
                 const t = new Date();
-                const d = o => { const dt = new Date(t); dt.setDate(dt.getDate() + o); return dt.toISOString().split('T')[0]; };
+                const d = o => { const dt = new Date(t); dt.setDate(dt.getDate() + o); return dt.toISOString().split(
+                    'T')[0]; };
                 return [
-                    { id: 'c1', nome: 'Carlos Silva', telefone: '(11)98765-4321', email: 'carlos@email.com', plano_id: 'plan_001', valor: 29.90, data_inicio: d(-60), data_vencimento: d(5), status: 'Ativo', observacoes: '' },
-                    { id: 'c2', nome: 'Maria Souza', telefone: '(21)97654-3210', email: 'maria@email.com', plano_id: 'plan_002', valor: 79.90, data_inicio: d(-90), data_vencimento: d(-3), status: 'Vencido', observacoes: 'Cobrar' },
-                    { id: 'c3', nome: 'José Lima', telefone: '(31)96543-2109', email: 'jose@email.com', plano_id: 'plan_003', valor: 149.90, data_inicio: d(-180), data_vencimento: d(1), status: 'Ativo', observacoes: '' },
-                    { id: 'c4', nome: 'Ana Oliveira', telefone: '(41)95432-1098', email: 'ana@email.com', plano_id: 'plan_001', valor: 29.90, data_inicio: d(-30), data_vencimento: d(-10), status: 'Vencido', observacoes: 'WhatsApp' },
-                    { id: 'c5', nome: 'Fernando Costa', telefone: '(51)94321-0987', email: 'fernando@email.com', plano_id: 'plan_004', valor: 249.90, data_inicio: d(-365), data_vencimento: d(15), status: 'Ativo', observacoes: 'VIP' },
-                    { id: 'c6', nome: 'Patrícia Nunes', telefone: '(61)93210-9876', email: 'patricia@email.com', plano_id: 'plan_001', valor: 29.90, data_inicio: d(-45), data_vencimento: d(2), status: 'Pendente', observacoes: '' }
+                    { id: 'c1', nome: 'Carlos Silva', telefone: '(11)98765-4321', email: 'carlos@email.com',
+                        plano_id: 'plan_001', valor: 29.90, data_inicio: d(-60), data_vencimento: d(5),
+                        status: 'Ativo', observacoes: '' },
+                    { id: 'c2', nome: 'Maria Souza', telefone: '(21)97654-3210', email: 'maria@email.com',
+                        plano_id: 'plan_002', valor: 79.90, data_inicio: d(-90), data_vencimento: d(-3),
+                        status: 'Vencido', observacoes: 'Cobrar' },
+                    { id: 'c3', nome: 'José Lima', telefone: '(31)96543-2109', email: 'jose@email.com',
+                        plano_id: 'plan_003', valor: 149.90, data_inicio: d(-180), data_vencimento: d(1),
+                        status: 'Ativo', observacoes: '' },
+                    { id: 'c4', nome: 'Ana Oliveira', telefone: '(41)95432-1098', email: 'ana@email.com',
+                        plano_id: 'plan_001', valor: 29.90, data_inicio: d(-30), data_vencimento: d(-10),
+                        status: 'Vencido', observacoes: 'WhatsApp' },
+                    { id: 'c5', nome: 'Fernando Costa', telefone: '(51)94321-0987', email: 'fernando@email.com',
+                        plano_id: 'plan_004', valor: 249.90, data_inicio: d(-365), data_vencimento: d(15),
+                        status: 'Ativo', observacoes: 'VIP' },
+                    { id: 'c6', nome: 'Patrícia Nunes', telefone: '(61)93210-9876', email: 'patricia@email.com',
+                        plano_id: 'plan_001', valor: 29.90, data_inicio: d(-45), data_vencimento: d(2),
+                        status: 'Pendente', observacoes: '' }
                 ];
             }
 
@@ -937,11 +1056,21 @@
             let plans = JSON.parse(localStorage.getItem(STORAGE_KEY_PLANS)) || defaultPlans;
             let currentSort = { field: 'nome', order: 'asc' };
 
-            function save() { localStorage.setItem(STORAGE_KEY_CLIENTS, JSON.stringify(clients)); localStorage.setItem(STORAGE_KEY_PLANS, JSON.stringify(plans)); }
-            function refreshStatus() { clients.forEach(c => { if (c.status !== 'Cancelado') c.status = calcStatus(c); }); save(); }
-            function calcStatus(c) { const days = daysUntil(c.data_vencimento); if (days < 0) return 'Vencido'; if (days <= 3) return 'Pendente'; return 'Ativo'; }
-            function daysUntil(d) { const t = new Date(d + 'T00:00:00'); const n = new Date(); n.setHours(0,0,0,0); return Math.ceil((t - n) / 86400000); }
-            function addMonths(d, m) { const dt = new Date(d + 'T00:00:00'); dt.setMonth(dt.getMonth() + m); return dt.toISOString().split('T')[0]; }
+            function save() { localStorage.setItem(STORAGE_KEY_CLIENTS, JSON.stringify(clients));
+                localStorage.setItem(STORAGE_KEY_PLANS, JSON.stringify(plans)); }
+
+            function refreshStatus() { clients.forEach(c => { if (c.status !== 'Cancelado') c.status = calcStatus(
+                    c); });
+                save(); }
+
+            function calcStatus(c) { const days = daysUntil(c.data_vencimento); if (days < 0) return 'Vencido'; if (days <=
+                    3) return 'Pendente'; return 'Ativo'; }
+
+            function daysUntil(d) { const t = new Date(d + 'T00:00:00'); const n = new Date();
+                n.setHours(0, 0, 0, 0); return Math.ceil((t - n) / 86400000); }
+
+            function addMonths(d, m) { const dt = new Date(d + 'T00:00:00');
+                dt.setMonth(dt.getMonth() + m); return dt.toISOString().split('T')[0]; }
             const todayISO = () => new Date().toISOString().split('T')[0];
             const fmtDate = d => d ? d.split('-').reverse().join('/') : '—';
             const fmtMoney = v => 'R$ ' + parseFloat(v).toFixed(2).replace('.', ',');
@@ -949,8 +1078,11 @@
             function getPlan(id) { return plans.find(p => p.id === id) || null; }
 
             function showToast(msg, type = 'success') {
-                const c = document.getElementById('toastContainer'); const t = document.createElement('div');
-                t.className = `toast toast-${type}`; t.textContent = msg; c.appendChild(t);
+                const c = document.getElementById('toastContainer');
+                const t = document.createElement('div');
+                t.className = `toast toast-${type}`;
+                t.textContent = msg;
+                c.appendChild(t);
                 setTimeout(() => t.remove(), 2800);
             }
 
@@ -959,8 +1091,10 @@
                 document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
                 const pg = document.getElementById('page-' + page);
                 const nav = document.querySelector(`.nav-item[data-page="${page}"]`);
-                if (pg) pg.classList.add('active'); if (nav) nav.classList.add('active');
-                document.getElementById('headerTitle').innerHTML = page === 'dashboard' ? '📊 Dashboard' : page === 'clientes' ? '👥 Clientes' : '📦 Planos';
+                if (pg) pg.classList.add('active');
+                if (nav) nav.classList.add('active');
+                document.getElementById('headerTitle').innerHTML = page === 'dashboard' ? '📊 Dashboard' : page ===
+                    'clientes' ? '👥 Clientes' : '📦 Planos';
                 if (page === 'dashboard') renderDashboard();
                 if (page === 'clientes') renderClientes();
                 if (page === 'planos') renderPlanos();
@@ -971,14 +1105,17 @@
                 const total = clients.length;
                 const ativos = clients.filter(c => c.status === 'Ativo').length;
                 const vencidos = clients.filter(c => c.status === 'Vencido').length;
-                const receita = clients.filter(c => c.status !== 'Cancelado').reduce((s, c) => s + parseFloat(c.valor || 0), 0);
+                const receita = clients.filter(c => c.status !== 'Cancelado').reduce((s, c) => s + parseFloat(c.valor ||
+                    0), 0);
                 document.getElementById('statsGrid').innerHTML = `
                     <div class="stat-card card-total"><div class="stat-icon">👥</div><div class="stat-info"><h3>Total</h3><div class="stat-value">${total}</div></div></div>
                     <div class="stat-card card-active"><div class="stat-icon">✅</div><div class="stat-info"><h3>Ativos</h3><div class="stat-value">${ativos}</div></div></div>
                     <div class="stat-card card-expired"><div class="stat-icon">⚠️</div><div class="stat-info"><h3>Vencidos</h3><div class="stat-value">${vencidos}</div></div></div>
                     <div class="stat-card card-revenue"><div class="stat-icon">💰</div><div class="stat-info"><h3>Receita</h3><div class="stat-value">${fmtMoney(receita)}</div></div></div>
                 `;
-                const upcoming = clients.filter(c => c.status !== 'Cancelado' && daysUntil(c.data_vencimento) >= 0 && daysUntil(c.data_vencimento) <= 7).sort((a,b) => daysUntil(a.data_vencimento) - daysUntil(b.data_vencimento));
+                const upcoming = clients.filter(c => c.status !== 'Cancelado' && daysUntil(c.data_vencimento) >= 0 &&
+                    daysUntil(c.data_vencimento) <= 7).sort((a, b) => daysUntil(a.data_vencimento) - daysUntil(b
+                    .data_vencimento));
                 const ul = document.getElementById('upcomingList');
                 ul.innerHTML = upcoming.length ? upcoming.map(c => {
                     const days = daysUntil(c.data_vencimento);
@@ -988,44 +1125,142 @@
                 }).join('') : '<li style="text-align:center;justify-content:center;">✅ Nenhum vencimento próximo</li>';
             }
 
+            // ==================== CLIENTES EM CARDS ====================
             function renderClientes() {
                 refreshStatus();
                 const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
                 const statusF = document.getElementById('filterStatus')?.value || 'todos';
                 let list = [...clients];
-                if (search) list = list.filter(c => c.nome.toLowerCase().includes(search) || (c.telefone||'').includes(search) || (c.email||'').toLowerCase().includes(search));
+                if (search) list = list.filter(c => c.nome.toLowerCase().includes(search) || (c.telefone || '')
+                    .includes(search) || (c.email || '').toLowerCase().includes(search));
                 if (statusF !== 'todos') list = list.filter(c => c.status === statusF);
-                list.sort((a,b) => {
-                    const f = currentSort.field; let va = a[f] || '', vb = b[f] || '';
-                    if (f === 'valor') { va = parseFloat(a.valor)||0; vb = parseFloat(b.valor)||0; }
-                    if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
-                    if (va < vb) return currentSort.order === 'asc' ? -1 : 1;
-                    if (va > vb) return currentSort.order === 'asc' ? 1 : -1; return 0;
+
+                // Ordenação
+                const sortField = currentSort.field;
+                const sortOrder = currentSort.order;
+                list.sort((a, b) => {
+                    let va, vb;
+                    switch (sortField) {
+                        case 'nome':
+                            va = a.nome.toLowerCase();
+                            vb = b.nome.toLowerCase();
+                            break;
+                        case 'data_vencimento':
+                            va = a.data_vencimento || '';
+                            vb = b.data_vencimento || '';
+                            break;
+                        case 'valor':
+                            va = parseFloat(a.valor) || 0;
+                            vb = parseFloat(b.valor) || 0;
+                            break;
+                        case 'status':
+                            va = a.status || '';
+                            vb = b.status || '';
+                            break;
+                        default:
+                            va = a.nome.toLowerCase();
+                            vb = b.nome.toLowerCase();
+                    }
+                    if (va < vb) return sortOrder === 'asc' ? -1 : 1;
+                    if (va > vb) return sortOrder === 'asc' ? 1 : -1;
+                    return 0;
                 });
-                const tbody = document.getElementById('clientsTableBody'); const empty = document.getElementById('emptyState');
-                if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; } else {
+
+                const grid = document.getElementById('clientsCardsGrid');
+                const empty = document.getElementById('emptyState');
+
+                if (list.length === 0) {
+                    grid.innerHTML = '';
+                    empty.style.display = 'block';
+                } else {
                     empty.style.display = 'none';
-                    tbody.innerHTML = list.map(c => {
-                        const badge = c.status === 'Ativo' ? 'badge-active' : c.status === 'Vencido' ? 'badge-expired' : c.status === 'Pendente' ? 'badge-pending' : 'badge-canceled';
-                        return `<tr><td><strong>${c.nome}</strong></td><td>${c.telefone||'—'}</td><td>${c.plano_nome||'—'}</td><td>${fmtMoney(c.valor)}</td><td>${fmtDate(c.data_vencimento)}</td><td><span class="badge ${badge}">${c.status}</span></td><td><div class="actions-cell"><button class="btn btn-success btn-sm" data-renew="${c.id}">🔄</button><button class="btn btn-warning btn-sm" data-edit="${c.id}">✏️</button><button class="btn btn-danger btn-sm" data-del="${c.id}">🗑️</button></div></td></tr>`;
+                    grid.innerHTML = list.map(c => {
+                        const statusClass = `status-${c.status.toLowerCase()}`;
+                        const badgeClass = c.status === 'Ativo' ? 'badge-ativo' : c.status === 'Vencido' ?
+                            'badge-vencido' : c.status === 'Pendente' ? 'badge-pendente' :
+                            'badge-cancelado';
+                        const initials = c.nome.split(' ').map(w => w[0]).slice(0, 2).join('')
+                            .toUpperCase();
+                        const daysLeft = daysUntil(c.data_vencimento);
+                        const vencimentoDisplay = c.status === 'Cancelado' ? '—' : fmtDate(c
+                            .data_vencimento) +
+                            (daysLeft >= 0 ? ` (${daysLeft}d)` : ` vencido`);
+                        return `
+                            <div class="client-card ${statusClass}">
+                                <div class="card-header">
+                                    <div class="client-name-avatar">
+                                        <div class="avatar-circle">${initials}</div>
+                                        <div class="client-name">${c.nome}</div>
+                                    </div>
+                                    <span class="status-badge ${badgeClass}">${c.status}</span>
+                                </div>
+                                <div class="card-info">
+                                    <div class="info-item">
+                                        <span class="info-label">📞 Telefone</span>
+                                        <span class="info-value">${c.telefone || '—'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">📧 Email</span>
+                                        <span class="info-value">${c.email || '—'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">📦 Plano</span>
+                                        <span class="info-value">${c.plano_nome || '—'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">💰 Valor</span>
+                                        <span class="info-value highlight">${fmtMoney(c.valor)}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">📅 Vencimento</span>
+                                        <span class="info-value">${vencimentoDisplay}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">📝 Obs</span>
+                                        <span class="info-value">${c.observacoes || '—'}</span>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn btn-success btn-sm" data-renew="${c.id}">🔄 Renovar</button>
+                                    <button class="btn btn-warning btn-sm" data-edit="${c.id}">✏️ Editar</button>
+                                    <button class="btn btn-danger btn-sm" data-del="${c.id}">🗑️ Excluir</button>
+                                </div>
+                            </div>
+                        `;
                     }).join('');
-                    tbody.querySelectorAll('[data-renew]').forEach(b => b.onclick = () => renewClient(b.dataset.renew));
-                    tbody.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openClientModal(b.dataset.edit));
-                    tbody.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteClient(b.dataset.del));
+
+                    // Event listeners nos botões dos cards
+                    grid.querySelectorAll('[data-renew]').forEach(b => b.onclick = () => renewClient(b.dataset
+                        .renew));
+                    grid.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openClientModal(b.dataset
+                        .edit));
+                    grid.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteClient(b.dataset.del));
                 }
             }
 
             function renewClient(id) {
-                const c = clients.find(x => x.id === id); if (!c) return;
-                const plan = getPlan(c.plano_id); const months = plan ? plan.duracao_meses : 1;
-                if (confirm(`Renovar ${c.nome} por +${months} mês(es)?`)) { c.data_vencimento = addMonths(c.data_vencimento, months); c.status = 'Ativo'; save(); renderClientes(); showToast('🔄 Assinatura renovada!'); }
+                const c = clients.find(x => x.id === id);
+                if (!c) return;
+                const plan = getPlan(c.plano_id);
+                const months = plan ? plan.duracao_meses : 1;
+                if (confirm(`Renovar ${c.nome} por +${months} mês(es)?`)) { c.data_vencimento = addMonths(c
+                        .data_vencimento, months);
+                    c.status = 'Ativo';
+                    save();
+                    renderClientes();
+                    showToast('🔄 Assinatura renovada!'); }
             }
 
             function deleteClient(id) {
-                const c = clients.find(x => x.id === id); if (!c) return;
-                if (confirm(`Excluir ${c.nome}?`)) { clients = clients.filter(x => x.id !== id); save(); renderClientes(); showToast('🗑️ Cliente removido', 'error'); }
+                const c = clients.find(x => x.id === id);
+                if (!c) return;
+                if (confirm(`Excluir ${c.nome}?`)) { clients = clients.filter(x => x.id !== id);
+                    save();
+                    renderClientes();
+                    showToast('🗑️ Cliente removido', 'error'); }
             }
 
+            // ==================== MODAL CLIENTE ====================
             function openClientModal(client = null) {
                 const edit = !!client;
                 document.getElementById('modalClientTitle').textContent = edit ? 'Editar Cliente' : 'Novo Cliente';
@@ -1039,13 +1274,17 @@
                 document.getElementById('clientStatus').value = client?.status || 'Ativo';
                 document.getElementById('clientObs').value = client?.observacoes || '';
                 const sel = document.getElementById('clientPlano');
-                sel.innerHTML = plans.map(p => `<option value="${p.id}" ${client?.plano_id===p.id?'selected':''}>${p.nome} (${p.duracao_meses}m)</option>`).join('');
+                sel.innerHTML = plans.map(p =>
+                    `<option value="${p.id}" ${client?.plano_id===p.id?'selected':''}>${p.nome} (${p.duracao_meses}m)</option>`
+                    ).join('');
                 if (!edit && plans.length) document.getElementById('clientValor').value = plans[0].valor;
-                sel.onchange = () => { const p = getPlan(sel.value); if (p && !edit) document.getElementById('clientValor').value = p.valor; };
+                sel.onchange = () => { const p = getPlan(sel.value); if (p && !edit) document.getElementById(
+                        'clientValor').value = p.valor; };
                 document.getElementById('modalClientOverlay').classList.add('show');
             }
 
             function closeClientModal() { document.getElementById('modalClientOverlay').classList.remove('show'); }
+
             function saveClient() {
                 const id = document.getElementById('clientId').value;
                 const nome = document.getElementById('clientNome').value.trim();
@@ -1054,21 +1293,35 @@
                 const venc = document.getElementById('clientDataVencimento').value;
                 if (!nome || !plano_id || !venc) return showToast('Preencha nome, plano e vencimento', 'error');
                 const plan = getPlan(plano_id);
-                const obj = { id: id || 'c_' + Date.now(), nome, telefone: document.getElementById('clientTelefone').value, email: document.getElementById('clientEmail').value, plano_id, plano_nome: plan?.nome || '', valor, data_inicio: document.getElementById('clientDataInicio').value, data_vencimento: venc, status: document.getElementById('clientStatus').value, observacoes: document.getElementById('clientObs').value };
+                const obj = { id: id || 'c_' + Date.now(), nome, telefone: document.getElementById('clientTelefone')
+                        .value, email: document.getElementById('clientEmail').value, plano_id, plano_nome: plan?.nome ||
+                        '', valor, data_inicio: document.getElementById('clientDataInicio').value,
+                    data_vencimento: venc, status: document.getElementById('clientStatus').value, observacoes: document
+                        .getElementById('clientObs').value };
                 obj.status = calcStatus(obj);
-                if (id) { const idx = clients.findIndex(c => c.id === id); if (idx >= 0) clients[idx] = obj; }
-                else clients.push(obj);
-                save(); closeClientModal(); renderClientes(); showToast('✅ Cliente salvo!');
+                if (id) { const idx = clients.findIndex(c => c.id === id); if (idx >= 0) clients[idx] = obj; } else clients
+                    .push(obj);
+                save();
+                closeClientModal();
+                renderClientes();
+                showToast('✅ Cliente salvo!');
             }
 
+            // ==================== PLANOS ====================
             function renderPlanos() {
                 const grid = document.getElementById('plansGrid');
                 grid.innerHTML = plans.map(p => `
-                    <div class="plan-card"><h4>${p.nome}</h4><div class="plan-price">${fmtMoney(p.valor)}</div><div class="plan-duration">${p.duracao_meses} mês(es)</div><div class="plan-actions"><button class="btn btn-warning btn-sm" data-editplan="${p.id}">✏️</button><button class="btn btn-danger btn-sm" data-delplan="${p.id}">🗑️</button></div></div>`).join('');
-                grid.querySelectorAll('[data-editplan]').forEach(b => b.onclick = () => openPlanModal(b.dataset.editplan));
+                    <div class="plan-card"><h4>${p.nome}</h4><div class="plan-price">${fmtMoney(p.valor)}</div><div class="plan-duration">${p.duracao_meses} mês(es)</div><div class="plan-actions"><button class="btn btn-warning btn-sm" data-editplan="${p.id}">✏️</button><button class="btn btn-danger btn-sm" data-delplan="${p.id}">🗑️</button></div></div>
+                `).join('');
+                grid.querySelectorAll('[data-editplan]').forEach(b => b.onclick = () => openPlanModal(b.dataset
+                .editplan));
                 grid.querySelectorAll('[data-delplan]').forEach(b => b.onclick = () => {
-                    const id = b.dataset.delplan; if (clients.some(c => c.plano_id === id)) return showToast('Plano em uso', 'error');
-                    if (confirm('Excluir plano?')) { plans = plans.filter(p => p.id !== id); save(); renderPlanos(); showToast('Plano removido', 'error'); }
+                    const id = b.dataset.delplan;
+                    if (clients.some(c => c.plano_id === id)) return showToast('Plano em uso', 'error');
+                    if (confirm('Excluir plano?')) { plans = plans.filter(p => p.id !== id);
+                        save();
+                        renderPlanos();
+                        showToast('Plano removido', 'error'); }
                 });
             }
 
@@ -1080,67 +1333,116 @@
                 document.getElementById('planValor').value = plan?.valor || '';
                 document.getElementById('modalPlanOverlay').classList.add('show');
             }
+
             function closePlanModal() { document.getElementById('modalPlanOverlay').classList.remove('show'); }
+
             function savePlan() {
                 const id = document.getElementById('planId').value;
                 const nome = document.getElementById('planNome').value.trim();
                 const dur = parseInt(document.getElementById('planDuracao').value) || 1;
                 const val = parseFloat(document.getElementById('planValor').value) || 0;
                 if (!nome || val <= 0) return showToast('Preencha corretamente', 'error');
-                if (id) { const idx = plans.findIndex(p => p.id === id); if (idx >= 0) plans[idx] = { ...plans[idx], nome, duracao_meses: dur, valor: val }; }
-                else plans.push({ id: 'plan_' + Date.now(), nome, duracao_meses: dur, valor: val });
-                save(); closePlanModal(); renderPlanos(); renderClientes(); showToast('✅ Plano salvo!');
+                if (id) { const idx = plans.findIndex(p => p.id === id); if (idx >= 0) plans[idx] = { ...plans[idx],
+                        nome, duracao_meses: dur, valor: val }; } else plans.push({ id: 'plan_' + Date.now(),
+                    nome, duracao_meses: dur, valor: val });
+                save();
+                closePlanModal();
+                renderPlanos();
+                renderClientes();
+                showToast('✅ Plano salvo!');
             }
 
+            // ==================== SETTINGS ====================
             function openSettings() { document.getElementById('modalSettingsOverlay').classList.add('show'); }
+
             function closeSettings() { document.getElementById('modalSettingsOverlay').classList.remove('show'); }
+
             function exportBackup() {
                 const data = { clients, plans, date: new Date().toISOString() };
                 const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'iptv_backup.json'; a.click();
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'iptv_backup.json';
+                a.click();
                 showToast('📥 Backup salvo');
             }
+
             function importBackup(file) {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    try { const data = JSON.parse(e.target.result); if (!data.clients || !data.plans) throw Error();
-                        if (confirm('Restaurar backup? Dados atuais serão substituídos.')) { clients = data.clients; plans = data.plans; save(); setPage('dashboard'); showToast('✅ Dados restaurados'); }
-                    } catch { showToast('Arquivo inválido', 'error'); }
-                }; reader.readAsText(file);
+                    try { const data = JSON.parse(e.target.result); if (!data.clients || !data.plans) throw Error(); if (
+                            confirm('Restaurar backup? Dados atuais serão substituídos.')) { clients = data.clients;
+                            plans = data.plans;
+                            save();
+                            setPage('dashboard');
+                            showToast('✅ Dados restaurados'); } } catch { showToast('Arquivo inválido', 'error'); }
+                };
+                reader.readAsText(file);
             }
 
-            document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => setPage(b.dataset.page)));
+            // ==================== EVENTOS ====================
+            document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => setPage(b.dataset
+                .page)));
             document.getElementById('btnSettings').addEventListener('click', openSettings);
             document.getElementById('modalSettingsClose').addEventListener('click', closeSettings);
-            document.getElementById('modalSettingsOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalSettingsOverlay')) closeSettings(); });
+            document.getElementById('modalSettingsOverlay').addEventListener('click', e => { if (e.target === document
+                    .getElementById('modalSettingsOverlay')) closeSettings(); });
             document.getElementById('btnExportBackup').addEventListener('click', exportBackup);
-            document.getElementById('btnImportBackup').addEventListener('click', () => document.getElementById('importFile').click());
-            document.getElementById('importFile').addEventListener('change', function() { if (this.files[0]) importBackup(this.files[0]); this.value = ''; });
-            document.getElementById('btnResetData').addEventListener('click', () => { if (confirm('Apagar TODOS os dados?')) { clients = []; plans = defaultPlans; save(); setPage('dashboard'); showToast('Dados resetados', 'error'); } });
+            document.getElementById('btnImportBackup').addEventListener('click', () => document.getElementById(
+                'importFile').click());
+            document.getElementById('importFile').addEventListener('change', function() { if (this.files[0])
+                    importBackup(this.files[0]);
+                this.value = ''; });
+            document.getElementById('btnResetData').addEventListener('click', () => { if (confirm(
+                    'Apagar TODOS os dados?')) { clients = [];
+                    plans = defaultPlans;
+                    save();
+                    setPage('dashboard');
+                    showToast('Dados resetados', 'error'); } });
             document.getElementById('btnAddClient').addEventListener('click', () => openClientModal());
+            document.getElementById('btnEmptyAdd')?.addEventListener('click', () => openClientModal());
             document.getElementById('modalClientClose').addEventListener('click', closeClientModal);
             document.getElementById('modalClientCancel').addEventListener('click', closeClientModal);
             document.getElementById('modalClientSave').addEventListener('click', saveClient);
-            document.getElementById('modalClientOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalClientOverlay')) closeClientModal(); });
+            document.getElementById('modalClientOverlay').addEventListener('click', e => { if (e.target === document
+                    .getElementById('modalClientOverlay')) closeClientModal(); });
             document.getElementById('btnAddPlan').addEventListener('click', () => openPlanModal());
             document.getElementById('modalPlanClose').addEventListener('click', closePlanModal);
             document.getElementById('modalPlanCancel').addEventListener('click', closePlanModal);
             document.getElementById('modalPlanSave').addEventListener('click', savePlan);
-            document.getElementById('modalPlanOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalPlanOverlay')) closePlanModal(); });
+            document.getElementById('modalPlanOverlay').addEventListener('click', e => { if (e.target === document
+                    .getElementById('modalPlanOverlay')) closePlanModal(); });
             document.getElementById('searchInput').addEventListener('input', renderClientes);
             document.getElementById('filterStatus').addEventListener('change', renderClientes);
-            document.querySelectorAll('#clientsTable thead th[data-sort]').forEach(th => th.addEventListener('click', () => { const f = th.dataset.sort; currentSort.order = currentSort.field === f ? (currentSort.order === 'asc' ? 'desc' : 'asc') : 'asc'; currentSort.field = f; renderClientes(); }));
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeClientModal(); closePlanModal(); closeSettings(); } });
+            document.getElementById('sortSelect').addEventListener('change', function() {
+                const val = this.value;
+                currentSort.field = val;
+                currentSort.order = val === 'nome' ? 'asc' : 'asc';
+                renderClientes();
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeClientModal();
+                    closePlanModal();
+                    closeSettings(); } });
 
+            // PWA manifest
             (function() {
-                const manifest = { name: 'IPTV Manager', short_name: 'IPTV', start_url: location.href, display: 'standalone', background_color: '#1a1a2e', theme_color: '#1a1a2e', icons: [{ src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB+klEQVR4nO2ZvUoDQRSFJ2IjiCAoIoiFKFhYWFhY2NjY2NjY2NjY2NjY2PgAvoGgIAj6AD6AjYWFhYWFhYWFhY2FhYWFhYWFhYXF+Y7sLCb7M7nJJnvvgeGSmZkzZ2buzOwPkUgkEolEIpFIJBKJRCIMAH4BLoAfgGvgbQfQCegGbgP3gPvAA+AxcBFwnRNwBegD7gEPgE+Bt4D37wI7gdvA28BzwGPgK7nvcwA2gDPAjcAF4D7gM+AVoLu2yTwDThC2CNUx5QGwI3AI+AQ4AnQUWANQ5nUrX9NAkQNwWDvCAgQo9HnGPBOEnoE4d+Y5Q7TwO0L9F/gEfFyB1wHKIP2HEGOoNY8NWH9SC4DF5CbwPvAJmX37CPRBjNPALBd/iFjMbvIV+Hiv+hyjL3m+9HMGFlOHqXtIM/2AVsP3p3U5UFQYb6uOeV8FowzwHpguxTlvT+CsRAb2kwsb2QAfgEVg6QD6I0lOpQwcJEKZr3SAiWTRkIFJYDwxqgFoiKpAdACLSWHk4b9IB2gBfAC+EeScIVpqIQuYgfM3wFcKr56T1EUkOyN5ClnYyQAnwEK5gbRFQHjN1C+zQ3oQ/Ms/0J6KscqA4jVXgOE8/BXF+C3jFJFz7gQIR2y+UoEeFAr19vDtM9AnhB5BeqPfKXmVMqA8lOJrO7h5Vv5xHxKJRCL5AfAN/AN83f+T/wIAAAAASUVORK5CYII=', sizes: '192x192', type: 'image/png' }] };
+                const manifest = { name: 'IPTV Manager', short_name: 'IPTV', start_url: location.href,
+                    display: 'standalone', background_color: '#1a1a2e', theme_color: '#1a1a2e', icons: [{ src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB+klEQVR4nO2ZvUoDQRSFJ2IjiCAoIoiFKFhYWFhY2NjY2NjY2NjY2NjY2PgAvoGgIAj6AD6AjYWFhYWFhYWFhY2FhYWFhYWFhYXF+Y7sLCb7M7nJJnvvgeGSmZkzZ2buzOwPkUgkEolEIpFIJBKJRCIMAH4BLoAfgGvgbQfQCegGbgP3gPvAA+AxcBFwnRNwBegD7gEPgE+Bt4D37wI7gdvA28BzwGPgK7nvcwA2gDPAjcAF4D7gM+AVoLu2yTwDThC2CNUx5QGwI3AI+AQ4AnQUWANQ5nUrX9NAkQNwWDvCAgQo9HnGPBOEnoE4d+Y5Q7TwO0L9F/gEfFyB1wHKIP2HEGOoNY8NWH9SC4DF5CbwPvAJmX37CPRBjNPALBd/iFjMbvIV+Hiv+hyjL3m+9HMGFlOHqXtIM/2AVsP3p3U5UFQYb6uOeV8FowzwHpguxTlvT+CsRAb2kwsb2QAfgEVg6QD6I0lOpQwcJEKZr3SAiWTRkIFJYDwxqgFoiKpAdACLSWHk4b9IB2gBfAC+EeScIVpqIQuYgfM3wFcKr56T1EUkOyN5ClnYyQAnwEK5gbRFQHjN1C+zQ3oQ/Ms/0J6KscqA4jVXgOE8/BXF+C3jFJFz7gQIR2y+UoEeFAr19vDtM9AnhB5BeqPfKXmVMqA8lOJrO7h5Vv5xHxKJRCL5AfAN/AN83f+T/wIAAAAASUVORK5CYII=',
+                            sizes: '192x192', type: 'image/png'
+                        }] };
                 const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-                const link = document.createElement('link'); link.rel = 'manifest'; link.href = URL.createObjectURL(blob); document.head.appendChild(link);
+                const link = document.createElement('link');
+                link.rel = 'manifest';
+                link.href = URL.createObjectURL(blob);
+                document.head.appendChild(link);
             })();
 
-            clients.forEach(c => { if (!c.plano_nome) { const p = getPlan(c.plano_id); c.plano_nome = p ? p.nome : '—'; } });
-            refreshStatus(); setPage('dashboard');
-            console.log('📱 IPTV Manager com tema degradê pronto!');
+            // Inicializa
+            clients.forEach(c => { if (!c.plano_nome) { const p = getPlan(c.plano_id);
+                    c.plano_nome = p ? p.nome : '—'; } });
+            refreshStatus();
+            setPage('dashboard');
+            console.log('📱 IPTV Manager com Cards - Pronto!');
         })();
     </script>
 </body>
