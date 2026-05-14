@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0a0a">
+    <meta name="theme-color" content="#1a1f2e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Gestão">
-    <title>Gestão | Dashboard Profissional</title>
+    <meta name="apple-mobile-web-app-title" content="IPTV Manager">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22IPTV%20Manager%20Pro%22,%22short_name%22:%22IPTV%20App%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22theme_color%22:%22%231a1f2e%22,%22background_color%22:%22%232a1f3a%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/1183/1183672.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]}">
+    <title>IPTV Manager - App Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -17,999 +20,519 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: radial-gradient(circle at 10% 20%, #0f0f0f, #050505);
-            color: #eef2ff;
+            background: linear-gradient(145deg, #1a1f2e 0%, #2a1f3a 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
             height: 100vh;
-            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        /* App container com estrutura flex */
+        .app-wrapper {
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            background: transparent;
             position: relative;
         }
 
-        /* Cabeçalho premium */
+        /* Header do app */
         .app-header {
-            background: rgba(10, 10, 10, 0.75);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(249, 115, 22, 0.2);
-            padding: 14px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 10;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
+            padding: 20px 18px 12px;
+            border-radius: 0 0 32px 32px;
+            color: #2d1b36;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .logo-image {
-            width: 38px;
-            height: 38px;
-            object-fit: contain;
-            border-radius: 12px;
-            background: rgba(249,115,22,0.15);
-            padding: 4px;
-            box-shadow: 0 0 8px rgba(249,115,22,0.3);
-        }
-        .logo-text {
-            font-weight: 700;
+        .app-header h1 {
             font-size: 1.5rem;
-            background: linear-gradient(135deg, #ffffff, #f97316);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .icon-btn {
-            background: rgba(30,30,30,0.9);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 60px;
-            padding: 8px 20px;
-            color: #fef3c7;
-            font-weight: 500;
-            font-size: 0.8rem;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
         }
-        .icon-btn:active {
-            transform: scale(0.96);
-            background: #2a2a2a;
+        .app-header h1 i {
+            color: #ff6b6b;
+        }
+        .sync-badge {
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            display: inline-block;
+            margin-top: 6px;
+            color: white;
         }
 
-        /* Conteúdo rolável */
-        .pages-container {
+        /* Área de conteúdo rolável */
+        .view-container {
             flex: 1;
             overflow-y: auto;
-            padding: 28px 24px 90px 24px;
+            padding: 16px 12px 20px;
             scroll-behavior: smooth;
         }
-        .page {
-            display: none;
-            animation: fadeSlide 0.3s ease-out;
-        }
-        .page.active {
-            display: block;
-        }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
-        /* Bottom Tab Bar refinada com badge */
-        .bottom-tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(10, 10, 10, 0.85);
+        /* Bottom navigation (estilo app) */
+        .bottom-nav {
+            background: rgba(30, 25, 45, 0.95);
             backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(249,115,22,0.25);
+            border-top: 1px solid rgba(255,255,255,0.15);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 8px 16px 14px;
-            z-index: 20;
-            box-shadow: 0 -6px 20px rgba(0,0,0,0.4);
+            padding: 8px 12px 12px;
+            border-radius: 32px 32px 0 0;
+            flex-shrink: 0;
         }
-        .tab-item {
-            flex: 1;
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            background: none;
+            gap: 4px;
+            background: transparent;
             border: none;
-            color: #9ca3af;
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 8px 0;
-            border-radius: 40px;
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-        .tab-item .tab-icon {
-            font-size: 1.6rem;
-            transition: transform 0.1s;
-        }
-        .tab-item.active {
-            color: #f97316;
-            background: rgba(249,115,22,0.12);
-        }
-        .tab-item:active .tab-icon {
-            transform: scale(0.94);
-        }
-        .tab-badge {
-            position: absolute;
-            top: -2px;
-            right: 5px;
-            background: #ef4444;
-            color: white;
-            border-radius: 30px;
-            padding: 2px 6px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
-            box-shadow: 0 0 6px rgba(239,68,68,0.6);
-        }
-
-        /* Cards grid aprimorado */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 colunas em desktop */
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        /* Estilo unificado para todos os cards */
-        .card, .client-card, .plano-card, .produto-card, .aviso-card, .relatorio-card {
-            background: rgba(18, 18, 18, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 32px;
-            padding: 22px;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(249,115,22,0.08);
-            transition: all 0.25s ease;
-            border: none;
-        }
-        .card:hover, .client-card:hover, .plano-card:hover, .produto-card:hover, .aviso-card:hover, .relatorio-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(249,115,22,0.25);
-        }
-
-        /* Cards do dashboard */
-        .card {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .card-icon {
-            font-size: 2.6rem;
-            margin-bottom: 12px;
-            display: inline-block;
-            filter: drop-shadow(0 2px 6px rgba(249,115,22,0.4));
-        }
-        .card-value {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-        }
-        .card-label {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            font-weight: 500;
-            margin-top: 8px;
-            letter-spacing: 0.2px;
-        }
-
-        /* Cards de clientes com destaque e botões centralizados */
-        .client-card .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .client-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            background: linear-gradient(135deg, #fff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .client-status {
-            font-size: 0.7rem;
-            padding: 4px 12px;
-            border-radius: 60px;
-            font-weight: 600;
-            backdrop-filter: blur(2px);
-        }
-        .status-ativo { background: rgba(34,197,94,0.2); color: #86efac; border: 1px solid #4ade80; }
-        .status-vencido { background: rgba(239,68,68,0.2); color: #fca5a5; border: 1px solid #ef4444; }
-        .client-info {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .info-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-        }
-        .info-row strong {
-            color: white;
-            min-width: 60px;
-            font-weight: 600;
-        }
-        .card-actions {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding-top: 16px;
-            flex-wrap: wrap;
-        }
-        .btn-renovar {
-            background: rgba(34,197,94,0.2);
-            color: #86efac;
-            border: 1px solid #4ade80;
-        }
-        .btn-renovar:hover {
-            background: rgba(34,197,94,0.4);
-        }
-
-        /* Destaque para clientes vencidos ou próximos ao vencimento */
-        .client-card.vencido-destaque {
-            border-left: 5px solid #ef4444;
-            background: rgba(239,68,68,0.08);
-            box-shadow: 0 0 12px rgba(239,68,68,0.2);
-        }
-        .client-card.proximo-destaque {
-            border-left: 5px solid #f97316;
-            background: rgba(249,115,22,0.05);
-        }
-
-        /* Cards de planos, produtos, avisos, relatórios (mantidos) */
-        .plano-card .plano-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 12px;
-        }
-        .plano-nome {
-            font-size: 1.3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #f97316);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .plano-duracao {
-            background: rgba(255,255,255,0.05);
-            color: #fcd34d;
-            border-radius: 50px;
-            padding: 4px 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border: 1px solid rgba(253,186,116,0.3);
-        }
-        .plano-detalhes {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .detalhe-linha {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-        }
-        .detalhe-label {
-            color: #94a3b8;
-        }
-        .detalhe-valor {
-            font-weight: 700;
-            color: #ffffff;
-        }
-        .lucro-destaque {
-            color: #86efac;
-        }
-        .produto-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 10px;
-        }
-        .produto-nome {
-            font-size: 1.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .produto-qtd {
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            color: white;
-            border-radius: 40px;
-            padding: 5px 14px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(249,115,22,0.4);
-        }
-        .produto-info {
-            margin-bottom: 22px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 24px;
-            padding: 12px;
-            text-align: center;
-        }
-        .produto-actions {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-        }
-        .aviso-card {
-            border-left: 4px solid #f97316;
-        }
-        .aviso-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 8px;
-        }
-        .aviso-nome {
-            font-size: 1.1rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .aviso-urgente { background: rgba(239,68,68,0.2); color: #fca5a5; }
-        .aviso-alerta { background: rgba(245,158,11,0.2); color: #fde047; }
-        .aviso-info {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-        .aviso-acoes {
-            display: flex;
-            justify-content: flex-end;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding-top: 14px;
-        }
-        .relatorio-card {
-            border-left: 3px solid #f97316;
-        }
-        .relatorio-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 8px;
-        }
-        .relatorio-nome {
-            font-size: 1rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .relatorio-info {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .relatorio-linha {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-        }
-
-        /* Botões genéricos */
-        .btn-icon {
-            background: rgba(30,30,30,0.9);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 40px;
             padding: 8px 16px;
-            font-size: 0.75rem;
-            font-weight: 500;
+            border-radius: 30px;
             cursor: pointer;
             transition: 0.2s;
-            color: #e2e8f0;
+            color: #aaa;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .nav-item i {
+            font-size: 1.5rem;
+        }
+        .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            color: #ffb347;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .nav-item:active { transform: scale(0.95); }
+
+        /* Cards e elementos (mesmo estilo degradê) */
+        .metric-card, .section-card, .client-card, .plan-card, .alert-card-mobile {
+            background: rgba(255,255,255,0.95);
+            border-radius: 28px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .metrics-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .metric-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid;
+        }
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b, #2d3a4e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+        }
+        .action-card-btn {
+            background: linear-gradient(145deg, #f8fafc, #eef2f8);
+            border-radius: 28px;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+        .btn-primary-card { background: linear-gradient(95deg, #1f6392, #2b8bb5); color: white; }
+        .btn-success-card { background: linear-gradient(95deg, #10b981, #34d399); color: white; }
+        .btn-whatsapp-card { background: linear-gradient(95deg, #25D366, #34d399); color: white; }
+        .btn-danger-card { background: linear-gradient(95deg, #ef4444, #f87171); color: white; }
+        .client-action-icon {
+            background: rgba(0,0,0,0.05);
+            padding: 6px 12px;
+            border-radius: 30px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-        }
-        .btn-whatsapp-card {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 60px;
-            font-weight: 600;
+            font-size: 0.7rem;
             cursor: pointer;
-            font-size: 0.8rem;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
-        .btn-whatsapp-card:active { transform: scale(0.96); }
-        .btn-produto {
-            background: rgba(30,30,30,0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 40px;
-            padding: 8px 18px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: #e2e8f0;
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
-        .btn-entrada { background: rgba(34,197,94,0.2); color: #86efac; }
-        .btn-saida { background: rgba(239,68,68,0.2); color: #fca5a5; }
-
-        /* Filtros e inputs */
-        .table-header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 24px;
-            align-items: center;
-        }
-        .table-header input, .table-header select {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            color: #e2e8f0;
-            padding: 12px 18px;
-            border-radius: 60px;
-            font-size: 0.85rem;
-            flex: 1;
-            outline: none;
-            transition: 0.2s;
-        }
-        .table-header input:focus, .table-header select:focus {
-            border-color: #f97316;
-            box-shadow: 0 0 0 2px rgba(249,115,22,0.3);
-        }
-        .btn {
-            padding: 8px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.85rem;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            color: white;
-            box-shadow: 0 4px 12px rgba(249,115,22,0.3);
-        }
-        .btn-primary:active { transform: scale(0.96); }
-        .btn-whatsapp {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-            color: white;
-        }
-        .glass-panel {
-            background: rgba(18,18,18,0.85);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            padding: 24px;
-            border: 1px solid rgba(249,115,22,0.2);
-        }
-        .chart-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 16px;
-            overflow-x: auto;
-            padding: 16px 0;
-        }
-        .chart-bar-wrap {
-            min-width: 70px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        .chart-bar {
-            width: 45px;
-            background: linear-gradient(135deg, #f97316, #fdba74);
-            border-radius: 16px 16px 0 0;
-            transition: height 0.3s;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 200;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-        .modal {
-            background: #141414;
-            border-radius: 36px 36px 0 0;
+        .status-active { background: #d1fae5; color: #065f46; }
+        .status-expired { background: #fee2e2; color: #b91c1c; }
+        .status-warning { background: #fed7aa; color: #9a3412; }
+        .chart-wrapper { height: 200px; margin-top: 12px; }
+        .hidden { display: none; }
+        input, select {
             width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 28px 24px;
-            border-top: 3px solid #f97316;
+            padding: 12px;
+            border-radius: 28px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
         }
-        .modal h3 {
-            margin-bottom: 20px;
-            font-weight: 700;
-            font-size: 1.4rem;
-            background: linear-gradient(135deg, #fff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .double-btns { display: flex; gap: 12px; margin-top: 6px; }
+        .plan-card { background: linear-gradient(145deg, #fff6e5, #ffe6c7); }
+        .alert-card-mobile {
+            background: linear-gradient(115deg, #fff9e6, #fff2d7);
+            border-left: 5px solid #f59e0b;
         }
-        .modal input, .modal select {
-            width: 100%;
-            padding: 14px 18px;
-            margin-bottom: 18px;
-            background: #1f1f1f;
-            border: 1px solid #333;
-            border-radius: 32px;
-            font-size: 0.9rem;
-            color: #e2e8f0;
-        }
-        .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-weight: 500;
-            z-index: 300;
-            animation: fadeUp 0.3s ease;
-            white-space: nowrap;
-            font-size: 0.85rem;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
-        h2, .page h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffffff, #fcd34d);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 6px;
-        }
-        /* Responsividade: tablets e celulares */
-        @media (max-width: 1024px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
-            }
-        }
-        @media (max-width: 640px) {
-            .pages-container { padding: 20px 16px 85px; }
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr); /* GRADE 2 COLUNAS NO CELULAR */
-                gap: 14px;
-            }
-            .card, .client-card, .plano-card, .produto-card, .aviso-card { padding: 16px; }
-            .logo-image { width: 32px; height: 32px; }
-            .logo-text { font-size: 1.2rem; }
-            .card-value { font-size: 1.4rem; }
-            .card-icon { font-size: 1.8rem; }
-            .card-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .btn-icon {
-                justify-content: center;
-            }
-        }
+        .alert-expired { background: linear-gradient(115deg, #ffe8e8, #ffdddd); border-left-color: #dc2626; }
+        footer { font-size: 0.65rem; text-align: center; color: #aaa; margin-top: 20px; }
     </style>
 </head>
 <body>
-
-<div class="app-header">
-    <div class="logo-area">
-        <img src="https://i.im.ge/QMqruep/ChatGPT_Image_12_05_2026_00_07_55.png" alt="Logo Gestão" class="logo-image" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23f97316\'/%3E%3Ctext x=\'50\' y=\'68\' font-size=\'50\' text-anchor=\'middle\' fill=\'white\'%3E📺%3C/text%3E%3C/svg%3E';">
-        <span class="logo-text">Gestão</span>
-    </div>
-    <div class="header-actions">
-        <button class="icon-btn" onclick="abrirMenuMais()">⚙️ Mais</button>
-    </div>
-</div>
-
-<div class="pages-container" id="pages-container">
-    <!-- Dashboard -->
-    <div class="page active" id="page-dashboard">
-        <h2>Dashboard</h2>
-        <p style="color:#94a3b8; margin-bottom:28px;">Visão executiva e métricas do negócio</p>
-        <div class="cards-grid" id="dashboard-cards"></div>
-        <div class="glass-panel">
-            <h4 style="color:#fcd34d; margin-bottom:20px; font-weight:600;">📈 Receita mensal (R$)</h4>
-            <div class="chart-container" id="chart-receita"></div>
-        </div>
+<div class="app-wrapper">
+    <div class="app-header">
+        <h1><i class="fas fa-tv"></i> IPTV Manager</h1>
+        <div class="sync-badge"><i class="fas fa-cloud-sync-alt"></i> Tempo real | App Mobile</div>
     </div>
 
-    <!-- Clientes -->
-    <div class="page" id="page-clientes">
-        <h2>Clientes</h2>
-        <div class="table-header">
-            <input type="text" id="search-clientes" placeholder="🔍 Nome ou telefone..." oninput="renderClientesCards()">
-            <select id="filtro-status-clientes" onchange="renderClientesCards()">
-                <option value="todos">Todos</option>
-                <option value="ativo">Ativos</option>
-                <option value="vencido">Vencidos</option>
-            </select>
-            <button class="btn btn-primary" onclick="abrirModalCliente()">+ Novo Cliente</button>
-        </div>
-        <div id="clientes-cards-container" class="cards-grid"></div>
-    </div>
+    <!-- Container das views (conteúdo dinâmico) -->
+    <div id="viewContainer" class="view-container"></div>
 
-    <!-- Financeiro -->
-    <div class="page" id="page-financeiro">
-        <h2>Financeiro</h2>
-        <div class="cards-grid" id="financeiro-cards"></div>
-        <div class="glass-panel">
-            <h4 style="color:#fcd34d; margin-bottom:18px;">Resumo por plano</h4>
-            <div id="resumo-planos-cards" class="cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px,1fr));"></div>
-        </div>
-    </div>
-
-    <!-- Estoque -->
-    <div class="page" id="page-estoque">
-        <h2>Estoque</h2>
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 24px;">
-            <button class="btn btn-primary" onclick="abrirModalProduto()">+ Novo Produto</button>
-        </div>
-        <div id="estoque-cards-container" class="cards-grid"></div>
-    </div>
-
-    <!-- Avisos -->
-    <div class="page" id="page-avisos">
-        <h2>Avisos</h2>
-        <div style="background:rgba(245,158,11,0.15); padding:8px 18px; border-radius:60px; margin-bottom:20px; display:inline-block; color:#fde047;">
-            ⚠️ Clientes com vencimento próximo ou atrasado
-        </div>
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-            <button class="btn btn-whatsapp" onclick="enviarAvisosWeb()">📱 Enviar avisos em massa</button>
-        </div>
-        <div id="avisos-cards-container" class="cards-grid"></div>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button class="nav-item" data-view="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+        <button class="nav-item" data-view="clientes"><i class="fas fa-users"></i><span>Clientes</span></button>
+        <button class="nav-item" data-view="planos"><i class="fas fa-tags"></i><span>Planos</span></button>
+        <button class="nav-item" data-view="alertas"><i class="fas fa-bell"></i><span>Alertas</span></button>
     </div>
 </div>
-
-<!-- Bottom Tab Bar com badge -->
-<div class="bottom-tab-bar">
-    <button class="tab-item" data-page="dashboard"><span class="tab-icon">📊</span><span>Início</span></button>
-    <button class="tab-item" data-page="clientes" id="tab-clientes">
-        <span class="tab-icon">👥</span>
-        <span>Clientes</span>
-        <span id="clientes-badge" class="tab-badge" style="display:none;">0</span>
-    </button>
-    <button class="tab-item" data-page="financeiro"><span class="tab-icon">💰</span><span>Financeiro</span></button>
-    <button class="tab-item" data-page="estoque"><span class="tab-icon">📦</span><span>Estoque</span></button>
-    <button class="tab-item" data-page="avisos"><span class="tab-icon">💬</span><span>Avisos</span></button>
-</div>
-
-<!-- Modais (incluindo o novo modal de renovação) -->
-<div class="modal-overlay" id="modal-cliente-overlay" style="display:none;" onclick="fecharModal(event,'modal-cliente-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Dados do Cliente</h3><form id="form-cliente" onsubmit="salvarCliente(event)"><input type="hidden" id="cliente-id"><label>Nome completo</label><input type="text" id="cliente-nome" required><label>Telefone (com DDD)</label><input type="text" id="cliente-telefone" required><label>Plano</label><select id="cliente-plano" required onchange="atualizarValoresPlano()"></select><div style="display:flex;gap:10px;"><div style="flex:1"><label>Valor R$</label><input type="number" id="cliente-valor" step="0.01"></div><div style="flex:1"><label>Custo R$</label><input type="number" id="cliente-custo" step="0.01"></div></div><label>Data de vencimento</label><input type="date" id="cliente-vencimento" required><label>Status</label><select id="cliente-status"><option value="ativo">Ativo</option><option value="vencido">Vencido</option></select><div style="display:flex;gap:10px;margin-top:20px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-cliente-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
-
-<div class="modal-overlay" id="modal-plano-overlay" style="display:none;" onclick="fecharModal(event,'modal-plano-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Plano</h3><form id="form-plano" onsubmit="salvarPlano(event)"><input type="hidden" id="plano-id"><label>Nome do plano</label><input type="text" id="plano-nome" required><label>Duração (dias)</label><input type="number" id="plano-duracao" required><label>Valor R$</label><input type="number" id="plano-valor" step="0.01"><label>Custo R$</label><input type="number" id="plano-custo" step="0.01"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-plano-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
-
-<div class="modal-overlay" id="modal-produto-overlay" style="display:none;" onclick="fecharModal(event,'modal-produto-overlay')"><div class="modal" onclick="event.stopPropagation()"><h3>Produto</h3><form id="form-produto" onsubmit="salvarProduto(event)"><input type="hidden" id="produto-id"><label>Nome do produto</label><input type="text" id="produto-nome" required><div id="campo-qtd-inicial"><label>Quantidade inicial</label><input type="number" id="produto-qtd-inicial" value="0"></div><div id="aviso-edicao-produto" style="background:#1a1a1a; padding:8px; border-radius:20px; margin:8px 0; display:none;">Edição: use movimentações para alterar estoque</div><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-produto-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div>
-
-<div class="modal-overlay" id="modal-movimentacao-overlay" style="display:none;" onclick="fecharModal(event,'modal-movimentacao-overlay')"><div class="modal"><h3>Movimentação</h3><form id="form-movimentacao" onsubmit="salvarMovimentacao(event)"><input type="hidden" id="mov-produto-id"><input type="hidden" id="mov-tipo"><p>Produto: <strong id="mov-produto-nome"></strong></p><label>Quantidade</label><input type="number" id="mov-quantidade" required><label>Data</label><input type="date" id="mov-data"><div style="display:flex;gap:10px;"><button type="button" class="btn" onclick="fecharModal(null,'modal-movimentacao-overlay')">Cancelar</button><button type="submit" class="btn btn-primary">Registrar</button></div></form></div></div>
-
-<!-- Modal de Renovação -->
-<div class="modal-overlay" id="modal-renovar-overlay" style="display:none;" onclick="fecharModal(event,'modal-renovar-overlay')">
-    <div class="modal" onclick="event.stopPropagation()">
-        <h3>✨ Renovar Assinatura</h3>
-        <form id="form-renovar" onsubmit="salvarRenovacao(event)">
-            <input type="hidden" id="renovar-cliente-id">
-            <label>Cliente</label>
-            <input type="text" id="renovar-cliente-nome" readonly style="background:#2a2a2a;">
-            <label>Plano atual</label>
-            <input type="text" id="renovar-plano-nome" readonly style="background:#2a2a2a;">
-            <label>Valor do plano (R$)</label>
-            <input type="number" id="renovar-valor" step="0.01" required>
-            <label>Data de vencimento atual</label>
-            <input type="date" id="renovar-vencimento-atual" readonly style="background:#2a2a2a;">
-            <label>Nova data de vencimento (após renovação)</label>
-            <input type="date" id="renovar-nova-data" required>
-            <div class="info-row" style="margin-top: 8px; color:#fcd34d;">⏱️ Serão adicionados os dias do plano à data atual de vencimento.</div>
-            <div class="btn-row" style="display:flex; gap:10px; margin-top:20px;">
-                <button type="button" class="btn" onclick="fecharModal(null,'modal-renovar-overlay')">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Confirmar Renovação</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id="toast" style="display:none;"></div>
 
 <script>
-    // ========== SISTEMA COMPLETO COM RENOVAÇÃO E BOTÕES CENTRALIZADOS ==========
-    const STORAGE_KEYS = { clientes: 'iptv_prof', planos: 'iptv_planos_prof', produtos: 'iptv_produtos_prof' };
-    let clientes = [], planos = [], produtos = [];
-    let ultimosClientesFiltrados = [];
-    const DIAS_AVISO_PREVIO = 3;
+    // ======================== DADOS E LÓGICA CENTRAL ========================
+    let plans = [
+        { id: "p1", name: "Básico Mensal", price: 29.90 },
+        { id: "p2", name: "Padrão Mensal", price: 49.90 },
+        { id: "p3", name: "Premium Mensal", price: 79.90 }
+    ];
+    let clients = [];
 
-    const gerarId = () => 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
-    const addDias = (data, dias) => { let d = new Date(data); d.setDate(d.getDate() + dias); return d.toISOString().split('T')[0]; };
-    const formatarData = s => s ? s.split('-').reverse().join('/') : '-';
-    const formatarMoeda = v => Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
-    const calcularLucro = (v,c) => (Number(v)||0)-(Number(c)||0);
-    const hojeStr = () => new Date().toISOString().split('T')[0];
-    const salvar = tipo => localStorage.setItem(STORAGE_KEYS[tipo], JSON.stringify(eval(tipo)));
-    function escapeHTML(str){ if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-
-    function carregarDados() {
-        clientes = JSON.parse(localStorage.getItem(STORAGE_KEYS.clientes)||'[]');
-        planos = JSON.parse(localStorage.getItem(STORAGE_KEYS.planos)||'[]');
-        produtos = JSON.parse(localStorage.getItem(STORAGE_KEYS.produtos)||'[]');
-        if(!planos.length) planos = [{id:'p1',nome:'Mensal',duracao:30,valor:35,custo:15},{id:'p2',nome:'Trimestral',duracao:90,valor:90,custo:35},{id:'p3',nome:'Anual',duracao:365,valor:300,custo:100}];
-        if(!produtos.length) produtos = [{id:'pr1',nome:'Crédito IPTV',quantidade:20,movimentacoes:[{tipo:'entrada',quantidade:20,data:hojeStr(),obs:'Inicial'}]},{id:'pr2',nome:'TV Box',quantidade:10,movimentacoes:[{tipo:'entrada',quantidade:10,data:hojeStr(),obs:'Inicial'}]}];
-        if(!clientes.length){ 
-            let h=new Date(); 
-            clientes=[
-                {id:'c1',nome:'João Silva',telefone:'11999991111',plano:'Mensal',valor:35,custo:15,inicio:addDias(h,-20),vencimento:addDias(h,10),status:'ativo'},
-                {id:'c2',nome:'Maria Oliveira',telefone:'11988882222',plano:'Trimestral',valor:90,custo:35,inicio:addDias(h,-60),vencimento:addDias(h,30),status:'ativo'},
-                {id:'c3',nome:'Carlos Mendes',telefone:'11977773333',plano:'Mensal',valor:35,custo:15,inicio:addDias(h,-25),vencimento:addDias(h,2),status:'ativo'},
-                {id:'c4',nome:'Ana Souza',telefone:'11966664444',plano:'Anual',valor:300,custo:100,inicio:addDias(h,-200),vencimento:addDias(h,-5),status:'vencido'}
-            ]; 
+    // helpers
+    function getToday() { let d = new Date(); d.setHours(0,0,0,0); return d; }
+    function daysDiff(dateStr) {
+        let due = new Date(dateStr); due.setHours(0,0,0,0);
+        return Math.ceil((due - getToday()) / (1000*60*60*24));
+    }
+    function saveData() {
+        localStorage.setItem("iptv_plans_app", JSON.stringify(plans));
+        localStorage.setItem("iptv_clients_app", JSON.stringify(clients));
+    }
+    function loadData() {
+        let savedPlans = localStorage.getItem("iptv_plans_app");
+        let savedClients = localStorage.getItem("iptv_clients_app");
+        if(savedPlans) plans = JSON.parse(savedPlans);
+        if(savedClients) clients = JSON.parse(savedClients);
+        if(plans.length===0) plans = [{ id: "p1", name: "Básico Mensal", price: 29.90 },{ id: "p2", name: "Padrão Mensal", price: 49.90 },{ id: "p3", name: "Premium Mensal", price: 79.90 }];
+        if(clients.length===0) {
+            let today = new Date();
+            let in5 = new Date(); in5.setDate(today.getDate()+5);
+            let over = new Date(); over.setDate(today.getDate()-2);
+            let fut = new Date(); fut.setDate(today.getDate()+30);
+            clients = [
+                { id: "c1", name: "Carlos Andrade", phone: "5511988881111", planId: "p2", dueDate: in5.toISOString().split('T')[0] },
+                { id: "c2", name: "Mariana Souza", phone: "5511999992222", planId: "p3", dueDate: over.toISOString().split('T')[0] },
+                { id: "c3", name: "Fernando Rocha", phone: "5511977773333", planId: "p1", dueDate: fut.toISOString().split('T')[0] },
+                { id: "c4", name: "Juliana Lima", phone: "5511966664444", planId: "p2", dueDate: fut.toISOString().split('T')[0] }
+            ];
         }
-        salvar('clientes'); salvar('planos'); salvar('produtos');
+    }
+    function getPlanById(id) { return plans.find(p => p.id === id); }
+
+    // Atualiza modelo e re-renderiza a view atual
+    let currentView = "dashboard";
+    let revenueChart = null;
+
+    function refreshCurrentView() {
+        renderView(currentView);
     }
 
-    function verificarVencimentos(){ let hoje=new Date(); hoje.setHours(0,0,0,0); let alt=false; clientes.forEach(c=>{ if(c.status==='ativo' && new Date(c.vencimento+'T00:00:00')<hoje){ c.status='vencido'; alt=true; } }); if(alt){ salvar('clientes'); atualizarTudo(); mostrarToast('Status atualizados'); } }
+    // ======================== RENDERIZAÇÃO DAS VIEWS ========================
+    function renderDashboard() {
+        // Métricas
+        let total = clients.length;
+        let active = clients.filter(c => daysDiff(c.dueDate) >= 0).length;
+        let monthly = clients.reduce((acc, c) => { let p = getPlanById(c.planId); if(p && daysDiff(c.dueDate)>=0) return acc + p.price; return acc; }, 0);
+        
+        // Estatísticas planos para gráfico
+        let planStats = new Map();
+        plans.forEach(p => planStats.set(p.id, { plan:p, revenue:0 }));
+        clients.forEach(c => { let p = getPlanById(c.planId); if(p && daysDiff(c.dueDate)>=0) { let stat = planStats.get(p.id); if(stat) stat.revenue += p.price; } });
+        let labels = [], data = [];
+        for(let stat of planStats.values()) { labels.push(stat.plan.name); data.push(stat.revenue); }
+        
+        let html = `
+            <div class="metrics-grid">
+                <div class="metric-card" style="border-left-color:#3b82f6"><div><div class="metric-title"><i class="fas fa-users"></i> Total Clientes</div><div class="metric-value">${total}</div></div><i class="fas fa-user-friends" style="font-size:2rem; opacity:0.6"></i></div>
+                <div class="metric-card" style="border-left-color:#10b981"><div><div class="metric-title"><i class="fas fa-check-circle"></i> Ativos</div><div class="metric-value">${active}</div></div><i class="fas fa-calendar-check" style="font-size:2rem"></i></div>
+                <div class="metric-card" style="border-left-color:#f59e0b"><div><div class="metric-title"><i class="fas fa-chart-line"></i> Faturamento Mensal</div><div class="metric-value">R$ ${monthly.toFixed(2)}</div></div><i class="fas fa-dollar-sign"></i></div>
+                <div class="metric-card" style="border-left-color:#8b5cf6"><div><div class="metric-title"><i class="fas fa-calendar-week"></i> Anual (proj)</div><div class="metric-value">R$ ${(monthly*12).toFixed(2)}</div></div><i class="fas fa-chart-simple"></i></div>
+            </div>
+            <div class="section-card">
+                <div class="section-title" style="font-weight:bold; margin-bottom:8px;"><i class="fas fa-chart-bar"></i> Receita por Plano</div>
+                <div class="chart-wrapper"><canvas id="dashboardChart"></canvas></div>
+                <div class="actions-grid" style="margin-top:12px"><button class="action-card-btn btn-primary-card" id="refreshDashboardBtn"><i class="fas fa-sync-alt"></i> Atualizar</button></div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-clock"></i> Últimos clientes</div>
+                <div id="lastClientsList" style="display:flex; flex-direction:column; gap:10px;"></div>
+            </div>
+        `;
+        document.getElementById("viewContainer").innerHTML = html;
+        // Gráfico
+        const ctx = document.getElementById('dashboardChart')?.getContext('2d');
+        if(ctx) {
+            if(revenueChart) revenueChart.destroy();
+            revenueChart = new Chart(ctx, { type: 'bar', data: { labels, datasets: [{ label: 'Receita (R$)', data, backgroundColor: '#8b5cf6', borderRadius: 10 }] }, options: { responsive: true, maintainAspectRatio: true } });
+        }
+        // Últimos clientes
+        let lastClientsDiv = document.getElementById("lastClientsList");
+        if(lastClientsDiv) {
+            let recentes = [...clients].slice(-3).reverse();
+            if(recentes.length===0) lastClientsDiv.innerHTML = "<div style='padding:12px;text-align:center'>Nenhum cliente</div>";
+            else {
+                lastClientsDiv.innerHTML = recentes.map(c => `<div style="background:#f1f5f9; border-radius:24px; padding:10px; display:flex; justify-content:space-between"><span><i class="fas fa-user"></i> ${c.name}</span><span>${c.dueDate}</span></div>`).join('');
+            }
+        }
+        document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => refreshCurrentView());
+    }
 
-    function navigateTo(pageId){
-        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-        document.getElementById(`page-${pageId}`).classList.add('active');
-        document.querySelectorAll('.tab-item').forEach(tab=>{
-            if(tab.dataset.page === pageId) tab.classList.add('active');
-            else tab.classList.remove('active');
+    function renderClientes() {
+        let html = `
+            <div class="actions-grid" style="margin-bottom:12px">
+                <button class="action-card-btn btn-primary-card" id="newClientBtnApp"><i class="fas fa-user-plus"></i> Novo Cliente</button>
+                <button class="action-card-btn btn-whatsapp-card" id="globalWppBtn"><i class="fab fa-whatsapp"></i> Alertar Vencidos</button>
+            </div>
+            <div id="clientFormPanel" class="hidden" style="background:rgba(255,255,255,0.95); border-radius:28px; padding:16px; margin-bottom:16px;">
+                <h3 id="formTitleApp">Adicionar Cliente</h3>
+                <input type="text" id="clientName" placeholder="Nome completo">
+                <input type="text" id="clientPhone" placeholder="WhatsApp (5511999999999)">
+                <select id="clientPlanIdSelect"></select>
+                <input type="date" id="clientDueDateInput">
+                <div class="double-btns"><button class="btn-primary-card" id="saveClientAppBtn">Salvar</button><button class="btn-danger-card" id="cancelClientFormBtn">Cancelar</button></div>
+            </div>
+            <div id="clientsListApp" class="clients-list"></div>
+        `;
+        document.getElementById("viewContainer").innerHTML = html;
+        populatePlanSelectApp();
+        renderClientsListOnly();
+        // Eventos
+        document.getElementById("newClientBtnApp")?.addEventListener("click", () => {
+            let panel = document.getElementById("clientFormPanel");
+            panel.classList.toggle("hidden");
+            document.getElementById("formTitleApp").innerText = "➕ Adicionar Cliente";
+            document.getElementById("saveClientAppBtn").removeAttribute("data-edit-id");
+            document.getElementById("clientName").value = "";
+            document.getElementById("clientPhone").value = "";
+            document.getElementById("clientDueDateInput").value = "";
         });
-        atualizarTudo();
-    }
-    document.querySelectorAll('.tab-item').forEach(tab=>{
-        tab.addEventListener('click',()=>navigateTo(tab.dataset.page));
-    });
-
-    function abrirMenuMais(){
-        let op = prompt("Acessar:\n1 - Planos\n2 - Relatórios\nDigite o número:");
-        if(op === '1') navigateTo('planos');
-        else if(op === '2') navigateTo('relatorios');
-        else if(op) mostrarToast('Opção inválida');
+        document.getElementById("cancelClientFormBtn")?.addEventListener("click", () => document.getElementById("clientFormPanel").classList.add("hidden"));
+        document.getElementById("saveClientAppBtn")?.addEventListener("click", saveClientFromApp);
+        document.getElementById("globalWppBtn")?.addEventListener("click", () => {
+            let vencidos = clients.filter(c => daysDiff(c.dueDate) <= 2);
+            if(vencidos.length===0) alert("Nenhum cliente com vencimento próximo.");
+            else vencidos.forEach(c => sendWhatsApp(c));
+        });
     }
 
-    // Páginas extras (Planos e Relatórios)
-    function adicionarPaginasExtras(){
-        const container = document.getElementById('pages-container');
-        if(!document.getElementById('page-planos')){
-            const divPlanos = document.createElement('div');
-            divPlanos.id = 'page-planos';
-            divPlanos.className = 'page';
-            divPlanos.innerHTML = `<h2>Planos</h2><div style="display: flex; justify-content: flex-end; margin-bottom:20px;"><button class="btn btn-primary" onclick="abrirModalPlano()">+ Novo Plano</button></div><div id="planos-cards-container" class="cards-grid"></div>`;
-            container.appendChild(divPlanos);
-        }
-        if(!document.getElementById('page-relatorios')){
-            const divRel = document.createElement('div');
-            divRel.id = 'page-relatorios';
-            divRel.className = 'page';
-            divRel.innerHTML = `<h2>Relatórios</h2><div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;"><input type="date" id="rel-data-inicio" style="flex:1;"><input type="date" id="rel-data-fim" style="flex:1;"><button class="btn btn-primary" onclick="atualizarRelatorios()">Filtrar</button><button class="btn" onclick="exportarCSV()">📥 CSV</button></div><div class="cards-grid" id="relatorio-cards"></div><div id="relatorio-clientes-container" class="cards-grid"></div>`;
-            container.appendChild(divRel);
-        }
-    }
-    adicionarPaginasExtras();
-
-    function atualizarTudo(){
-        atualizarDashboard(); atualizarFinanceiro(); renderClientesCards(); renderPlanosCards(); renderEstoqueCards(); renderAvisosCards(); preencherSelectPlanos(); if(document.getElementById('page-relatorios').classList.contains('active')) atualizarRelatorios();
-        atualizarBadgeClientes();
+    function populatePlanSelectApp() {
+        let sel = document.getElementById("clientPlanIdSelect");
+        if(sel) { sel.innerHTML = plans.map(p => `<option value="${p.id}">${p.name} - R$ ${p.price.toFixed(2)}</option>`).join(''); }
     }
 
-    // Atualiza o badge no botão Clientes com a quantidade de vencidos
-    function atualizarBadgeClientes() {
-        const vencidos = clientes.filter(c => c.status === 'vencido').length;
-        const badge = document.getElementById('clientes-badge');
-        if (badge) {
-            if (vencidos > 0) {
-                badge.textContent = vencidos;
-                badge.style.display = 'inline-block';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-    }
-
-    // ========== RENOVAÇÃO DE CLIENTE ==========
-    function abrirModalRenovar(id) {
-        const cliente = clientes.find(c => c.id === id);
-        if (!cliente) return;
-        const plano = planos.find(p => p.nome === cliente.plano);
-        if (!plano) {
-            mostrarToast('Plano não encontrado para este cliente');
-            return;
-        }
-        const novaData = addDias(cliente.vencimento, plano.duracao);
-        document.getElementById('renovar-cliente-id').value = cliente.id;
-        document.getElementById('renovar-cliente-nome').value = cliente.nome;
-        document.getElementById('renovar-plano-nome').value = cliente.plano;
-        document.getElementById('renovar-valor').value = cliente.valor;
-        document.getElementById('renovar-vencimento-atual').value = cliente.vencimento;
-        document.getElementById('renovar-nova-data').value = novaData;
-        document.getElementById('modal-renovar-overlay').style.display = 'flex';
-    }
-
-    function salvarRenovacao(e) {
-        e.preventDefault();
-        const id = document.getElementById('renovar-cliente-id').value;
-        const cliente = clientes.find(c => c.id === id);
-        if (!cliente) return;
-        const novaData = document.getElementById('renovar-nova-data').value;
-        const valorPago = parseFloat(document.getElementById('renovar-valor').value) || cliente.valor;
-        cliente.vencimento = novaData;
-        cliente.status = 'ativo';
-        if (valorPago !== cliente.valor) {
-            cliente.valor = valorPago;
-        }
-        salvar('clientes');
-        fecharModal(null, 'modal-renovar-overlay');
-        atualizarTudo();
-        mostrarToast(`✅ Cliente ${cliente.nome} renovado com sucesso! Nova validade: ${formatarData(novaData)}`);
-    }
-
-    // ========== CLIENTES EM CARDS COM BOTÕES CENTRALIZADOS ==========
-    function renderClientesCards() {
-        const container = document.getElementById('clientes-cards-container');
-        if (!container) return;
-        const busca = document.getElementById('search-clientes')?.value.toLowerCase() || '';
-        const filtro = document.getElementById('filtro-status-clientes')?.value || 'todos';
-        let lista = clientes.filter(c => 
-            (!busca || c.nome.toLowerCase().includes(busca) || c.telefone.includes(busca)) && 
-            (filtro === 'todos' || c.status === filtro)
-        );
-        if (lista.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:40px;">Nenhum cliente encontrado</div>';
-            return;
-        }
-
-        function isProximoVencimento(vencimento) {
-            const hoje = new Date(); hoje.setHours(0,0,0,0);
-            const venc = new Date(vencimento + 'T00:00:00');
-            const diff = Math.ceil((venc - hoje) / (1000 * 60 * 60 * 24));
-            return diff >= 0 && diff <= DIAS_AVISO_PREVIO;
-        }
-
-        container.innerHTML = lista.map(c => {
-            const statusClass = c.status === 'ativo' ? 'status-ativo' : 'status-vencido';
-            let destaqueClass = '';
-            if (c.status === 'vencido') {
-                destaqueClass = 'vencido-destaque';
-            } else if (c.status === 'ativo' && isProximoVencimento(c.vencimento)) {
-                destaqueClass = 'proximo-destaque';
-            }
+    function renderClientsListOnly() {
+        let container = document.getElementById("clientsListApp");
+        if(!container) return;
+        if(clients.length===0) { container.innerHTML = "<div style='padding:20px;text-align:center'>Nenhum cliente</div>"; return; }
+        container.innerHTML = clients.map(client => {
+            let plan = getPlanById(client.planId);
+            let days = daysDiff(client.dueDate);
+            let statusClass = days >= 0 ? (days <= 5 ? "status-warning" : "status-active") : "status-expired";
+            let statusText = days >= 0 ? (days <=5 ? "Próx venc" : "Ativo") : "Vencido";
             return `
-                <div class="client-card ${destaqueClass}">
-                    <div class="card-header">
-                        <span class="client-name">${escapeHTML(c.nome)}</span>
-                        <span class="client-status ${statusClass}">${c.status === 'ativo' ? 'Ativo' : 'Vencido'}</span>
-                    </div>
-                    <div class="client-info">
-                        <div class="info-row"><strong>📞 Tel:</strong> ${escapeHTML(c.telefone)}</div>
-                        <div class="info-row"><strong>📋 Plano:</strong> ${escapeHTML(c.plano)}</div>
-                        <div class="info-row"><strong>💰 Valor:</strong> R$ ${formatarMoeda(c.valor)}</div>
-                        <div class="info-row"><strong>📅 Venc:</strong> ${formatarData(c.vencimento)}</div>
-                    </div>
-                    <div class="card-actions">
-                        <button class="btn-icon btn-renovar" onclick="abrirModalRenovar('${c.id}')">🔄 Renovar</button>
-                        <button class="btn-icon btn-edit" onclick="editarCliente('${c.id}')">✏️ Editar</button>
-                        <button class="btn-icon btn-delete" onclick="excluirCliente('${c.id}')">🗑️ Excluir</button>
+                <div class="client-card" data-client-id="${client.id}">
+                    <div class="client-header"><div class="client-name"><i class="fas fa-user-circle"></i> ${escapeHtml(client.name)}</div><span class="status-badge ${statusClass}">${statusText}</span></div>
+                    <div class="client-details" style="display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; font-size:0.75rem"><span><i class="fab fa-whatsapp"></i> ${client.phone}</span><span><i class="fas fa-tag"></i> ${plan?.name} R$ ${plan?.price.toFixed(2)}</span><span><i class="far fa-calendar"></i> ${client.dueDate} (${days} dias)</span></div>
+                    <div class="client-actions" style="display:flex; gap:8px; justify-content:flex-end;">
+                        <button class="client-action-icon" data-action="whatsapp" data-id="${client.id}"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                        <button class="client-action-icon" data-action="renew" data-id="${client.id}"><i class="fas fa-calendar-plus"></i> Renovar</button>
+                        <button class="client-action-icon" data-action="edit" data-id="${client.id}"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="client-action-icon" data-action="delete" data-id="${client.id}"><i class="fas fa-trash-alt"></i> Excluir</button>
                     </div>
                 </div>
             `;
         }).join('');
-    }
-
-    // ========== RELATÓRIOS ==========
-    function atualizarRelatorios() {
-        const ini = document.getElementById('rel-data-inicio').value || addDias(new Date(), -30);
-        const fim = document.getElementById('rel-data-fim').value || hojeStr();
-        const fl = clientes.filter(c => {
-            const i = new Date(c.inicio + 'T00:00:00');
-            const v = new Date(c.vencimento + 'T00:00:00');
-            const fi = new Date(ini + 'T00:00:00');
-            const ff = new Date(fim + 'T00:00:00');
-            return i <= ff && v >= fi;
+        // Delegar eventos
+        document.querySelectorAll("#clientsListApp .client-action-icon").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                let action = btn.getAttribute("data-action");
+                let id = btn.getAttribute("data-id");
+                let client = clients.find(c=>c.id===id);
+                if(!client) return;
+                if(action === "whatsapp") sendWhatsApp(client);
+                else if(action === "renew") { let dias = prompt("Dias a adicionar:", "30"); if(dias && !isNaN(parseInt(dias))){ let nd = new Date(client.dueDate); nd.setDate(nd.getDate()+parseInt(dias)); client.dueDate = nd.toISOString().split('T')[0]; saveData(); refreshCurrentView(); alert("Renovado!");} }
+                else if(action === "edit") openEditClientForm(client);
+                else if(action === "delete") { if(confirm("Remover?")){ clients = clients.filter(c=>c.id!==id); saveData(); refreshCurrentView(); } }
+            });
         });
-        ultimosClientesFiltrados = fl;
-        const receitaPeriodo = fl.reduce((s, c) => s + Number(c.valor || 0), 0);
-        document.getElementById('relatorio-cards').innerHTML = `<div class="card"><div class="card-value">R$ ${formatarMoeda(receitaPeriodo)}</div><div class="card-label">Receita no período</div></div><div class="card"><div class="card-value">${fl.length}</div><div class="card-label">Clientes no período</div></div>`;
-        const container = document.getElementById('relatorio-clientes-container');
-        if (!container) return;
-        if (fl.length === 0) { container.innerHTML = '<div style="text-align:center; padding:40px;">Nenhum cliente encontrado</div>'; return; }
-        container.innerHTML = fl.map(c => `<div class="relatorio-card"><div class="relatorio-header"><span class="relatorio-nome">${escapeHTML(c.nome)}</span><span class="client-status ${c.status==='ativo'?'status-ativo':'status-vencido'}">${c.status==='ativo'?'Ativo':'Vencido'}</span></div><div class="relatorio-info"><div class="relatorio-linha"><span>📞 Telefone</span><span>${escapeHTML(c.telefone)}</span></div><div class="relatorio-linha"><span>📋 Plano</span><span>${escapeHTML(c.plano)}</span></div><div class="relatorio-linha"><span>💰 Valor</span><span>R$ ${formatarMoeda(c.valor)}</span></div><div class="relatorio-linha"><span>📅 Vencimento</span><span>${formatarData(c.vencimento)}</span></div></div></div>`).join('');
     }
 
-    // ========== AVISOS ==========
-    function getClientesAviso(){ let hoje=new Date(); hoje.setHours(0,0,0,0); return clientes.filter(c=>{ if(c.status==='cancelado')return false; if(c.status==='vencido')return true; if(c.status==='ativo'){ let venc=new Date(c.vencimento+'T00:00:00'); let dias=Math.ceil((venc-hoje)/86400000); return dias>=0 && dias<=DIAS_AVISO_PREVIO; } return false; }); }
-    function getSituacaoAviso(c){ if(c.status==='vencido')return {texto:'Vencido',classe:'aviso-urgente'}; let hoje=new Date(); let dias=Math.ceil((new Date(c.vencimento+'T00:00:00')-hoje)/86400000); if(dias===0)return {texto:'Vence hoje',classe:'aviso-urgente'}; return {texto:`Vence em ${dias} dias`,classe:'aviso-alerta'}; }
-    function getMensagemAviso(c){ let hoje=new Date(); let dias=Math.ceil((new Date(c.vencimento+'T00:00:00')-hoje)/86400000); if(c.status==='vencido'||dias<0) return `Olá ${c.nome}, seu plano *${c.plano}* está VENCIDO! Renove agora: R$ ${formatarMoeda(c.valor)}`; else if(dias===0) return `⚠️ ${c.nome}, seu plano vence HOJE! Renove: R$ ${formatarMoeda(c.valor)}`; else return `🔔 ${c.nome}, seu plano vence em ${dias} dias (${formatarData(c.vencimento)}). Renove: R$ ${formatarMoeda(c.valor)}`; }
-    function renderAvisosCards(){ const cont=document.getElementById('avisos-cards-container'); if(!cont)return; let av=getClientesAviso(); if(av.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">✨ Nenhum aviso pendente</div>'; return; } cont.innerHTML=av.map(c=>{const s=getSituacaoAviso(c); return `<div class="aviso-card"><div class="aviso-header"><span class="aviso-nome">${escapeHTML(c.nome)}</span><span class="aviso-status ${s.classe}">${s.texto}</span></div><div class="aviso-info"><div class="aviso-linha"><span>📞 Telefone</span><span>${escapeHTML(c.telefone)}</span></div><div class="aviso-linha"><span>📋 Plano</span><span>${escapeHTML(c.plano)}</span></div><div class="aviso-linha"><span>💰 Valor</span><span>R$ ${formatarMoeda(c.valor)}</span></div><div class="aviso-linha"><span>📅 Vencimento</span><span>${formatarData(c.vencimento)}</span></div></div><div class="aviso-acoes"><button class="btn-whatsapp-card" onclick="abrirWhatsApp('${c.telefone}','${getMensagemAviso(c).replace(/'/g,"\\'")}')">📱 Enviar mensagem</button></div></div>`; }).join(''); }
-    function abrirWhatsApp(tel,msg){ window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank'); }
-    function enviarAvisosWeb(){ let av=getClientesAviso(); if(!av.length){mostrarToast('Nenhum aviso');return;} av.forEach(c=>setTimeout(()=>abrirWhatsApp(c.telefone,getMensagemAviso(c)),500)); mostrarToast(`Enviando para ${av.length} cliente(s)`); }
+    function openEditClientForm(client) {
+        let panel = document.getElementById("clientFormPanel");
+        panel.classList.remove("hidden");
+        document.getElementById("formTitleApp").innerHTML = "✏️ Editar Cliente";
+        document.getElementById("clientName").value = client.name;
+        document.getElementById("clientPhone").value = client.phone;
+        document.getElementById("clientPlanIdSelect").value = client.planId;
+        document.getElementById("clientDueDateInput").value = client.dueDate;
+        document.getElementById("saveClientAppBtn").setAttribute("data-edit-id", client.id);
+    }
 
-    // ========== PLANOS ==========
-    function renderPlanosCards(){ const cont=document.getElementById('planos-cards-container'); if(!cont)return; if(planos.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">Nenhum plano</div>'; return; } cont.innerHTML=planos.map(p=>{ const lucro=p.valor-p.custo; return `<div class="plano-card"><div class="plano-header"><span class="plano-nome">${escapeHTML(p.nome)}</span><span class="plano-duracao">${p.duracao} dias</span></div><div class="plano-detalhes"><div class="detalhe-linha"><span>💰 Valor</span><span class="detalhe-valor">R$ ${formatarMoeda(p.valor)}</span></div><div class="detalhe-linha"><span>📉 Custo</span><span class="detalhe-valor">R$ ${formatarMoeda(p.custo)}</span></div><div class="detalhe-linha"><span>📈 Lucro/assinatura</span><span class="lucro-destaque">R$ ${formatarMoeda(lucro)}</span></div></div><div class="plano-actions"><button class="btn-icon btn-edit" onclick="editarPlano('${p.id}')">✏️ Editar</button><button class="btn-icon btn-delete" onclick="excluirPlano('${p.id}')">🗑️ Excluir</button></div></div>`; }).join(''); }
-    function abrirModalPlano(){ document.getElementById('form-plano').reset(); document.getElementById('plano-id').value=''; document.getElementById('modal-plano-overlay').style.display='flex'; }
-    function editarPlano(id){ let p=planos.find(x=>x.id===id); document.getElementById('plano-id').value=p.id; document.getElementById('plano-nome').value=p.nome; document.getElementById('plano-duracao').value=p.duracao; document.getElementById('plano-valor').value=p.valor; document.getElementById('plano-custo').value=p.custo; document.getElementById('modal-plano-overlay').style.display='flex'; }
-    function salvarPlano(e){ e.preventDefault(); let id=document.getElementById('plano-id').value; let nome=document.getElementById('plano-nome').value.trim(); if(!nome)return; let plano={id:id||gerarId(), nome, duracao:parseInt(document.getElementById('plano-duracao').value), valor:parseFloat(document.getElementById('plano-valor').value), custo:parseFloat(document.getElementById('plano-custo').value)}; if(id) planos=planos.map(p=>p.id===id?plano:p); else planos.push(plano); salvar('planos'); fecharModal(null,'modal-plano-overlay'); atualizarTudo(); mostrarToast('Plano salvo');}
-    function excluirPlano(id){ let plano=planos.find(p=>p.id===id); if(clientes.some(c=>c.plano===plano.nome)){mostrarToast('Plano em uso'); return;} planos=planos.filter(p=>p.id!==id); salvar('planos'); atualizarTudo();}
+    function saveClientFromApp() {
+        let name = document.getElementById("clientName").value.trim();
+        let phone = document.getElementById("clientPhone").value.trim();
+        let planId = document.getElementById("clientPlanIdSelect").value;
+        let dueDate = document.getElementById("clientDueDateInput").value;
+        if(!name || !dueDate) { alert("Nome e data obrigatórios"); return; }
+        let editId = document.getElementById("saveClientAppBtn").getAttribute("data-edit-id");
+        if(editId) {
+            let cl = clients.find(c=>c.id===editId);
+            if(cl) { cl.name=name; cl.phone=phone; cl.planId=planId; cl.dueDate=dueDate; }
+        } else {
+            let newId = "c"+Date.now()+Math.random().toString(36);
+            clients.push({ id: newId, name, phone, planId, dueDate });
+        }
+        saveData();
+        document.getElementById("clientFormPanel").classList.add("hidden");
+        refreshCurrentView();
+        alert("Cliente salvo");
+    }
 
-    // ========== ESTOQUE ==========
-    function renderEstoqueCards(){ const cont=document.getElementById('estoque-cards-container'); if(!cont)return; if(produtos.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">Nenhum produto</div>'; return; } cont.innerHTML=produtos.map(p=>{ const ult=p.movimentacoes?.length?formatarData(p.movimentacoes[p.movimentacoes.length-1].data):'-'; return `<div class="produto-card"><div class="produto-header"><span class="produto-nome">${escapeHTML(p.nome)}</span><span class="produto-qtd">${p.quantidade} un.</span></div><div class="produto-info">📅 Última mov: ${ult}</div><div class="produto-actions"><button class="btn-produto btn-entrada" onclick="abrirMovimentacao('${p.id}','entrada')">➕ Entrada</button><button class="btn-produto btn-saida" onclick="abrirMovimentacao('${p.id}','saida')">➖ Saída</button><button class="btn-produto" onclick="editarProduto('${p.id}')">✏️ Editar</button><button class="btn-produto" onclick="excluirProduto('${p.id}')">🗑️ Excluir</button></div></div>`; }).join(''); }
-    function abrirModalProduto(){ document.getElementById('form-produto').reset(); document.getElementById('produto-id').value=''; document.getElementById('campo-qtd-inicial').style.display='block'; document.getElementById('aviso-edicao-produto').style.display='none'; document.getElementById('modal-produto-overlay').style.display='flex'; }
-    function editarProduto(id){ let p=produtos.find(x=>x.id===id); document.getElementById('produto-id').value=p.id; document.getElementById('produto-nome').value=p.nome; document.getElementById('campo-qtd-inicial').style.display='none'; document.getElementById('aviso-edicao-produto').style.display='block'; document.getElementById('modal-produto-overlay').style.display='flex'; }
-    function salvarProduto(e){ e.preventDefault(); let id=document.getElementById('produto-id').value; let nome=document.getElementById('produto-nome').value.trim(); if(!nome)return; if(id){ let p=produtos.find(x=>x.id===id); p.nome=nome; salvar('produtos'); mostrarToast('Atualizado'); } else { let qtd=parseInt(document.getElementById('produto-qtd-inicial').value)||0; produtos.push({id:gerarId(), nome, quantidade:qtd, movimentacoes:qtd?[{tipo:'entrada',quantidade:qtd,data:hojeStr(),obs:'Inicial'}]:[]}); salvar('produtos'); mostrarToast('Produto criado'); } fecharModal(null,'modal-produto-overlay'); atualizarTudo(); }
-    function excluirProduto(id){ if(confirm('Excluir?')){ produtos=produtos.filter(p=>p.id!==id); salvar('produtos'); atualizarTudo(); mostrarToast('Excluído'); } }
-    function abrirMovimentacao(pid,tipo){ let p=produtos.find(x=>x.id===pid); document.getElementById('mov-produto-id').value=pid; document.getElementById('mov-tipo').value=tipo; document.getElementById('mov-produto-nome').innerText=p.nome; document.getElementById('form-movimentacao').reset(); document.getElementById('mov-data').value=hojeStr(); document.getElementById('modal-movimentacao-overlay').style.display='flex'; }
-    function salvarMovimentacao(e){ e.preventDefault(); let pid=document.getElementById('mov-produto-id').value; let tipo=document.getElementById('mov-tipo').value; let qtd=parseInt(document.getElementById('mov-quantidade').value); let p=produtos.find(x=>x.id===pid); if(tipo==='saida' && qtd>p.quantidade){mostrarToast('Estoque insuficiente'); return;} p.movimentacoes.push({tipo, quantidade:qtd, data:document.getElementById('mov-data').value, obs:''}); p.quantidade+=tipo==='entrada'?qtd:-qtd; salvar('produtos'); fecharModal(null,'modal-movimentacao-overlay'); atualizarTudo(); mostrarToast('Registrado'); }
+    function renderPlanos() {
+        let html = `
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-tags"></i> Planos de Assinatura</div>
+                <div id="plansListApp" class="plans-grid" style="display:flex; flex-wrap:wrap; gap:12px;"></div>
+                <div class="actions-grid"><button class="action-card-btn" id="showAddPlanAppBtn"><i class="fas fa-plus"></i> Novo Plano</button></div>
+                <div id="addPlanPanel" class="hidden" style="margin-top:12px;"><input type="text" id="newPlanNameApp" placeholder="Nome"><input type="number" id="newPlanPriceApp" placeholder="Preço R$"><div class="double-btns"><button class="btn-primary-card" id="confirmAddPlanApp">Salvar</button><button class="btn-danger-card" id="cancelAddPlanApp">Cancelar</button></div></div>
+            </div>
+            <div class="section-card">
+                <div class="section-title"><i class="fas fa-chart-line"></i> Resumo Financeiro</div>
+                <div id="financeSummaryApp" style="background:#eef2ff; border-radius:24px; padding:12px; text-align:center;">Receita Mensal Ativa: R$ 0,00</div>
+            </div>
+        `;
+        document.getElementById("viewContainer").innerHTML = html;
+        renderPlansListApp();
+        // Eventos plano
+        document.getElementById("showAddPlanAppBtn")?.addEventListener("click", () => document.getElementById("addPlanPanel").classList.toggle("hidden"));
+        document.getElementById("cancelAddPlanApp")?.addEventListener("click", () => document.getElementById("addPlanPanel").classList.add("hidden"));
+        document.getElementById("confirmAddPlanApp")?.addEventListener("click", () => {
+            let name = document.getElementById("newPlanNameApp").value.trim();
+            let price = parseFloat(document.getElementById("newPlanPriceApp").value);
+            if(!name || isNaN(price)) { alert("Inválido"); return; }
+            plans.push({ id: "plan_"+Date.now(), name, price });
+            saveData();
+            refreshCurrentView();
+            alert("Plano adicionado");
+        });
+        let monthlyActive = clients.reduce((acc,c) => { let p = getPlanById(c.planId); if(p && daysDiff(c.dueDate)>=0) return acc + p.price; return acc; },0);
+        document.getElementById("financeSummaryApp").innerHTML = `Receita Mensal Ativa: R$ ${monthlyActive.toFixed(2)}`;
+    }
 
-    // ========== CRUD Clientes (editar, excluir, salvar) ==========
-    function editarCliente(id){ let c=clientes.find(x=>x.id===id); if(!c)return; document.getElementById('cliente-id').value=c.id; document.getElementById('cliente-nome').value=c.nome; document.getElementById('cliente-telefone').value=c.telefone; preencherSelectPlanos(); document.getElementById('cliente-plano').value=c.plano; document.getElementById('cliente-valor').value=c.valor; document.getElementById('cliente-custo').value=c.custo; document.getElementById('cliente-vencimento').value=c.vencimento; document.getElementById('cliente-status').value=c.status; document.getElementById('modal-cliente-overlay').style.display='flex'; }
-    function excluirCliente(id){ if(confirm('Excluir cliente?')){ clientes=clientes.filter(c=>c.id!==id); salvar('clientes'); atualizarTudo(); mostrarToast('Cliente removido'); } }
-    function salvarCliente(e){ e.preventDefault(); let id=document.getElementById('cliente-id').value; let status=document.getElementById('cliente-status').value; let venc=document.getElementById('cliente-vencimento').value; let hoje=hojeStr(); if(status==='ativo' && venc<hoje && !confirm('Vencido, salvar como vencido?')) return; let c={id:id||gerarId(), nome:document.getElementById('cliente-nome').value.trim(), telefone:document.getElementById('cliente-telefone').value.trim(), plano:document.getElementById('cliente-plano').value, valor:parseFloat(document.getElementById('cliente-valor').value)||0, custo:parseFloat(document.getElementById('cliente-custo').value)||0, inicio:hoje, vencimento:venc, status:status==='ativo'&&venc<hoje?'vencido':status}; if(!c.nome||!c.telefone||!c.plano) return mostrarToast('Preencha todos'); if(id) clientes=clientes.map(x=>x.id===id?c:x); else clientes.unshift(c); salvar('clientes'); fecharModal(null,'modal-cliente-overlay'); atualizarTudo(); mostrarToast('Salvo'); }
-    function preencherSelectPlanos(){ let sel=document.getElementById('cliente-plano'); sel.innerHTML='<option value="">Selecione</option>'; planos.forEach(p=>sel.innerHTML+=`<option value="${p.nome}">${p.nome}</option>`); }
-    function atualizarValoresPlano(){ let nome=document.getElementById('cliente-plano').value; let p=planos.find(x=>x.nome===nome); if(p && !document.getElementById('cliente-id').value){ document.getElementById('cliente-valor').value=p.valor; document.getElementById('cliente-custo').value=p.custo; } }
-    function abrirModalCliente(){ document.getElementById('form-cliente').reset(); document.getElementById('cliente-id').value=''; document.getElementById('cliente-status').value='ativo'; document.getElementById('cliente-vencimento').value=addDias(new Date(),30); preencherSelectPlanos(); document.getElementById('modal-cliente-overlay').style.display='flex'; }
+    function renderPlansListApp() {
+        let container = document.getElementById("plansListApp");
+        if(!container) return;
+        container.innerHTML = plans.map(plan => {
+            let count = clients.filter(c=>c.planId===plan.id).length;
+            return `<div class="plan-card" style="flex:1; min-width:140px;"><strong>${plan.name}</strong><br>R$ ${plan.price.toFixed(2)}<br><small>${count} assinantes</small><div style="margin-top:8px; display:flex; gap:6px;"><button class="editPlanBtnApp" data-id="${plan.id}" style="background:white; border:none; border-radius:20px; padding:4px 12px;">Editar</button><button class="delPlanBtnApp" data-id="${plan.id}" style="background:#ffdddd; border:none; border-radius:20px; padding:4px 12px;">Excluir</button></div></div>`;
+        }).join('');
+        document.querySelectorAll(".editPlanBtnApp").forEach(btn => {
+            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let p = plans.find(pl=>pl.id===id); let newName = prompt("Nome", p.name); let newPrice = parseFloat(prompt("Preço", p.price)); if(newName && !isNaN(newPrice)) { p.name=newName; p.price=newPrice; saveData(); refreshCurrentView(); } });
+        });
+        document.querySelectorAll(".delPlanBtnApp").forEach(btn => {
+            btn.addEventListener("click", () => { let id = btn.getAttribute("data-id"); let used = clients.some(c=>c.planId===id); if(used) { alert("Clientes usam esse plano"); return; } plans = plans.filter(p=>p.id!==id); saveData(); refreshCurrentView(); });
+        });
+    }
 
-    // ========== FINANCEIRO E DASHBOARD ==========
-    function renderResumoPlanosCards(){ const cont=document.getElementById('resumo-planos-cards'); if(!cont)return; const resumo=planos.map(plano=>{ const cp=clientes.filter(c=>c.plano===plano.nome && c.status!=='cancelado'); return {...plano, qtd:cp.length, receita:cp.reduce((s,c)=>s+Number(c.valor),0), custo:cp.reduce((s,c)=>s+Number(c.custo),0), lucro:cp.reduce((s,c)=>s+calcularLucro(c.valor,c.custo),0)}; }).filter(p=>p.qtd>0); if(resumo.length===0){ cont.innerHTML='<div style="text-align:center; padding:40px;">Nenhum cliente ativo</div>'; return; } cont.innerHTML=resumo.map(plano=>`<div class="plano-card"><div class="plano-header"><strong style="font-size:1rem;">${escapeHTML(plano.nome)}</strong><span style="background:linear-gradient(135deg,#f97316,#ea580c); color:white; border-radius:40px; padding:2px 12px;">${plano.qtd} cliente(s)</span></div><div class="plano-detalhes"><div class="detalhe-linha"><span>💰 Receita:</span><span>R$ ${formatarMoeda(plano.receita)}</span></div><div class="detalhe-linha"><span>📉 Custo:</span><span>R$ ${formatarMoeda(plano.custo)}</span></div><div class="detalhe-linha"><span>📈 Lucro:</span><span class="lucro-destaque">R$ ${formatarMoeda(plano.lucro)}</span></div></div></div>`).join(''); }
-    function atualizarFinanceiro(){ let receita=clientes.reduce((s,c)=>s+Number(c.valor),0); let custo=clientes.reduce((s,c)=>s+Number(c.custo),0); document.getElementById('financeiro-cards').innerHTML=`<div class="card"><div class="card-icon">💵</div><div class="card-value">R$ ${formatarMoeda(receita)}</div><div class="card-label">Receita Total</div></div><div class="card"><div class="card-icon">📤</div><div class="card-value">R$ ${formatarMoeda(custo)}</div><div class="card-label">Custo Total</div></div><div class="card"><div class="card-icon">📈</div><div class="card-value">R$ ${formatarMoeda(receita-custo)}</div><div class="card-label">Lucro Total</div></div>`; renderResumoPlanosCards(); }
-    function atualizarDashboard(){ let t=clientes.length, a=clientes.filter(c=>c.status==='ativo').length, v=clientes.filter(c=>c.status==='vencido').length, l=clientes.reduce((s,c)=>s+calcularLucro(c.valor,c.custo),0); document.getElementById('dashboard-cards').innerHTML=`<div class="card" onclick="navigateTo('clientes')"><div class="card-icon">👥</div><div class="card-value">${t}</div><div class="card-label">Clientes</div></div><div class="card" onclick="navigateTo('clientes')"><div class="card-icon">✅</div><div class="card-value">${a}</div><div class="card-label">Ativos</div></div><div class="card" onclick="navigateTo('avisos')"><div class="card-icon">⚠️</div><div class="card-value">${v}</div><div class="card-label">Vencidos</div></div><div class="card" onclick="navigateTo('financeiro')"><div class="card-icon">💰</div><div class="card-value">R$ ${formatarMoeda(l)}</div><div class="card-label">Lucro Total</div></div>`; let meses=[]; for(let i=5;i>=0;i--){let d=new Date(); d.setMonth(d.getMonth()-i); meses.push({label:d.toLocaleDateString('pt-BR',{month:'short'}),receita:0});} clientes.forEach(c=>{if(c.status!=='cancelado'){let p=planos.find(pl=>pl.nome===c.plano); if(p){let rateio=c.valor/(p.duracao/30); let inicio=new Date(c.inicio+'T00:00:00'), fim=new Date(c.vencimento+'T00:00:00'); meses.forEach((m,idx)=>{let mesAtual=new Date(2023,idx,1); if(inicio<=new Date(mesAtual.getFullYear(),mesAtual.getMonth()+1,0) && fim>=new Date(mesAtual.getFullYear(),mesAtual.getMonth(),1)) m.receita+=rateio;});}}}); let max=Math.max(...meses.map(m=>m.receita),1); document.getElementById('chart-receita').innerHTML=meses.map(m=>`<div class="chart-bar-wrap"><span style="font-size:0.75rem; font-weight:500;">${formatarMoeda(m.receita)}</span><div class="chart-bar" style="height:${Math.max(m.receita/max*50,6)}px"></div><span style="font-size:0.7rem;">${m.label}</span></div>`).join(''); }
+    function renderAlertas() {
+        let near = clients.filter(c => { let d = daysDiff(c.dueDate); return d <= 5 && d >= -3; });
+        let html = `<div class="section-card"><div class="section-title"><i class="fas fa-bell"></i> Alertas de Vencimento</div><div id="alertsListApp"></div></div>`;
+        document.getElementById("viewContainer").innerHTML = html;
+        let container = document.getElementById("alertsListApp");
+        if(near.length===0) container.innerHTML = "<div style='padding:20px;text-align:center'>✅ Sem alertas ativos</div>";
+        else {
+            container.innerHTML = near.map(c => {
+                let days = daysDiff(c.dueDate);
+                let msg = days<0 ? `Vencido há ${Math.abs(days)} dias` : `Vence em ${days} dias`;
+                return `<div class="alert-card-mobile ${days<0 ? 'alert-expired':''}"><div><strong>${c.name}</strong><br>${msg}<br><small>${c.phone}</small></div><button class="tiny-btn" style="background:#25D366; border:none; padding:8px 16px; border-radius:40px; color:white;" data-waid="${c.id}"><i class="fab fa-whatsapp"></i> Notificar</button></div>`;
+            }).join('');
+            document.querySelectorAll("[data-waid]").forEach(btn => {
+                btn.addEventListener("click", (e) => { let id = btn.getAttribute("data-waid"); let cli = clients.find(c=>c.id===id); if(cli) sendWhatsApp(cli); });
+            });
+        }
+    }
 
-    // ========== UTILITÁRIOS ==========
-    function exportarCSV(){ if(!ultimosClientesFiltrados.length){mostrarToast('Sem dados');return;} let csv="Nome,Telefone,Plano,Valor,Vencimento,Status\n"; ultimosClientesFiltrados.forEach(c=>csv+=`"${c.nome}","${c.telefone}","${c.plano}",${c.valor},"${formatarData(c.vencimento)}","${c.status}"\n`); let blob=new Blob([csv],{type:'text/csv'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='relatorio_gestao.csv'; a.click(); mostrarToast('Exportado'); }
-    function fecharModal(event, modalId){ if(event && event.target !== document.getElementById(modalId)) return; document.getElementById(modalId).style.display='none'; }
-    function mostrarToast(msg){ let t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>{t.style.display='none';},2000); }
-    
-    carregarDados(); verificarVencimentos(); atualizarTudo(); setInterval(verificarVencimentos,60000); window.addEventListener('focus',verificarVencimentos);
+    function sendWhatsApp(client) {
+        let plan = getPlanById(client.planId);
+        let days = daysDiff(client.dueDate);
+        let msg = `Olá ${client.name}, sua assinatura IPTV (${plan?.name}) ${days <=0 ? "está VENCIDA! Renove já." : `vence em ${days} dias.`} Acesse: https://seudominio.com`;
+        let phone = client.phone.replace(/\D/g,'');
+        if(phone) window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        else alert("Número inválido");
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // ======================== Navegação principal ========================
+    function renderView(view) {
+        currentView = view;
+        if(view === 'dashboard') renderDashboard();
+        else if(view === 'clientes') renderClientes();
+        else if(view === 'planos') renderPlanos();
+        else if(view === 'alertas') renderAlertas();
+        // Marca nav ativo
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            if(btn.getAttribute('data-view') === view) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+
+    // Inicialização
+    loadData();
+    // Setup navegação
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            let view = btn.getAttribute('data-view');
+            renderView(view);
+        });
+    });
+    renderView('dashboard');
 </script>
 </body>
 </html>
