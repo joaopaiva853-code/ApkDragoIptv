@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⭐</text></svg>">
     <title>Caixinha de Empréstimos | Dragon Ball</title>
 
-    <!-- Manifest PWA (gerado dinamicamente) -->
+    <!-- Manifest PWA -->
     <script>
         (function() {
             const manifest = {
@@ -28,7 +28,6 @@
                     type: 'image/svg+xml'
                 }]
             };
-
             const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
             const manifestURL = URL.createObjectURL(blob);
             const link = document.createElement('link');
@@ -36,10 +35,9 @@
             link.href = manifestURL;
             document.head.appendChild(link);
 
-            // Service Worker para cache offline
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'caixinha-dbz-v1';
+                    const CACHE_NAME = 'caixinha-dbz-v2';
                     self.addEventListener('install', event => {
                         event.waitUntil(
                             caches.open(CACHE_NAME).then(cache => cache.addAll(['/']))
@@ -56,7 +54,6 @@
                 navigator.serviceWorker.register(swURL).catch(() => {});
             }
 
-            // Botão de instalação PWA
             let deferredPrompt;
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
@@ -136,7 +133,6 @@
             -webkit-user-select: none;
         }
 
-        /* Nuvens decorativas */
         body::before {
             content: '☁️      ☁️';
             position: fixed;
@@ -178,7 +174,6 @@
             outline: 2px solid #FF8C00;
         }
 
-        /* ===== HEADER ===== */
         .card-header {
             background: linear-gradient(135deg, #FF6B00 0%, #FF4500 30%, #FFA500 100%);
             padding: 24px 20px 20px;
@@ -287,7 +282,6 @@
             transform: scale(0.95);
         }
 
-        /* ===== BODY ===== */
         .card-body {
             padding: 20px 20px 24px;
             background: #fffef9;
@@ -295,7 +289,6 @@
                 radial-gradient(circle at 90% 10%, rgba(255, 107, 0, 0.06) 0%, transparent 20%);
         }
 
-        /* ===== TABS ===== */
         .tabs {
             display: flex;
             gap: 4px;
@@ -346,7 +339,6 @@
             }
         }
 
-        /* ===== FORMULÁRIOS ===== */
         .form-row {
             display: flex;
             gap: 12px;
@@ -462,7 +454,6 @@
             color: #FF6B00;
         }
 
-        /* ===== BOTÕES ===== */
         .btn {
             padding: 11px 18px;
             border: none;
@@ -510,11 +501,7 @@
             border-color: #FF0000;
             box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
         }
-        .btn-danger:active {
-            background: linear-gradient(180deg, #B71C1C 0%, #C62828 100%);
-        }
 
-        /* ===== LISTA DE CLIENTES ===== */
         .client-list {
             list-style: none;
             display: flex;
@@ -559,12 +546,7 @@
         .client-tag.selected .remove-client {
             color: rgba(255, 255, 255, 0.9);
         }
-        .client-tag .remove-client:active {
-            opacity: 1;
-            color: var(--danger);
-        }
 
-        /* ===== CARDS DE EMPRÉSTIMO ===== */
         .loan-card {
             background: #fff;
             border: 2px solid #FFB347;
@@ -610,7 +592,6 @@
             font-weight: 800;
             color: var(--text);
             font-size: 0.9rem;
-            letter-spacing: -0.1px;
         }
         .loan-badge {
             font-size: 0.7rem;
@@ -628,11 +609,6 @@
             font-size: 0.78rem;
             color: var(--text-light);
             font-weight: 500;
-        }
-        .loan-details span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
         .installments-mini {
             display: flex;
@@ -654,16 +630,13 @@
             color: #FF6B00;
             cursor: pointer;
             transition: var(--transition);
-            font-family: inherit;
         }
         .installment-dot.paid {
             background: #00B894;
             border-color: #00B894;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 184, 148, 0.4);
         }
 
-        /* ===== PARCELAS ===== */
         .resumo-cards {
             display: flex;
             gap: 10px;
@@ -762,7 +735,6 @@
             opacity: 0.7;
         }
 
-        /* ===== FOOTER ===== */
         .card-footer {
             text-align: center;
             padding: 8px 20px 14px;
@@ -773,11 +745,23 @@
             border-top: 1px solid #FFE0C0;
         }
 
+        .saved-indicator {
+            display: inline-block;
+            background: #00B894;
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .saved-indicator.show {
+            opacity: 1;
+        }
+
         ::-webkit-scrollbar {
             width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
             background: #FFB347;
@@ -811,7 +795,6 @@
 <body>
     <div class="app-container">
         <div class="card">
-            <!-- HEADER -->
             <div class="card-header">
                 <div class="icon-wrapper">⭐</div>
                 <h1>Caixinha do Dragão</h1>
@@ -819,19 +802,17 @@
                 <div>
                     <span class="badge" id="globalResumo">🐉 Gerencie clientes e parcelas</span>
                     <button class="install-btn" id="installBtn" onclick="installApp()">📲 Instalar App</button>
+                    <span class="saved-indicator" id="savedIndicator">💾 Salvo!</span>
                 </div>
             </div>
 
-            <!-- BODY -->
             <div class="card-body">
-                <!-- TABS -->
                 <div class="tabs">
                     <button class="tab active" data-tab="tab-clientes">👥 Guerreiros</button>
                     <button class="tab" data-tab="tab-emprestimos">📋 Missões</button>
                     <button class="tab" data-tab="tab-parcelas">💳 Esferas</button>
                 </div>
 
-                <!-- PAINEL CLIENTES -->
                 <div class="panel active" id="tab-clientes">
                     <div class="form-row">
                         <div class="form-group" style="flex:2;">
@@ -855,7 +836,6 @@
                     </div>
                 </div>
 
-                <!-- PAINEL EMPRÉSTIMOS -->
                 <div class="panel" id="tab-emprestimos">
                     <div id="noClientWarning" style="text-align:center; padding:30px; color:var(--text-light); background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
                         ⚠️ Selecione um guerreiro na aba <strong>Guerreiros</strong> para continuar.
@@ -907,7 +887,6 @@
                     </div>
                 </div>
 
-                <!-- PAINEL PARCELAS -->
                 <div class="panel" id="tab-parcelas">
                     <div id="noLoanSelected" style="text-align:center; padding:30px; color:var(--text-light); background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
                         🗂️ Selecione uma missão na aba <strong>Missões</strong> para ver as esferas.
@@ -920,15 +899,55 @@
                 </div>
             </div>
 
-            <!-- FOOTER -->
             <div class="card-footer">
-                🐉 App completo com tema Dragon Ball • Clientes, missões e esferas • Funciona offline
+                🐉 App completo • Dados salvos automaticamente • Funciona offline
             </div>
         </div>
     </div>
 
     <script>
         (function() {
+            // ============ STORAGE ============
+            const STORAGE_KEY = 'caixinha_dragon_ball_data';
+
+            function salvarDados() {
+                const data = {
+                    clientes: clientes,
+                    emprestimos: emprestimos,
+                    nextLoanId: nextLoanId
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                mostrarIndicadorSalvo();
+            }
+
+            function carregarDados() {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    try {
+                        const data = JSON.parse(saved);
+                        clientes = data.clientes || [];
+                        emprestimos = data.emprestimos || [];
+                        nextLoanId = data.nextLoanId || 1;
+                        // Converte strings de data de volta para objetos Date
+                        emprestimos.forEach(emp => {
+                            emp.parcelas.forEach(p => {
+                                if (typeof p.data === 'string') p.data = new Date(p.data);
+                            });
+                        });
+                    } catch (e) {
+                        console.log('Erro ao carregar dados salvos');
+                    }
+                }
+            }
+
+            function mostrarIndicadorSalvo() {
+                const indicator = document.getElementById('savedIndicator');
+                if (indicator) {
+                    indicator.classList.add('show');
+                    setTimeout(() => indicator.classList.remove('show'), 1500);
+                }
+            }
+
             // ============ ESTADO ============
             let clientes = [];
             let selectedClientIndex = null;
@@ -1053,6 +1072,7 @@
                 if (selectedClientIndex === idx) selectedClientIndex = null;
                 else if (selectedClientIndex > idx) selectedClientIndex--;
                 if (selectedLoanId && !findLoanById(selectedLoanId)) selectedLoanId = null;
+                salvarDados();
                 renderClientes();
                 renderLoanList();
                 updateParcelaPanel();
@@ -1067,6 +1087,7 @@
                 }
                 clientes.push({ nome });
                 newClientInput.value = '';
+                salvarDados();
                 renderClientes();
             }
 
@@ -1118,6 +1139,7 @@
                 emprestimos.push(novo);
                 selectedLoanId = novo.id;
                 loanValorInput.value = '';
+                salvarDados();
                 renderLoanList();
                 updateParcelaPanel();
                 switchTab('tab-parcelas');
@@ -1212,6 +1234,7 @@
                 const parcela = loan.parcelas.find(p => p.numero === parcelaNum);
                 if (parcela) {
                     parcela.pago = !parcela.pago;
+                    salvarDados();
                     updateParcelaPanel();
                     renderLoanList();
                     updateGlobalResumo();
@@ -1254,6 +1277,8 @@
                 inp.addEventListener('keydown', e => { if (e.key === 'Enter') criarEmprestimo(); });
             });
 
+            // ============ INIT ============
+            carregarDados();
             renderClientes();
             updateGlobalResumo();
         })();
