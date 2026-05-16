@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#6c5ce7">
+    <meta name="theme-color" content="#FF6B00">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Caixinha">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💎</text></svg>">
-    <title>Caixinha de Empréstimos</title>
+    <meta name="apple-mobile-web-app-title" content="Caixinha DBZ">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⭐</text></svg>">
+    <title>Caixinha de Empréstimos | Dragon Ball</title>
 
     <!-- Manifest PWA (gerado dinamicamente) -->
     <script>
         (function() {
             const manifest = {
-                name: 'Caixinha de Empréstimos',
-                short_name: 'Caixinha',
-                description: 'Gerencie empréstimos com clientes e parcelas',
+                name: 'Caixinha de Empréstimos DBZ',
+                short_name: 'Caixinha DBZ',
+                description: 'Gerencie empréstimos com tema Dragon Ball',
                 start_url: location.href,
                 display: 'standalone',
                 orientation: 'portrait',
-                background_color: '#f8f9fb',
-                theme_color: '#6c5ce7',
+                background_color: '#FFF5E6',
+                theme_color: '#FF6B00',
                 icons: [{
-                    src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#6c5ce7"/><text x="50" y="65" font-size="55" text-anchor="middle" fill="white">💎</text></svg>'),
+                    src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FF6B00"/><text x="50" y="65" font-size="55" text-anchor="middle" fill="white">⭐</text></svg>'),
                     sizes: '100x100',
                     type: 'image/svg+xml'
                 }]
@@ -39,7 +39,7 @@
             // Service Worker para cache offline
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE_NAME = 'caixinha-v2';
+                    const CACHE_NAME = 'caixinha-dbz-v1';
                     self.addEventListener('install', event => {
                         event.waitUntil(
                             caches.open(CACHE_NAME).then(cache => cache.addAll(['/']))
@@ -82,24 +82,24 @@
 
     <style>
         :root {
-            --bg: #f8f9fb;
+            --bg: #FFF5E6;
             --card-bg: #ffffff;
-            --primary: #6c5ce7;
-            --primary-light: #a29bfe;
-            --primary-dark: #4a3db6;
-            --secondary: #fd79a8;
-            --gold: #fdcb6e;
-            --gold-light: #ffeaa7;
-            --text: #2d3436;
-            --text-light: #636e72;
-            --border: #e0e4e8;
-            --success: #00b894;
-            --danger: #d63031;
-            --warning: #e17055;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
-            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.16);
+            --primary: #FF6B00;
+            --primary-light: #FFA500;
+            --primary-dark: #CC5500;
+            --secondary: #1E90FF;
+            --gold: #FFD700;
+            --gold-light: #FFF0A0;
+            --text: #2C1810;
+            --text-light: #5A3E2B;
+            --border: #F0C080;
+            --success: #00B894;
+            --danger: #E63946;
+            --warning: #FFAA00;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+            --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.18);
             --radius-xs: 8px;
             --radius-sm: 12px;
             --radius: 16px;
@@ -115,16 +115,20 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(160deg, #f0f2f8 0%, #fafaff 30%, #f5f6fd 70%, #f0f2f8 100%);
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background: #FFF5E6;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(30, 144, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.06) 0%, transparent 50%);
             background-attachment: fixed;
             min-height: 100vh;
             min-height: -webkit-fill-available;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            padding-bottom: calc(16px + var(--safe-bottom));
+            padding: 12px;
+            padding-bottom: calc(12px + var(--safe-bottom));
             position: relative;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
@@ -132,34 +136,37 @@
             -webkit-user-select: none;
         }
 
-        body::before,
-        body::after {
-            content: '';
+        /* Nuvens decorativas */
+        body::before {
+            content: '☁️      ☁️';
             position: fixed;
-            border-radius: 50%;
+            top: 20px;
+            left: 5%;
+            font-size: 40px;
+            opacity: 0.12;
             pointer-events: none;
             z-index: 0;
-        }
-        body::before {
-            top: -200px;
-            right: -200px;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(108, 92, 231, 0.04) 0%, rgba(253, 121, 168, 0.03) 40%, transparent 70%);
+            letter-spacing: 60px;
+            white-space: pre;
         }
         body::after {
-            bottom: -150px;
-            left: -150px;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(253, 203, 110, 0.05) 0%, rgba(0, 184, 148, 0.03) 50%, transparent 70%);
+            content: '☁️      ☁️';
+            position: fixed;
+            bottom: 40px;
+            right: 3%;
+            font-size: 50px;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+            letter-spacing: 80px;
+            white-space: pre;
         }
 
         .app-container {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 680px;
+            max-width: 640px;
         }
 
         .card {
@@ -167,145 +174,158 @@
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-xl);
             overflow: hidden;
-            border: 1px solid rgba(108, 92, 231, 0.08);
+            border: 3px solid #FFD700;
+            outline: 2px solid #FF8C00;
         }
 
         /* ===== HEADER ===== */
         .card-header {
-            background: linear-gradient(135deg, #6c5ce7 0%, #4a3db6 30%, #a29bfe 100%);
-            padding: 28px 24px 22px;
+            background: linear-gradient(135deg, #FF6B00 0%, #FF4500 30%, #FFA500 100%);
+            padding: 24px 20px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
-        }
-        .card-header::before,
-        .card-header::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            background: rgba(255, 255, 255, 0.06);
+            border-bottom: 3px solid #FFD700;
         }
         .card-header::before {
-            top: -60px;
-            right: -60px;
-            width: 180px;
-            height: 180px;
+            content: '⭐⭐⭐';
+            position: absolute;
+            top: 8px;
+            left: 15px;
+            font-size: 18px;
+            letter-spacing: 6px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+            color: #FFD700;
         }
         .card-header::after {
-            bottom: -50px;
-            left: -40px;
-            width: 140px;
-            height: 140px;
-            background: rgba(255, 255, 255, 0.04);
+            content: '⭐⭐';
+            position: absolute;
+            bottom: 8px;
+            right: 20px;
+            font-size: 16px;
+            letter-spacing: 5px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+            color: #FFD700;
         }
         .card-header .icon-wrapper {
             display: inline-block;
-            font-size: 44px;
-            margin-bottom: 8px;
-            animation: floatCoin 3s ease-in-out infinite;
+            font-size: 48px;
+            margin-bottom: 4px;
+            animation: floatStar 2.5s ease-in-out infinite;
             position: relative;
             z-index: 1;
-            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
         }
-        @keyframes floatCoin {
-            0%,
-            100% {
-                transform: translateY(0px) rotate(0deg);
+        @keyframes floatStar {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
             }
-            25% {
-                transform: translateY(-6px) rotate(-2deg);
+            30% {
+                transform: translateY(-8px) scale(1.15);
             }
-            50% {
-                transform: translateY(-2px) rotate(1deg);
-            }
-            75% {
-                transform: translateY(-8px) rotate(-1deg);
+            60% {
+                transform: translateY(-2px) scale(1.05);
             }
         }
         .card-header h1 {
             color: #fff;
             font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: -0.4px;
+            font-weight: 900;
+            letter-spacing: -0.3px;
             position: relative;
             z-index: 1;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            font-family: 'Impact', 'Arial Black', sans-serif;
         }
         .card-header .subtitle {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.85rem;
-            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            margin-top: 2px;
             position: relative;
             z-index: 1;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         .badge {
             display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-weight: 700;
-            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            color: #FFD700;
+            font-weight: 800;
+            font-size: 0.72rem;
             padding: 5px 14px;
             border-radius: 20px;
-            margin-top: 8px;
+            margin-top: 6px;
             backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid #FFD700;
             position: relative;
             z-index: 1;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px black;
         }
         .install-btn {
             display: none;
-            background: rgba(255, 255, 255, 0.25);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            font-weight: 700;
-            font-size: 0.75rem;
-            padding: 6px 14px;
+            background: #FFD700;
+            color: #000;
+            border: 2px solid #000;
+            font-weight: 800;
+            font-size: 0.7rem;
+            padding: 5px 12px;
             border-radius: 20px;
             margin-left: 8px;
             cursor: pointer;
-            backdrop-filter: blur(4px);
             transition: var(--transition);
             vertical-align: middle;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.3px;
         }
         .install-btn:active {
-            background: rgba(255, 255, 255, 0.4);
+            background: #FFA500;
+            transform: scale(0.95);
         }
 
         /* ===== BODY ===== */
         .card-body {
-            padding: 24px 24px 28px;
-            background: #fdfdfd;
+            padding: 20px 20px 24px;
+            background: #fffef9;
+            background-image: radial-gradient(circle at 10% 90%, rgba(255, 215, 0, 0.06) 0%, transparent 20%),
+                radial-gradient(circle at 90% 10%, rgba(255, 107, 0, 0.06) 0%, transparent 20%);
         }
 
         /* ===== TABS ===== */
         .tabs {
             display: flex;
             gap: 4px;
-            margin-bottom: 22px;
-            background: #f5f6fa;
+            margin-bottom: 20px;
+            background: #FFF0D0;
             border-radius: var(--radius-sm);
             padding: 4px;
+            border: 2px solid #FFB347;
         }
         .tab {
             flex: 1;
-            padding: 10px 8px;
-            font-weight: 600;
-            font-size: 0.82rem;
+            padding: 9px 6px;
+            font-weight: 700;
+            font-size: 0.78rem;
             cursor: pointer;
             border-radius: 10px;
             background: transparent;
-            color: var(--text-light);
+            color: #6B4226;
             border: none;
             transition: var(--transition);
             text-align: center;
             white-space: nowrap;
+            letter-spacing: 0.2px;
         }
         .tab.active {
-            background: #fff;
-            color: var(--primary);
-            box-shadow: var(--shadow-sm);
-            font-weight: 700;
+            background: #FF6B00;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+            font-weight: 800;
+            border: 2px solid #FFD700;
         }
 
         .panel {
@@ -330,7 +350,7 @@
         .form-row {
             display: flex;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
         }
         .form-row .form-group {
@@ -339,25 +359,25 @@
             margin-bottom: 0;
         }
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .form-group label {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text);
-            margin-bottom: 6px;
-            font-size: 0.8rem;
+            margin-bottom: 5px;
+            font-size: 0.78rem;
             text-transform: uppercase;
-            opacity: 0.8;
-            letter-spacing: 0.2px;
+            opacity: 0.9;
+            letter-spacing: 0.3px;
         }
         .input-wrapper,
         .date-wrapper,
         .select-wrapper {
-            background: #f9fafc;
-            border: 1.5px solid var(--border);
+            background: #fff;
+            border: 2px solid #FFB347;
             border-radius: var(--radius-xs);
             transition: var(--transition);
             display: flex;
@@ -368,58 +388,53 @@
         .input-wrapper:focus-within,
         .date-wrapper:focus-within,
         .select-wrapper:focus-within {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.06);
-            background: #fff;
+            border-color: #FF6B00;
+            box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
+            background: #fffef5;
         }
         .input-wrapper .prefix {
             padding: 0 6px 0 12px;
             font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-light);
+            font-weight: 800;
+            color: #FF6B00;
         }
         .input-wrapper input {
             flex: 1;
             border: none;
             background: transparent;
-            padding: 12px 10px 12px 2px;
-            font-size: 0.95rem;
+            padding: 11px 10px 11px 2px;
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text);
             outline: none;
             font-family: inherit;
         }
         .input-wrapper input::placeholder {
-            color: #b0b8c1;
+            color: #C4A882;
             font-weight: 400;
-            font-size: 0.85rem;
         }
         .input-wrapper.porcentagem .sufix {
             padding: 0 10px 0 4px;
             font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-light);
+            font-weight: 800;
+            color: #FF6B00;
         }
         .date-wrapper .calendar-icon {
             padding: 0 6px 0 12px;
             font-size: 1rem;
-            color: var(--text-light);
+            color: var(--secondary);
         }
         .date-wrapper input[type="date"] {
             flex: 1;
             border: none;
             background: transparent;
-            padding: 12px 10px 12px 2px;
-            font-size: 0.9rem;
+            padding: 11px 10px 11px 2px;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text);
             outline: none;
             font-family: inherit;
             cursor: pointer;
-        }
-        .date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-            opacity: 0.6;
         }
         .select-wrapper {
             position: relative;
@@ -428,8 +443,8 @@
             width: 100%;
             border: none;
             background: transparent;
-            padding: 12px 34px 12px 12px;
-            font-size: 0.9rem;
+            padding: 11px 30px 11px 12px;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text);
             outline: none;
@@ -444,54 +459,59 @@
             transform: translateY(-50%);
             pointer-events: none;
             font-size: 0.8rem;
-            color: var(--text-light);
+            color: #FF6B00;
         }
 
         /* ===== BOTÕES ===== */
         .btn {
-            padding: 12px 20px;
+            padding: 11px 18px;
             border: none;
             border-radius: var(--radius-xs);
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 0.88rem;
+            font-weight: 800;
             cursor: pointer;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background: var(--primary);
+            background: linear-gradient(180deg, #FF8C00 0%, #FF6B00 100%);
             color: #fff;
-            box-shadow: 0 4px 14px rgba(108, 92, 231, 0.25);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
             font-family: inherit;
+            border: 2px solid #FFD700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
         .btn:active {
             transform: scale(0.97);
-            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.2);
+            box-shadow: 0 2px 6px rgba(255, 107, 0, 0.3);
+            background: linear-gradient(180deg, #CC5500 0%, #FF6B00 100%);
         }
         .btn-small {
-            padding: 7px 14px;
-            font-size: 0.8rem;
+            padding: 6px 12px;
+            font-size: 0.78rem;
             border-radius: 8px;
         }
         .btn-outline {
             background: #fff;
-            border: 1.5px solid var(--border);
-            color: var(--text);
-            box-shadow: var(--shadow-sm);
+            border: 2px solid #FFB347;
+            color: #6B4226;
+            box-shadow: none;
+            text-shadow: none;
         }
         .btn-outline:active {
-            background: #f0f2f5;
-            border-color: var(--primary-light);
-            color: var(--primary);
+            background: #FFF0D0;
+            border-color: #FF6B00;
+            color: #FF6B00;
         }
         .btn-danger {
-            background: var(--danger);
-            box-shadow: 0 4px 14px rgba(214, 48, 49, 0.2);
+            background: linear-gradient(180deg, #E63946 0%, #C62828 100%);
+            border-color: #FF0000;
+            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
         }
         .btn-danger:active {
-            background: #b71c1c;
+            background: linear-gradient(180deg, #B71C1C 0%, #C62828 100%);
         }
 
         /* ===== LISTA DE CLIENTES ===== */
@@ -502,16 +522,16 @@
             gap: 8px;
             max-height: 140px;
             overflow-y: auto;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             padding: 4px 0;
         }
         .client-tag {
             background: #fff;
-            border: 1.5px solid var(--border);
+            border: 2px solid #FFB347;
             border-radius: 24px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            padding: 7px 14px;
+            font-size: 0.82rem;
+            font-weight: 700;
             color: var(--text);
             display: flex;
             align-items: center;
@@ -524,37 +544,33 @@
             transform: scale(0.96);
         }
         .client-tag.selected {
-            background: var(--primary);
+            background: #FF6B00;
             color: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+            border-color: #FFD700;
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
         }
         .client-tag .remove-client {
-            color: #b2bec3;
+            color: #C4A882;
             font-weight: bold;
             cursor: pointer;
-            opacity: 0.7;
+            opacity: 0.8;
             font-size: 1rem;
-            transition: var(--transition);
         }
         .client-tag.selected .remove-client {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
         }
         .client-tag .remove-client:active {
             opacity: 1;
             color: var(--danger);
         }
-        .client-tag.selected .remove-client:active {
-            color: #fff;
-        }
 
         /* ===== CARDS DE EMPRÉSTIMO ===== */
         .loan-card {
             background: #fff;
-            border: 1.5px solid var(--border);
+            border: 2px solid #FFB347;
             border-radius: var(--radius-sm);
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
             cursor: pointer;
             transition: var(--transition);
             box-shadow: var(--shadow-sm);
@@ -562,26 +578,25 @@
             overflow: hidden;
         }
         .loan-card::after {
-            content: '';
+            content: '⭐';
             position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            border-radius: 0 4px 4px 0;
-            background: transparent;
+            right: 10px;
+            top: 10px;
+            font-size: 1.2rem;
+            opacity: 0;
             transition: var(--transition);
+            color: #FFD700;
         }
         .loan-card:active {
             transform: scale(0.98);
         }
         .loan-card.selected {
-            border-color: var(--primary);
-            background: #fafaff;
-            box-shadow: 0 8px 30px rgba(108, 92, 231, 0.15);
+            border-color: #FF6B00;
+            background: #FFF8F0;
+            box-shadow: 0 8px 24px rgba(255, 107, 0, 0.2);
         }
         .loan-card.selected::after {
-            background: var(--primary);
+            opacity: 1;
         }
         .loan-header {
             display: flex;
@@ -589,28 +604,28 @@
             align-items: flex-start;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .loan-title {
-            font-weight: 700;
+            font-weight: 800;
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             letter-spacing: -0.1px;
         }
         .loan-badge {
-            font-size: 0.75rem;
-            padding: 4px 10px;
+            font-size: 0.7rem;
+            padding: 3px 10px;
             border-radius: 12px;
             font-weight: 700;
-            background: #f0f2f5;
-            color: var(--text-light);
-            letter-spacing: 0.2px;
+            background: #FFF0D0;
+            color: #6B4226;
+            border: 1px solid #FFB347;
         }
         .loan-details {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--text-light);
             font-weight: 500;
         }
@@ -621,34 +636,31 @@
         }
         .installments-mini {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             flex-wrap: wrap;
             margin-top: 10px;
         }
         .installment-dot {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            border: 2px solid #dfe6e9;
+            border: 2px solid #FFB347;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.68rem;
-            font-weight: 700;
+            font-size: 0.65rem;
+            font-weight: 800;
             background: #fff;
-            color: #b2bec3;
+            color: #FF6B00;
             cursor: pointer;
             transition: var(--transition);
             font-family: inherit;
         }
         .installment-dot.paid {
-            background: var(--success);
-            border-color: var(--success);
+            background: #00B894;
+            border-color: #00B894;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
-        }
-        .installment-dot:active {
-            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(0, 184, 148, 0.4);
         }
 
         /* ===== PARCELAS ===== */
@@ -656,98 +668,96 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .resumo-card {
             flex: 1;
-            min-width: 120px;
+            min-width: 110px;
             background: #fff;
-            border: 1.5px solid var(--border);
+            border: 2px solid #FFB347;
             border-radius: var(--radius-sm);
-            padding: 14px;
+            padding: 12px;
             box-shadow: var(--shadow-sm);
             text-align: center;
-            transition: var(--transition);
         }
         .resumo-card .label {
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-size: 0.65rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
             color: var(--text-light);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .resumo-card .value {
-            font-size: 1.2rem;
-            font-weight: 800;
+            font-size: 1.1rem;
+            font-weight: 900;
             color: var(--text);
-            letter-spacing: -0.3px;
+        }
+        .resumo-card.destaque {
+            border-color: #FF6B00;
+            background: #FFF8F0;
         }
         .resumo-card.destaque .value {
-            color: var(--primary);
+            color: #FF6B00;
         }
         .resumo-card.success .value {
-            color: var(--success);
+            color: #00B894;
         }
 
         .parcela-detail-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 12px;
-            border-bottom: 1px solid #f2f4f7;
-            font-size: 0.88rem;
+            padding: 10px;
+            border-bottom: 1px solid #FFE0C0;
+            font-size: 0.85rem;
             transition: var(--transition);
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-bottom: 2px;
         }
         .parcela-detail-row:last-child {
             border-bottom: none;
         }
         .parcela-detail-row:active {
-            background: #f5f6fa;
+            background: #FFF5E6;
         }
         .parcela-detail-row.paid {
-            background: #f5fdf9;
+            background: #E6FFF5;
         }
         .parcela-detail-row .check {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #dfe6e9;
-            border-radius: 8px;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #FFB347;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
             flex-shrink: 0;
             background: #fff;
-            transition: var(--transition);
             color: transparent;
         }
         .parcela-detail-row.paid .check {
-            background: var(--success);
-            border-color: var(--success);
+            background: #00B894;
+            border-color: #00B894;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 184, 148, 0.25);
         }
         .parcela-detail-row .info {
             flex: 1;
         }
         .parcela-detail-row .info .data {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-light);
-            font-weight: 500;
         }
         .parcela-detail-row .valor {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 0.95rem;
-            letter-spacing: -0.2px;
+            font-weight: 800;
+            color: #FF6B00;
+            font-size: 0.9rem;
         }
         .parcela-detail-row.paid .valor {
-            color: #55a38a;
+            color: #00B894;
             text-decoration: line-through;
             opacity: 0.7;
         }
@@ -755,52 +765,45 @@
         /* ===== FOOTER ===== */
         .card-footer {
             text-align: center;
-            padding: 8px 24px 16px;
-            font-size: 0.7rem;
-            color: #b0b8c1;
-            font-weight: 500;
-            background: #fdfdfd;
+            padding: 8px 20px 14px;
+            font-size: 0.68rem;
+            color: #B8A090;
+            font-weight: 600;
+            background: #fffef9;
+            border-top: 1px solid #FFE0C0;
         }
 
-        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
             width: 4px;
-            height: 4px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: #d0d5dd;
+            background: #FFB347;
             border-radius: 4px;
         }
 
-        /* ===== RESPONSIVO ===== */
         @media (max-width: 480px) {
             body {
-                padding: 8px;
-                padding-bottom: calc(8px + var(--safe-bottom));
+                padding: 4px;
+                padding-bottom: calc(4px + var(--safe-bottom));
             }
             .card-body {
-                padding: 18px 14px 20px;
+                padding: 16px 10px 18px;
             }
             .card-header {
-                padding: 22px 14px 18px;
+                padding: 18px 12px 14px;
             }
             .card-header h1 {
                 font-size: 1.3rem;
             }
             .form-row {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
             }
             .resumo-cards {
                 flex-direction: column;
-                gap: 8px;
-            }
-            .tab {
-                font-size: 0.75rem;
-                padding: 8px 4px;
             }
         }
     </style>
@@ -810,11 +813,11 @@
         <div class="card">
             <!-- HEADER -->
             <div class="card-header">
-                <div class="icon-wrapper">💎</div>
-                <h1>Caixinha de Empréstimos</h1>
-                <p class="subtitle">Gestão inteligente dos seus empréstimos</p>
+                <div class="icon-wrapper">⭐</div>
+                <h1>Caixinha do Dragão</h1>
+                <p class="subtitle">Empréstimos com poder de luta! ⚡</p>
                 <div>
-                    <span class="badge" id="globalResumo">✨ Gerencie clientes e parcelas</span>
+                    <span class="badge" id="globalResumo">🐉 Gerencie clientes e parcelas</span>
                     <button class="install-btn" id="installBtn" onclick="installApp()">📲 Instalar App</button>
                 </div>
             </div>
@@ -823,18 +826,18 @@
             <div class="card-body">
                 <!-- TABS -->
                 <div class="tabs">
-                    <button class="tab active" data-tab="tab-clientes">👥 Clientes</button>
-                    <button class="tab" data-tab="tab-emprestimos">📋 Empréstimos</button>
-                    <button class="tab" data-tab="tab-parcelas">💳 Parcelas</button>
+                    <button class="tab active" data-tab="tab-clientes">👥 Guerreiros</button>
+                    <button class="tab" data-tab="tab-emprestimos">📋 Missões</button>
+                    <button class="tab" data-tab="tab-parcelas">💳 Esferas</button>
                 </div>
 
                 <!-- PAINEL CLIENTES -->
                 <div class="panel active" id="tab-clientes">
                     <div class="form-row">
                         <div class="form-group" style="flex:2;">
-                            <label>👤 Nome do cliente</label>
+                            <label>👤 Nome do Guerreiro</label>
                             <div class="input-wrapper">
-                                <input type="text" id="newClientInput" placeholder="Digite o nome do cliente..." maxlength="30" autocomplete="off">
+                                <input type="text" id="newClientInput" placeholder="Ex: Goku, Vegeta..." maxlength="30" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group" style="flex:0; display:flex; align-items:flex-end;">
@@ -842,11 +845,11 @@
                         </div>
                     </div>
                     <ul class="client-list" id="clientList"></ul>
-                    <p style="font-size:0.78rem; color:var(--text-light); margin-top:2px;">
-                        Toque em um cliente para selecioná‑lo e gerenciar seus empréstimos.
+                    <p style="font-size:0.75rem; color:var(--text-light); margin-top:2px;">
+                        Selecione um guerreiro para gerenciar seus empréstimos.
                     </p>
-                    <div id="selectedClientInfo" style="margin-top:14px; padding:12px 14px; background:#fafaff; border-radius:10px; border:1.5px solid #e8e8f0; display:none;">
-                        <strong style="color:var(--primary);">✅ Cliente selecionado:</strong>
+                    <div id="selectedClientInfo" style="margin-top:12px; padding:10px 14px; background:#FFF8F0; border-radius:10px; border:2px solid #FFB347; display:none;">
+                        <strong style="color:#FF6B00;">⭐ Guerreiro selecionado:</strong>
                         <span id="selectedClientName" style="font-weight:700;"></span>
                         <button class="btn btn-small btn-outline" id="clearSelectedClient" style="margin-left:8px;">Limpar</button>
                     </div>
@@ -854,20 +857,20 @@
 
                 <!-- PAINEL EMPRÉSTIMOS -->
                 <div class="panel" id="tab-emprestimos">
-                    <div id="noClientWarning" style="text-align:center; padding:30px; color:var(--text-light); background:#f9fafc; border-radius:12px;">
-                        ⚠️ Selecione um cliente na aba <strong>Clientes</strong> para continuar.
+                    <div id="noClientWarning" style="text-align:center; padding:30px; color:var(--text-light); background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
+                        ⚠️ Selecione um guerreiro na aba <strong>Guerreiros</strong> para continuar.
                     </div>
                     <div id="loanFormContainer" style="display:none;">
                         <div class="form-row">
                             <div class="form-group">
-                                <label>💵 Valor do empréstimo</label>
+                                <label>💵 Valor da missão</label>
                                 <div class="input-wrapper">
                                     <span class="prefix">R$</span>
                                     <input type="text" id="loanValorInput" placeholder="Ex: 1000,00" inputmode="decimal" autocomplete="off">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>📊 Acréscimo</label>
+                                <label>📊 Acréscimo (%)</label>
                                 <div class="input-wrapper porcentagem">
                                     <input type="text" id="loanPorcentagemInput" value="20" placeholder="20" inputmode="decimal" autocomplete="off">
                                     <span class="sufix">%</span>
@@ -886,25 +889,19 @@
                                 <label>🔢 Parcelas</label>
                                 <div class="select-wrapper">
                                     <select id="loanParcelasSelect">
-                                        <option value="2">2x</option>
-                                        <option value="3" selected>3x</option>
-                                        <option value="4">4x</option>
-                                        <option value="5">5x</option>
-                                        <option value="6">6x</option>
-                                        <option value="8">8x</option>
-                                        <option value="10">10x</option>
-                                        <option value="12">12x</option>
+                                        <option value="2">2x</option><option value="3" selected>3x</option>
+                                        <option value="4">4x</option><option value="5">5x</option><option value="6">6x</option><option value="8">8x</option><option value="10">10x</option><option value="12">12x</option>
                                     </select>
                                     <span class="arrow">▾</span>
                                 </div>
                             </div>
                         </div>
                         <button class="btn" id="addLoanBtn" style="width:100%; margin-top:4px;">
-                            ✨ Criar Empréstimo para <span id="loanClientNameSpan"></span>
+                            ⚡ Criar Missão para <span id="loanClientNameSpan"></span>
                         </button>
-                        <hr style="margin:24px 0; border-color:#f0f2f5;">
-                        <h3 style="margin-bottom:14px; font-size:0.95rem; color:var(--text); display:flex; align-items:center; gap:6px;">
-                            📋 Empréstimos de <span id="loanListClientName" style="color:var(--primary);"></span>
+                        <hr style="margin:20px 0; border-color:#FFE0C0;">
+                        <h3 style="margin-bottom:12px; font-size:0.9rem; color:var(--text); display:flex; align-items:center; gap:6px;">
+                            📋 Missões de <span id="loanListClientName" style="color:#FF6B00;"></span>
                         </h3>
                         <div id="loanListContainer"></div>
                     </div>
@@ -912,20 +909,20 @@
 
                 <!-- PAINEL PARCELAS -->
                 <div class="panel" id="tab-parcelas">
-                    <div id="noLoanSelected" style="text-align:center; padding:30px; color:var(--text-light); background:#f9fafc; border-radius:12px;">
-                        🗂️ Selecione um empréstimo na aba <strong>Empréstimos</strong> para ver as parcelas.
+                    <div id="noLoanSelected" style="text-align:center; padding:30px; color:var(--text-light); background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
+                        🗂️ Selecione uma missão na aba <strong>Missões</strong> para ver as esferas.
                     </div>
                     <div id="parcelaDetailContainer" style="display:none;">
-                        <h3 style="margin-bottom:12px; font-size:0.95rem; color:var(--text);">💳 Parcelas do Empréstimo</h3>
+                        <h3 style="margin-bottom:10px; font-size:0.9rem; color:var(--text);">💳 Esferas da Missão</h3>
                         <div class="resumo-cards" id="parcelaResumo"></div>
-                        <div id="parcelaList" style="background:#fff; border:1.5px solid var(--border); border-radius:12px; overflow:hidden;"></div>
+                        <div id="parcelaList" style="background:#fff; border:2px solid #FFB347; border-radius:12px; overflow:hidden;"></div>
                     </div>
                 </div>
             </div>
 
             <!-- FOOTER -->
             <div class="card-footer">
-                🛡️ App completo • Clientes, empréstimos e parcelas • Funciona offline
+                🐉 App completo com tema Dragon Ball • Clientes, missões e esferas • Funciona offline
             </div>
         </div>
     </div>
@@ -1004,7 +1001,6 @@
                 return { totalParcelas, pagas, valorTotal, valorPago };
             }
 
-            // ============ DATA DEFAULT ============
             (function() {
                 const hoje = new Date();
                 hoje.setDate(hoje.getDate() + 30);
@@ -1014,7 +1010,6 @@
                 loanDataInput.value = `${ano}-${mes}-${dia}`;
             })();
 
-            // ============ RENDER ============
             function renderClientes() {
                 clientListEl.innerHTML = '';
                 clientes.forEach((c, idx) => {
@@ -1051,7 +1046,7 @@
             }
 
             function removerCliente(idx) {
-                if (!confirm(`Remover cliente "${clientes[idx].nome}" e todos os seus empréstimos?`)) return;
+                if (!confirm(`Remover guerreiro "${clientes[idx].nome}" e todas as suas missões?`)) return;
                 emprestimos = emprestimos.filter(e => e.clienteIndex !== idx);
                 emprestimos.forEach(e => { if (e.clienteIndex > idx) e.clienteIndex--; });
                 clientes.splice(idx, 1);
@@ -1067,7 +1062,7 @@
                 const nome = newClientInput.value.trim();
                 if (!nome) return;
                 if (clientes.some(c => c.nome.toLowerCase() === nome.toLowerCase())) {
-                    alert('Cliente já existe.');
+                    alert('Esse guerreiro já existe!');
                     return;
                 }
                 clientes.push({ nome });
@@ -1091,7 +1086,7 @@
 
             function criarEmprestimo() {
                 if (selectedClientIndex === null) {
-                    alert('Selecione um cliente primeiro.');
+                    alert('Selecione um guerreiro primeiro.');
                     switchTab('tab-clientes');
                     return;
                 }
@@ -1134,7 +1129,7 @@
                 if (selectedClientIndex === null) { loanListContainer.innerHTML = ''; return; }
                 const loans = emprestimos.filter(e => e.clienteIndex === selectedClientIndex);
                 if (loans.length === 0) {
-                    loanListContainer.innerHTML = '<p style="color:var(--text-light); padding:12px; text-align:center;">Nenhum empréstimo para este cliente ainda.</p>';
+                    loanListContainer.innerHTML = '<p style="color:var(--text-light); padding:12px; text-align:center;">Nenhuma missão para este guerreiro.</p>';
                     return;
                 }
                 loanListContainer.innerHTML = loans.map(l => {
@@ -1144,8 +1139,8 @@
                     return `
                     <div class="loan-card ${selectedLoanId === l.id ? 'selected' : ''}" data-loan-id="${l.id}">
                         <div class="loan-header">
-                            <span class="loan-title">💰 Empréstimo #${l.id} — ${formatarMoeda(l.valor)} +${pct}%</span>
-                            <span class="loan-badge">${s.pagas}/${s.totalParcelas} pagas</span>
+                            <span class="loan-title">🐉 Missão #${l.id} — ${formatarMoeda(l.valor)} +${pct}%</span>
+                            <span class="loan-badge">${s.pagas}/${s.totalParcelas} esferas</span>
                         </div>
                         <div class="loan-details">
                             <span>📅 ${dataFormatada}</span>
@@ -1153,7 +1148,7 @@
                             <span>📦 Total: ${formatarMoeda(s.valorTotal)}</span>
                         </div>
                         <div class="installments-mini">
-                            ${l.parcelas.map(p => `<div class="installment-dot ${p.pago ? 'paid' : ''}" title="Parcela ${p.numero}: ${formatarMoeda(p.valor)}">${p.numero}</div>`).join('')}
+                            ${l.parcelas.map(p => `<div class="installment-dot ${p.pago ? 'paid' : ''}" title="Esfera ${p.numero}: ${formatarMoeda(p.valor)}">${p.numero}</div>`).join('')}
                         </div>
                     </div>`;
                 }).join('');
@@ -1190,7 +1185,7 @@
                         <div class="value">${formatarMoeda(s.valorTotal)}</div>
                     </div>
                     <div class="resumo-card success">
-                        <div class="label">✅ Progresso</div>
+                        <div class="label">⭐ Progresso</div>
                         <div class="value">${s.pagas}/${s.totalParcelas}</div>
                     </div>
                 `;
@@ -1198,7 +1193,7 @@
                     <div class="parcela-detail-row ${p.pago ? 'paid' : ''}" data-parcela-num="${p.numero}">
                         <div class="check">${p.pago ? '✓' : ''}</div>
                         <div class="info">
-                            <div><strong>${p.numero}ª Parcela</strong></div>
+                            <div><strong>${p.numero}ª Esfera</strong></div>
                             <div class="data">📅 ${formatarData(p.data)}</div>
                         </div>
                         <div class="valor">${formatarMoeda(p.valor)}</div>
@@ -1228,10 +1223,9 @@
                 const totalEmprestimos = emprestimos.length;
                 let totalReceber = 0;
                 emprestimos.forEach(e => { totalReceber += e.parcelas.reduce((s, p) => s + p.valor, 0); });
-                globalResumo.textContent = `👥 ${totalClientes} clientes • 💰 ${totalEmprestimos} empréstimos • Total a receber: ${formatarMoeda(totalReceber)}`;
+                globalResumo.textContent = `👥 ${totalClientes} guerreiros • 💰 ${totalEmprestimos} missões • Total: ${formatarMoeda(totalReceber)}`;
             }
 
-            // ============ TABS ============
             function switchTab(tabId) {
                 tabs.forEach(t => t.classList.remove('active'));
                 panels.forEach(p => p.classList.remove('active'));
@@ -1246,7 +1240,6 @@
                 });
             });
 
-            // ============ EVENTOS ============
             addClientBtn.addEventListener('click', adicionarCliente);
             newClientInput.addEventListener('keydown', e => { if (e.key === 'Enter') adicionarCliente(); });
             clearSelectedClientBtn.addEventListener('click', () => {
@@ -1261,7 +1254,6 @@
                 inp.addEventListener('keydown', e => { if (e.key === 'Enter') criarEmprestimo(); });
             });
 
-            // ============ INIT ============
             renderClientes();
             updateGlobalResumo();
         })();
