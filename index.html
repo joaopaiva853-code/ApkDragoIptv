@@ -10,11 +10,13 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⭐</text></svg>">
     <title>Caixinha de Empréstimos | Dragon Ball</title>
 
+    <!-- Manifest PWA -->
     <script>
         (function() {
             const manifest = {
                 name: 'Caixinha de Empréstimos DBZ',
                 short_name: 'Caixinha DBZ',
+                description: 'Gerencie empréstimos com calendário e tema Dragon Ball',
                 start_url: location.href,
                 display: 'standalone',
                 orientation: 'portrait',
@@ -22,40 +24,55 @@
                 theme_color: '#FF6B00',
                 icons: [{
                     src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FF6B00"/><text x="50" y="65" font-size="55" text-anchor="middle" fill="white">⭐</text></svg>'),
-                    sizes: '100x100', type: 'image/svg+xml'
+                    sizes: '100x100',
+                    type: 'image/svg+xml'
                 }]
             };
+
             const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            const manifestURL = URL.createObjectURL(blob);
             const link = document.createElement('link');
             link.rel = 'manifest';
-            link.href = URL.createObjectURL(blob);
+            link.href = manifestURL;
             document.head.appendChild(link);
 
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
-                    const CACHE = 'caixinha-dbz-v4';
-                    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/']))));
-                    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-                `], { type: 'application/javascript' }))).catch(() => {});
+                const swCode = `
+                    const CACHE_NAME = 'caixinha-dbz-v2';
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME).then(cache => cache.addAll(['/']))
+                        );
+                    });
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request).then(response => response || fetch(event.request))
+                        );
+                    });
+                `;
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swURL = URL.createObjectURL(swBlob);
+                navigator.serviceWorker.register(swURL).catch(() => {});
             }
 
             let deferredPrompt;
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                const btn = document.getElementById('installBtn');
-                if (btn) btn.style.display = 'inline-flex';
+                const installBtn = document.getElementById('installBtn');
+                if (installBtn) installBtn.style.display = 'inline-flex';
             });
+
             window.installApp = function() {
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then(() => {
                         deferredPrompt = null;
-                        const btn = document.getElementById('installBtn');
-                        if (btn) btn.style.display = 'none';
+                        const installBtn = document.getElementById('installBtn');
+                        if (installBtn) installBtn.style.display = 'none';
                     });
                 } else {
-                    alert('Instalação disponível via navegador Chrome/Edge.');
+                    alert('A instalação não está disponível no momento. Tente acessar pelo navegador Chrome ou Edge.');
                 }
             };
         })();
@@ -63,258 +80,454 @@
 
     <style>
         :root {
-            --bg: #FFF5E6; --card-bg: #ffffff; --primary: #FF6B00; --primary-light: #FFA500;
-            --primary-dark: #CC5500; --secondary: #1E90FF; --gold: #FFD700; --gold-light: #FFF0A0;
-            --text: #2C1810; --text-light: #5A3E2B; --border: #F0C080; --success: #00B894;
-            --danger: #E63946; --warning: #FFAA00; --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.1); --shadow-lg: 0 16px 48px rgba(0,0,0,0.14);
-            --shadow-xl: 0 24px 64px rgba(0,0,0,0.18); --radius-xs: 8px; --radius-sm: 12px;
-            --radius: 16px; --radius-lg: 24px; --transition: 0.25s; --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --bg: #FFF5E6;
+            --card-bg: #ffffff;
+            --primary: #FF6B00;
+            --primary-light: #FFA500;
+            --primary-dark: #CC5500;
+            --secondary: #1E90FF;
+            --gold: #FFD700;
+            --gold-light: #FFF0A0;
+            --text: #2C1810;
+            --text-light: #5A3E2B;
+            --border: #F0C080;
+            --success: #00B894;
+            --danger: #E63946;
+            --warning: #FFAA00;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.14);
+            --shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.18);
+            --radius-xs: 8px;
+            --radius-sm: 12px;
+            --radius: 16px;
+            --radius-lg: 24px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
             background: #FFF5E6;
             background-image: radial-gradient(circle at 20% 80%, rgba(255,107,0,0.08) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(30,144,255,0.08) 0%, transparent 50%),
                 radial-gradient(circle at 50% 50%, rgba(255,215,0,0.06) 0%, transparent 50%);
-            background-attachment: fixed; min-height: 100vh; display: flex;
-            align-items: center; justify-content: center; padding: 12px;
-            padding-bottom: calc(12px + var(--safe-bottom)); overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent; user-select: none;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            padding-bottom: calc(12px + var(--safe-bottom));
+            position: relative;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .app-container { width: 100%; max-width: 640px; z-index: 1; }
+
+        body::before {
+            content: '☁️      ☁️';
+            position: fixed;
+            top: 20px; left: 5%;
+            font-size: 40px; opacity: 0.12;
+            pointer-events: none; z-index: 0;
+            letter-spacing: 60px; white-space: pre;
+        }
+        body::after {
+            content: '☁️      ☁️';
+            position: fixed;
+            bottom: 40px; right: 3%;
+            font-size: 50px; opacity: 0.1;
+            pointer-events: none; z-index: 0;
+            letter-spacing: 80px; white-space: pre;
+        }
+
+        .app-container {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 640px;
+        }
+
         .card {
-            background: var(--card-bg); border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl); overflow: hidden;
-            border: 3px solid #FFD700; outline: 2px solid #FF8C00;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            border: 3px solid #FFD700;
+            outline: 2px solid #FF8C00;
         }
+
         .card-header {
-            background: linear-gradient(135deg, #FF6B00, #FF4500, #FFA500);
-            padding: 24px 20px 20px; text-align: center; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, #FF6B00 0%, #FF4500 30%, #FFA500 100%);
+            padding: 24px 20px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
             border-bottom: 3px solid #FFD700;
         }
-        .card-header::before { content: '⭐⭐⭐'; position: absolute; top: 8px; left: 15px; font-size: 18px; opacity: 0.5; color: #FFD700; }
-        .card-header::after { content: '⭐⭐'; position: absolute; bottom: 8px; right: 20px; font-size: 16px; opacity: 0.5; color: #FFD700; }
-        .icon-wrapper {
-            font-size: 48px; animation: floatStar 2.5s infinite; display: inline-block;
+        .card-header::before {
+            content: '⭐⭐⭐'; position: absolute;
+            top: 8px; left: 15px;
+            font-size: 18px; letter-spacing: 6px;
+            pointer-events: none; z-index: 1;
+            opacity: 0.5; color: #FFD700;
+        }
+        .card-header::after {
+            content: '⭐⭐'; position: absolute;
+            bottom: 8px; right: 20px;
+            font-size: 16px; letter-spacing: 5px;
+            pointer-events: none; z-index: 1;
+            opacity: 0.5; color: #FFD700;
+        }
+        .card-header .icon-wrapper {
+            display: inline-block; font-size: 48px; margin-bottom: 4px;
+            animation: floatStar 2.5s ease-in-out infinite;
+            position: relative; z-index: 1;
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
         }
-        @keyframes floatStar { 0%,100%{transform: translateY(0) scale(1)} 30%{transform: translateY(-8px) scale(1.15)} 60%{transform: translateY(-2px) scale(1.05)} }
-        .card-header h1 { color: #fff; font-size: 1.5rem; font-weight: 900; font-family: 'Impact', sans-serif; text-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-        .subtitle { color: rgba(255,255,255,0.9); font-size: 0.8rem; font-weight: 600; }
+        @keyframes floatStar {
+            0%,100%{transform: translateY(0px) scale(1)}
+            30%{transform: translateY(-8px) scale(1.15)}
+            60%{transform: translateY(-2px) scale(1.05)}
+        }
+        .card-header h1 {
+            color: #fff; font-size: 1.5rem; font-weight: 900;
+            letter-spacing: -0.3px; position: relative; z-index: 1;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            font-family: 'Impact', 'Arial Black', sans-serif;
+        }
+        .card-header .subtitle {
+            color: rgba(255,255,255,0.9); font-size: 0.8rem;
+            margin-top: 2px; position: relative; z-index: 1;
+            font-weight: 600; letter-spacing: 0.5px;
+        }
         .badge {
-            background: rgba(0,0,0,0.3); color: #FFD700; font-weight: 800; font-size: 0.72rem;
-            padding: 5px 14px; border-radius: 20px; margin-top: 6px; border: 1px solid #FFD700;
             display: inline-block;
+            background: rgba(0,0,0,0.3); color: #FFD700;
+            font-weight: 800; font-size: 0.72rem;
+            padding: 5px 14px; border-radius: 20px;
+            margin-top: 6px; backdrop-filter: blur(6px);
+            border: 1px solid #FFD700; position: relative; z-index: 1;
+            letter-spacing: 0.5px; text-shadow: 0 1px 2px black;
         }
         .install-btn {
-            display: none; background: #FFD700; color: #000; border: 2px solid #000;
-            font-weight: 800; font-size: 0.7rem; padding: 5px 12px; border-radius: 20px;
-            margin-left: 8px; cursor: pointer; vertical-align: middle;
+            display: none;
+            background: #FFD700; color: #000;
+            border: 2px solid #000; font-weight: 800;
+            font-size: 0.7rem; padding: 5px 12px;
+            border-radius: 20px; margin-left: 8px;
+            cursor: pointer; transition: var(--transition);
+            vertical-align: middle;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            letter-spacing: 0.3px;
         }
-        .card-body { padding: 20px 20px 24px; background: #fffef9; }
+        .install-btn:active { background: #FFA500; transform: scale(0.95); }
+
+        .card-body {
+            padding: 20px 20px 24px;
+            background: #fffef9;
+            background-image: radial-gradient(circle at 10% 90%, rgba(255,215,0,0.06) 0%, transparent 20%),
+                radial-gradient(circle at 90% 10%, rgba(255,107,0,0.06) 0%, transparent 20%);
+        }
+
         .tabs {
-            display: flex; gap: 4px; margin-bottom: 20px; background: #FFF0D0;
-            border-radius: var(--radius-sm); padding: 4px; border: 2px solid #FFB347;
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: #FFF0D0; border-radius: var(--radius-sm);
+            padding: 4px; border: 2px solid #FFB347;
         }
         .tab {
-            flex: 1; padding: 9px 2px; font-weight: 700; font-size: 0.7rem; cursor: pointer;
-            border-radius: 10px; background: transparent; color: #6B4226; border: none;
-            text-align: center; transition: var(--transition);
+            flex: 1; padding: 9px 4px; font-weight: 700;
+            font-size: 0.75rem; cursor: pointer; border-radius: 10px;
+            background: transparent; color: #6B4226; border: none;
+            transition: var(--transition); text-align: center;
+            white-space: nowrap; letter-spacing: 0.2px;
         }
         .tab.active {
-            background: #FF6B00; color: #fff; box-shadow: 0 4px 12px rgba(255,107,0,0.4);
-            border: 2px solid #FFD700;
+            background: #FF6B00; color: #fff;
+            box-shadow: 0 4px 12px rgba(255,107,0,0.4);
+            font-weight: 800; border: 2px solid #FFD700;
         }
-        .panel { display: none; animation: fadeSlide 0.35s; }
+
+        .panel { display: none; animation: fadeSlide 0.35s ease; }
         .panel.active { display: block; }
-        @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .form-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
         .form-row .form-group { flex: 1; min-width: 140px; margin-bottom: 0; }
-        .form-group label { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; opacity: 0.9; display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: flex; align-items: center; gap: 6px;
+            font-weight: 700; color: var(--text); margin-bottom: 5px;
+            font-size: 0.78rem; text-transform: uppercase;
+            opacity: 0.9; letter-spacing: 0.3px;
+        }
         .input-wrapper, .date-wrapper, .select-wrapper {
-            background: #fff; border: 2px solid #FFB347; border-radius: var(--radius-xs);
-            display: flex; align-items: center; overflow: hidden; box-shadow: var(--shadow-sm);
+            background: #fff; border: 2px solid #FFB347;
+            border-radius: var(--radius-xs); transition: var(--transition);
+            display: flex; align-items: center; overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
         .input-wrapper:focus-within, .date-wrapper:focus-within, .select-wrapper:focus-within {
-            border-color: #FF6B00; box-shadow: 0 0 0 4px rgba(255,107,0,0.1);
+            border-color: #FF6B00;
+            box-shadow: 0 0 0 4px rgba(255,107,0,0.1);
+            background: #fffef5;
         }
-        .input-wrapper .prefix { padding: 0 6px 0 12px; font-weight: 800; color: #FF6B00; }
-        .input-wrapper input, .date-wrapper input, .select-wrapper select {
-            flex: 1; border: none; background: transparent; padding: 11px 10px;
-            font-size: 0.9rem; font-weight: 600; color: var(--text); outline: none; font-family: inherit;
+        .input-wrapper .prefix {
+            padding: 0 6px 0 12px; font-size: 0.95rem;
+            font-weight: 800; color: #FF6B00;
+        }
+        .input-wrapper input {
+            flex: 1; border: none; background: transparent;
+            padding: 11px 10px 11px 2px; font-size: 0.9rem;
+            font-weight: 600; color: var(--text); outline: none;
+            font-family: inherit;
+        }
+        .input-wrapper.porcentagem .sufix {
+            padding: 0 10px 0 4px; font-size: 0.95rem;
+            font-weight: 800; color: #FF6B00;
+        }
+        .date-wrapper .calendar-icon {
+            padding: 0 6px 0 12px; font-size: 1rem; color: var(--secondary);
+        }
+        .date-wrapper input[type="date"] {
+            flex: 1; border: none; background: transparent;
+            padding: 11px 10px 11px 2px; font-size: 0.85rem;
+            font-weight: 600; color: var(--text); outline: none;
+            font-family: inherit; cursor: pointer;
         }
         .select-wrapper { position: relative; }
-        .select-wrapper select { padding: 11px 30px 11px 12px; appearance: none; cursor: pointer; }
-        .select-wrapper .arrow { position: absolute; right: 12px; color: #FF6B00; }
+        .select-wrapper select {
+            width: 100%; border: none; background: transparent;
+            padding: 11px 30px 11px 12px; font-size: 0.85rem;
+            font-weight: 600; color: var(--text); outline: none;
+            cursor: pointer; appearance: none; font-family: inherit;
+        }
+        .select-wrapper .arrow {
+            position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%); pointer-events: none;
+            font-size: 0.8rem; color: #FF6B00;
+        }
+
         .btn {
             padding: 11px 18px; border: none; border-radius: var(--radius-xs);
-            font-size: 0.88rem; font-weight: 800; cursor: pointer; transition: var(--transition);
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            background: linear-gradient(180deg, #FF8C00, #FF6B00); color: #fff;
-            box-shadow: 0 4px 12px rgba(255,107,0,0.4); border: 2px solid #FFD700;
+            font-size: 0.88rem; font-weight: 800; cursor: pointer;
+            letter-spacing: 0.3px; transition: var(--transition);
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px; background: linear-gradient(180deg, #FF8C00 0%, #FF6B00 100%);
+            color: #fff; box-shadow: 0 4px 12px rgba(255,107,0,0.4);
+            font-family: inherit; border: 2px solid #FFD700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .btn:active { transform: scale(0.97); }
         .btn-small { padding: 6px 12px; font-size: 0.78rem; border-radius: 8px; }
-        .btn-outline { background: #fff; border: 2px solid #FFB347; color: #6B4226; box-shadow: none; }
-        .btn-outline:active { background: #FFF0D0; }
-        .btn-danger { background: linear-gradient(180deg, #E63946, #C62828); border-color: #FF0000; }
-
-        .client-list { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; max-height: 140px; overflow-y: auto; margin-bottom: 12px; }
-        .client-tag {
-            background: #fff; border: 2px solid #FFB347; border-radius: 24px;
-            padding: 7px 14px; font-size: 0.82rem; font-weight: 700; cursor: pointer;
-            box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 8px;
+        .btn-outline {
+            background: #fff; border: 2px solid #FFB347;
+            color: #6B4226; box-shadow: none; text-shadow: none;
         }
-        .client-tag.selected { background: #FF6B00; color: #fff; border-color: #FFD700; }
-        .client-tag .remove-client { cursor: pointer; opacity: 0.8; }
+        .btn-outline:active { background: #FFF0D0; border-color: #FF6B00; color: #FF6B00; }
+        .btn-danger {
+            background: linear-gradient(180deg, #E63946 0%, #C62828 100%);
+            border-color: #FF0000; box-shadow: 0 4px 12px rgba(230,57,70,0.3);
+        }
+
+        .client-list {
+            list-style: none; display: flex; flex-wrap: wrap;
+            gap: 8px; max-height: 140px; overflow-y: auto;
+            margin-bottom: 12px; padding: 4px 0;
+        }
+        .client-tag {
+            background: #fff; border: 2px solid #FFB347;
+            border-radius: 24px; padding: 7px 14px;
+            font-size: 0.82rem; font-weight: 700; color: var(--text);
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer; transition: var(--transition); box-shadow: var(--shadow-sm);
+        }
+        .client-tag:active { transform: scale(0.96); }
+        .client-tag.selected {
+            background: #FF6B00; color: #fff;
+            border-color: #FFD700; box-shadow: 0 6px 20px rgba(255,107,0,0.5);
+        }
+        .client-tag .remove-client {
+            color: #C4A882; font-weight: bold; cursor: pointer;
+            opacity: 0.8; font-size: 1rem;
+        }
+        .client-tag.selected .remove-client { color: rgba(255,255,255,0.9); }
 
         .loan-card {
-            background: #fff; border: 2px solid #FFB347; border-radius: var(--radius-sm);
-            padding: 14px; margin-bottom: 10px; cursor: pointer; box-shadow: var(--shadow-sm);
-            position: relative;
+            background: #fff; border: 2px solid #FFB347;
+            border-radius: var(--radius-sm); padding: 14px;
+            margin-bottom: 10px; cursor: pointer; transition: var(--transition);
+            box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
         }
-        .loan-card.selected { border-color: #FF6B00; background: #FFF8F0; }
-        .loan-card::after { content: '⭐'; position: absolute; right: 10px; top: 10px; opacity: 0; }
+        .loan-card::after {
+            content: '⭐'; position: absolute; right: 10px; top: 10px;
+            font-size: 1.2rem; opacity: 0; color: #FFD700;
+            transition: var(--transition);
+        }
+        .loan-card.selected {
+            border-color: #FF6B00; background: #FFF8F0;
+            box-shadow: 0 8px 24px rgba(255,107,0,0.2);
+        }
         .loan-card.selected::after { opacity: 1; }
-        .loan-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
-        .loan-title { font-weight: 800; font-size: 0.9rem; }
-        .loan-badge { font-size: 0.7rem; padding: 3px 10px; border-radius: 12px; background: #FFF0D0; border: 1px solid #FFB347; }
-        .loan-details { font-size: 0.78rem; color: var(--text-light); display: flex; gap: 10px; flex-wrap: wrap; }
+        .loan-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+        .loan-title { font-weight: 800; color: var(--text); font-size: 0.9rem; }
+        .loan-badge {
+            font-size: 0.7rem; padding: 3px 10px; border-radius: 12px;
+            font-weight: 700; background: #FFF0D0; color: #6B4226;
+            border: 1px solid #FFB347;
+        }
+        .loan-details { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.78rem; color: var(--text-light); }
         .installments-mini { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
         .installment-dot {
-            width: 26px; height: 26px; border-radius: 50%; border: 2px solid #FFB347;
-            display: flex; align-items: center; justify-content: center; font-size: 0.65rem;
-            font-weight: 800; background: #fff; color: #FF6B00;
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 2px solid #FFB347; display: flex; align-items: center;
+            justify-content: center; font-size: 0.65rem; font-weight: 800;
+            background: #fff; color: #FF6B00; cursor: pointer;
         }
         .installment-dot.paid { background: #00B894; border-color: #00B894; color: #fff; }
 
         .resumo-cards { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
         .resumo-card {
-            flex: 1; min-width: 110px; background: #fff; border: 2px solid #FFB347;
-            border-radius: var(--radius-sm); padding: 12px; text-align: center; box-shadow: var(--shadow-sm);
+            flex: 1; min-width: 110px; background: #fff;
+            border: 2px solid #FFB347; border-radius: var(--radius-sm);
+            padding: 12px; box-shadow: var(--shadow-sm); text-align: center;
         }
-        .resumo-card .label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-light); }
-        .resumo-card .value { font-size: 1.1rem; font-weight: 900; }
+        .resumo-card .label {
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 3px;
+        }
+        .resumo-card .value { font-size: 1.1rem; font-weight: 900; color: var(--text); }
         .resumo-card.destaque { border-color: #FF6B00; background: #FFF8F0; }
         .resumo-card.destaque .value { color: #FF6B00; }
         .resumo-card.success .value { color: #00B894; }
 
         .parcela-detail-row {
-            display: flex; align-items: center; gap: 10px; padding: 10px;
-            border-bottom: 1px solid #FFE0C0; cursor: pointer; border-radius: 6px;
-            transition: var(--transition);
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px; border-bottom: 1px solid #FFE0C0;
+            font-size: 0.85rem; transition: var(--transition);
+            cursor: pointer; border-radius: 6px; margin-bottom: 2px;
         }
-        .parcela-detail-row:active { background: #FFF5E6; }
+        .parcela-detail-row:last-child { border-bottom: none; }
         .parcela-detail-row.paid { background: #E6FFF5; }
         .parcela-detail-row .check {
-            width: 22px; height: 22px; border: 2px solid #FFB347; border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 11px; background: #fff; color: transparent;
+            width: 22px; height: 22px; border: 2px solid #FFB347;
+            border-radius: 6px; display: flex; align-items: center;
+            justify-content: center; font-weight: bold; font-size: 11px;
+            flex-shrink: 0; background: #fff; color: transparent;
         }
         .parcela-detail-row.paid .check { background: #00B894; border-color: #00B894; color: #fff; }
         .parcela-detail-row .info { flex: 1; }
         .parcela-detail-row .info .data { font-size: 0.72rem; color: var(--text-light); }
         .parcela-detail-row .valor { font-weight: 800; color: #FF6B00; font-size: 0.9rem; }
         .parcela-detail-row.paid .valor { color: #00B894; text-decoration: line-through; opacity: 0.7; }
-        .edit-icon {
-            background: none; border: none; font-size: 1rem; cursor: pointer;
-            opacity: 0.7; color: var(--primary); padding: 2px 6px;
-        }
-        .edit-icon:active { opacity: 1; }
 
-        .calendar-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        /* CALENDAR STYLES */
+        .calendar-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px;
+        }
         .calendar-nav button {
             background: #FF6B00; color: #fff; border: 2px solid #FFD700;
-            border-radius: 8px; padding: 6px 12px; font-weight: 800; cursor: pointer;
+            border-radius: 8px; padding: 6px 12px; font-weight: 800;
+            cursor: pointer; transition: var(--transition);
         }
-        .calendar-month-label { font-weight: 900; font-size: 1rem; color: #FF6B00; text-transform: uppercase; }
+        .calendar-nav button:active { background: #CC5500; }
+        .calendar-month-label {
+            font-weight: 900; font-size: 1rem; color: #FF6B00;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
         .calendar-table {
-            width: 100%; border-collapse: collapse; background: #fff;
-            border-radius: 12px; overflow: hidden; border: 2px solid #FFB347;
+            width: 100%; border-collapse: collapse;
+            background: #fff; border-radius: 12px;
+            overflow: hidden; box-shadow: var(--shadow-sm);
+            border: 2px solid #FFB347;
         }
         .calendar-table th {
-            background: #FFF0D0; color: #6B4226; padding: 8px 2px;
-            font-size: 0.7rem; font-weight: 800; border-bottom: 2px solid #FFB347;
+            background: #FFF0D0; color: #6B4226;
+            padding: 8px 2px; font-size: 0.7rem; font-weight: 800;
+            text-align: center; border-bottom: 2px solid #FFB347;
         }
         .calendar-table td {
-            text-align: center; padding: 4px 2px; font-size: 0.8rem; font-weight: 600;
-            cursor: pointer; border: 1px solid #FFE0C0; position: relative; height: 32px;
+            text-align: center; padding: 4px 2px; font-size: 0.8rem;
+            font-weight: 600; cursor: pointer; border: 1px solid #FFE0C0;
+            transition: var(--transition); position: relative; height: 32px;
         }
-        .calendar-table td.today { background: #FFD700; color: #000; font-weight: 900; border: 2px solid #FF6B00; }
-        .calendar-table td.selected { background: #FFE0B0; outline: 2px solid #FF6B00; }
+        .calendar-table td:hover { background: #FFF8F0; }
         .calendar-table td.other-month { color: #C4A882; opacity: 0.5; }
+        .calendar-table td.today {
+            background: #FFD700; color: #000; font-weight: 900;
+            border: 2px solid #FF6B00;
+        }
+        .calendar-table td.selected {
+            background: #FFE0B0; outline: 2px solid #FF6B00;
+        }
         .event-dot {
-            position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-            width: 6px; height: 6px; border-radius: 50%; background: #FF6B00;
+            position: absolute; bottom: 2px; left: 50%;
+            transform: translateX(-50%);
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #FF6B00;
         }
         .event-dot.paid-dot { background: #00B894; }
 
-        .agenda-section { margin-top: 14px; background: #fff; border: 2px solid #FFB347; border-radius: 12px; padding: 12px; }
-        .agenda-title { font-weight: 800; font-size: 0.9rem; margin-bottom: 8px; }
-        .agenda-item {
-            display: flex; align-items: center; gap: 8px; padding: 8px;
-            border-bottom: 1px solid #FFE0C0; font-size: 0.8rem; cursor: pointer; border-radius: 4px;
+        .agenda-section {
+            margin-top: 14px; background: #fff;
+            border: 2px solid #FFB347; border-radius: 12px;
+            padding: 12px; min-height: 40px;
         }
+        .agenda-title {
+            font-weight: 800; font-size: 0.9rem; color: var(--text);
+            margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+        }
+        .agenda-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px; border-bottom: 1px solid #FFE0C0;
+            font-size: 0.8rem; cursor: pointer; border-radius: 4px;
+            transition: var(--transition);
+        }
+        .agenda-item:last-child { border-bottom: none; }
         .agenda-item:active { background: #FFF5E6; }
         .agenda-item .agenda-status {
-            width: 18px; height: 18px; border: 2px solid #FFB347; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center; font-size: 10px;
-            background: #fff; color: transparent;
+            width: 18px; height: 18px; border: 2px solid #FFB347;
+            border-radius: 4px; display: flex; align-items: center;
+            justify-content: center; font-size: 10px; font-weight: bold;
+            flex-shrink: 0; background: #fff; color: transparent;
         }
         .agenda-item.paid .agenda-status { background: #00B894; border-color: #00B894; color: #fff; }
         .agenda-item .agenda-info { flex: 1; }
         .agenda-item .agenda-valor { font-weight: 800; color: #FF6B00; }
         .agenda-item.paid .agenda-valor { color: #00B894; text-decoration: line-through; }
 
-        /* Modal de edição */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); z-index: 100; display: flex;
-            align-items: center; justify-content: center; animation: fadeIn 0.2s;
+        .btn-all-events {
+            width: 100%; margin-top: 10px; background: #FFD700;
+            color: #000; border: 2px solid #FF6B00;
+            padding: 8px; font-weight: 800; border-radius: 8px;
+            cursor: pointer; transition: var(--transition);
         }
-        @keyframes fadeIn { from { opacity: 0; } }
-        .modal {
-            background: #fff; border-radius: var(--radius-lg); padding: 20px;
-            width: 90%; max-width: 420px; box-shadow: var(--shadow-xl);
-            border: 3px solid #FFD700;
-        }
-        .modal h3 { color: #FF6B00; margin-bottom: 14px; font-family: 'Impact', sans-serif; }
-        .modal .form-group { margin-bottom: 12px; }
-        .modal .form-group label { font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 4px; color: var(--text); }
-        .modal .form-group input {
-            width: 100%; padding: 10px; border: 2px solid #FFB347; border-radius: 8px;
-            font-size: 0.9rem; font-weight: 600; background: #fff;
-        }
-        .modal .form-group input:focus { border-color: #FF6B00; outline: none; }
-        .modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+        .btn-all-events:active { background: #FFC107; }
 
-        .card-footer { text-align: center; padding: 8px 20px 14px; font-size: 0.68rem; color: #B8A090; border-top: 1px solid #FFE0C0; }
-
-        /* Resumo de empréstimos na aba clientes */
-        .client-loan-summary {
-            margin-top: 10px; padding: 10px; background: #FFF8F0;
-            border: 2px solid #FFB347; border-radius: 10px; display: none;
-        }
-        .client-loan-summary .summary-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 6px 0; border-bottom: 1px dashed #FFE0C0;
-            font-size: 0.8rem;
-        }
-        .client-loan-summary .summary-item:last-child { border-bottom: none; }
-        .client-loan-summary .summary-title {
-            font-weight: 800; color: #FF6B00; font-size: 0.85rem; margin-bottom: 6px;
+        .card-footer {
+            text-align: center; padding: 8px 20px 14px;
+            font-size: 0.68rem; color: #B8A090; font-weight: 600;
+            background: #fffef9; border-top: 1px solid #FFE0C0;
         }
 
         @media (max-width: 480px) {
+            body { padding: 4px; }
             .card-body { padding: 16px 10px 18px; }
             .card-header { padding: 18px 12px 14px; }
             .card-header h1 { font-size: 1.3rem; }
             .form-row { flex-direction: column; gap: 8px; }
             .resumo-cards { flex-direction: column; }
-            .tab { font-size: 0.6rem; padding: 8px 0; }
+            .tab { font-size: 0.65rem; padding: 8px 2px; }
         }
     </style>
 </head>
@@ -332,7 +545,7 @@
         </div>
 
         <div class="card-body">
-            <div class="tabs">
+            <div class="tabs" id="tabsContainer">
                 <button class="tab active" data-tab="tab-clientes">👥 Guerreiros</button>
                 <button class="tab" data-tab="tab-emprestimos">📋 Missões</button>
                 <button class="tab" data-tab="tab-parcelas">💳 Esferas</button>
@@ -353,71 +566,83 @@
                     </div>
                 </div>
                 <ul class="client-list" id="clientList"></ul>
-                <p style="font-size:0.75rem; color:var(--text-light);">Selecione um guerreiro para ver seus lançamentos.</p>
+                <p style="font-size:0.75rem; color:var(--text-light); margin-top:2px;">
+                    Selecione um guerreiro para gerenciar seus empréstimos.
+                </p>
                 <div id="selectedClientInfo" style="margin-top:12px; padding:10px 14px; background:#FFF8F0; border-radius:10px; border:2px solid #FFB347; display:none;">
-                    <strong style="color:#FF6B00;">⭐ Guerreiro:</strong>
+                    <strong style="color:#FF6B00;">⭐ Guerreiro selecionado:</strong>
                     <span id="selectedClientName" style="font-weight:700;"></span>
                     <button class="btn btn-small btn-outline" id="clearSelectedClient" style="margin-left:8px;">Limpar</button>
-                </div>
-                <!-- Resumo de empréstimos do cliente selecionado -->
-                <div class="client-loan-summary" id="clientLoanSummary">
-                    <div class="summary-title">📋 Missões de <span id="summaryClientName"></span></div>
-                    <div id="clientLoanSummaryList"></div>
                 </div>
             </div>
 
             <!-- PAINEL EMPRÉSTIMOS -->
             <div class="panel" id="tab-emprestimos">
-                <div id="noClientWarning" style="text-align:center; padding:30px; background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
+                <div id="noClientWarning" style="text-align:center; padding:30px; color:var(--text-light); background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
                     ⚠️ Selecione um guerreiro na aba <strong>Guerreiros</strong> para continuar.
                 </div>
                 <div id="loanFormContainer" style="display:none;">
                     <div class="form-row">
                         <div class="form-group">
                             <label>💵 Valor da missão</label>
-                            <div class="input-wrapper"><span class="prefix">R$</span><input type="text" id="loanValorInput" placeholder="Ex: 1000,00" inputmode="decimal"></div>
+                            <div class="input-wrapper">
+                                <span class="prefix">R$</span>
+                                <input type="text" id="loanValorInput" placeholder="Ex: 1000,00" inputmode="decimal" autocomplete="off">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>📊 Acréscimo (%)</label>
-                            <div class="input-wrapper porcentagem"><input type="text" id="loanPorcentagemInput" value="20" placeholder="20" inputmode="decimal"><span class="sufix">%</span></div>
+                            <div class="input-wrapper porcentagem">
+                                <input type="text" id="loanPorcentagemInput" value="20" placeholder="20" inputmode="decimal" autocomplete="off">
+                                <span class="sufix">%</span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>📅 Data inicial</label>
-                            <div class="date-wrapper"><span class="calendar-icon">📆</span><input type="date" id="loanDataInput"></div>
+                            <div class="date-wrapper">
+                                <span class="calendar-icon">📆</span>
+                                <input type="date" id="loanDataInput">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>🔢 Parcelas</label>
                             <div class="select-wrapper">
                                 <select id="loanParcelasSelect">
-                                    <option value="2">2x</option><option value="3" selected>3x</option><option value="4">4x</option>
-                                    <option value="5">5x</option><option value="6">6x</option><option value="8">8x</option>
+                                    <option value="2">2x</option><option value="3" selected>3x</option>
+                                    <option value="4">4x</option><option value="5">5x</option>
+                                    <option value="6">6x</option><option value="8">8x</option>
                                     <option value="10">10x</option><option value="12">12x</option>
-                                </select><span class="arrow">▾</span>
+                                </select>
+                                <span class="arrow">▾</span>
                             </div>
                         </div>
                     </div>
-                    <button class="btn" id="addLoanBtn" style="width:100%;">⚡ Criar Missão para <span id="loanClientNameSpan"></span></button>
+                    <button class="btn" id="addLoanBtn" style="width:100%; margin-top:4px;">
+                        ⚡ Criar Missão para <span id="loanClientNameSpan"></span>
+                    </button>
                     <hr style="margin:20px 0; border-color:#FFE0C0;">
-                    <h3 style="margin-bottom:12px;">📋 Missões de <span id="loanListClientName" style="color:#FF6B00;"></span></h3>
+                    <h3 style="margin-bottom:12px; font-size:0.9rem; color:var(--text); display:flex; align-items:center; gap:6px;">
+                        📋 Missões de <span id="loanListClientName" style="color:#FF6B00;"></span>
+                    </h3>
                     <div id="loanListContainer"></div>
                 </div>
             </div>
 
             <!-- PAINEL PARCELAS -->
             <div class="panel" id="tab-parcelas">
-                <div id="noLoanSelected" style="text-align:center; padding:30px; background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
-                    🗂️ Selecione uma missão na aba <strong>Missões</strong>.
+                <div id="noLoanSelected" style="text-align:center; padding:30px; color:var(--text-light); background:#FFF5E6; border-radius:12px; border:2px dashed #FFB347;">
+                    🗂️ Selecione uma missão na aba <strong>Missões</strong> para ver as esferas.
                 </div>
                 <div id="parcelaDetailContainer" style="display:none;">
-                    <h3>💳 Esferas da Missão</h3>
+                    <h3 style="margin-bottom:10px; font-size:0.9rem; color:var(--text);">💳 Esferas da Missão</h3>
                     <div class="resumo-cards" id="parcelaResumo"></div>
                     <div id="parcelaList" style="background:#fff; border:2px solid #FFB347; border-radius:12px; overflow:hidden;"></div>
                 </div>
             </div>
 
-            <!-- PAINEL AGENDA -->
+            <!-- PAINEL AGENDA (CALENDÁRIO) -->
             <div class="panel" id="tab-agenda">
                 <div class="calendar-nav">
                     <button id="prevMonthBtn">◀</button>
@@ -429,91 +654,25 @@
                     <div class="agenda-title" id="agendaTitle">📋 Selecione um dia</div>
                     <div id="agendaList"></div>
                 </div>
-                <button class="btn btn-outline" id="allEventsBtn" style="width:100%; margin-top:10px;">📅 Ver todos os próximos vencimentos</button>
+                <button class="btn-all-events" id="allEventsBtn">📅 Ver todos os próximos vencimentos</button>
                 <div id="allEventsContainer" style="margin-top:10px; display:none;"></div>
             </div>
-        </div>
-        <div class="card-footer">🐉 Dados salvos automaticamente • Calendário, clientes e edição de parcelas</div>
-    </div>
-</div>
 
-<!-- MODAL DE EDIÇÃO -->
-<div class="modal-overlay" id="editModal" style="display:none;">
-    <div class="modal">
-        <h3>✏️ Editar Esfera</h3>
-        <div class="form-group">
-            <label>📅 Data de vencimento</label>
-            <input type="date" id="editDataInput">
         </div>
-        <div class="form-group">
-            <label>💰 Valor da parcela (R$)</label>
-            <input type="text" id="editValorInput" placeholder="Ex: 400,00" inputmode="decimal">
-        </div>
-        <div class="form-group">
-            <label>🔢 Número da parcela</label>
-            <input type="number" id="editNumeroInput" min="1" max="12">
-        </div>
-        <div class="modal-btns">
-            <button class="btn btn-outline" id="cancelEditBtn">Cancelar</button>
-            <button class="btn" id="saveEditBtn">💾 Salvar</button>
+        <div class="card-footer">
+            🐉 App completo • Calendário, clientes e esferas • Funciona offline
         </div>
     </div>
 </div>
 
 <script>
     (function() {
-        // ============ PERSISTÊNCIA COM LOCALSTORAGE ============
-        const STORAGE_KEY = 'caixinha_dbz_data';
-
-        function salvarDados() {
-            const dados = {
-                clientes: clientes,
-                emprestimos: emprestimos.map(e => ({
-                    ...e,
-                    parcelas: e.parcelas.map(p => ({
-                        ...p,
-                        data: p.data.toISOString()
-                    }))
-                })),
-                nextLoanId: nextLoanId
-            };
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
-            } catch (e) {
-                console.warn('Não foi possível salvar os dados.', e);
-            }
-        }
-
-        function carregarDados() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                if (raw) {
-                    const dados = JSON.parse(raw);
-                    clientes = dados.clientes || [];
-                    emprestimos = (dados.emprestimos || []).map(e => ({
-                        ...e,
-                        parcelas: e.parcelas.map(p => ({
-                            ...p,
-                            data: new Date(p.data)
-                        }))
-                    }));
-                    nextLoanId = dados.nextLoanId || 1;
-                }
-            } catch (e) {
-                console.warn('Erro ao carregar dados.', e);
-            }
-        }
-
         // ============ ESTADO ============
         let clientes = [];
         let selectedClientIndex = null;
         let emprestimos = [];
         let selectedLoanId = null;
         let nextLoanId = 1;
-
-        // Estado da edição
-        let editingLoanId = null;
-        let editingParcelaNum = null;
 
         // Agenda state
         let currentMonth, currentYear, selectedDate;
@@ -527,9 +686,6 @@
         const selectedClientInfo = document.getElementById('selectedClientInfo');
         const selectedClientNameEl = document.getElementById('selectedClientName');
         const clearSelectedClientBtn = document.getElementById('clearSelectedClient');
-        const clientLoanSummary = document.getElementById('clientLoanSummary');
-        const summaryClientName = document.getElementById('summaryClientName');
-        const clientLoanSummaryList = document.getElementById('clientLoanSummaryList');
         const noClientWarning = document.getElementById('noClientWarning');
         const loanFormContainer = document.getElementById('loanFormContainer');
         const loanValorInput = document.getElementById('loanValorInput');
@@ -553,12 +709,6 @@
         const allEventsContainer = document.getElementById('allEventsContainer');
         const prevMonthBtn = document.getElementById('prevMonthBtn');
         const nextMonthBtn = document.getElementById('nextMonthBtn');
-        const editModal = document.getElementById('editModal');
-        const editDataInput = document.getElementById('editDataInput');
-        const editValorInput = document.getElementById('editValorInput');
-        const editNumeroInput = document.getElementById('editNumeroInput');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-        const saveEditBtn = document.getElementById('saveEditBtn');
 
         // ============ HELPERS ============
         function formatarMoeda(v) {
@@ -572,6 +722,10 @@
             let s = str.replace(/[^\d,.-]/g, '').trim();
             if (s.includes(',') && s.includes('.')) s = s.replace(/\./g, '').replace(',', '.');
             else if (s.includes(',') && !s.includes('.')) s = s.replace(',', '.');
+            else if (!s.includes(',') && s.includes('.')) {
+                const parts = s.split('.');
+                if (parts.length > 2) s = s.replace(/\./g, '');
+            }
             return parseFloat(s);
         }
         function gerarDatas(dataBase, total) {
@@ -592,26 +746,43 @@
             const totalParcelas = loan.parcelas.length;
             const pagas = loan.parcelas.filter(p => p.pago).length;
             const valorTotal = loan.parcelas.reduce((s, p) => s + p.valor, 0);
-            return { totalParcelas, pagas, valorTotal };
+            const valorPago = loan.parcelas.filter(p => p.pago).reduce((s, p) => s + p.valor, 0);
+            return { totalParcelas, pagas, valorTotal, valorPago };
         }
         function getClienteNome(index) {
             return (clientes[index] && clientes[index].nome) || '?';
         }
+
+        // Extrai todos os eventos (parcelas) de todos os empréstimos
         function getAllEvents() {
             const events = [];
             emprestimos.forEach(loan => {
                 const clienteNome = getClienteNome(loan.clienteIndex);
                 loan.parcelas.forEach(p => {
                     events.push({
-                        date: p.data, clienteNome, loanId: loan.id,
-                        parcelaNum: p.numero, valor: p.valor, pago: p.pago
+                        date: p.data,
+                        clienteNome,
+                        loanId: loan.id,
+                        parcelaNum: p.numero,
+                        valor: p.valor,
+                        pago: p.pago
                     });
                 });
             });
             return events;
         }
 
-        // ============ RENDER CLIENTES (COM RESUMO) ============
+        // Inicializa data default do empréstimo
+        (function() {
+            const hoje = new Date();
+            hoje.setDate(hoje.getDate() + 30);
+            const ano = hoje.getFullYear();
+            const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoje.getDate()).padStart(2, '0');
+            loanDataInput.value = `${ano}-${mes}-${dia}`;
+        })();
+
+        // ============ RENDER CLIENTES ============
         function renderClientes() {
             clientListEl.innerHTML = '';
             clientes.forEach((c, idx) => {
@@ -621,59 +792,45 @@
                 tag.addEventListener('click', function(e) {
                     if (e.target.classList.contains('remove-client')) {
                         e.stopPropagation();
-                        if (confirm(`Remover guerreiro "${c.nome}" e todas as suas missões?`)) {
-                            emprestimos = emprestimos.filter(lo => lo.clienteIndex !== idx);
-                            emprestimos.forEach(lo => { if (lo.clienteIndex > idx) lo.clienteIndex--; });
-                            clientes.splice(idx, 1);
-                            if (selectedClientIndex === idx) selectedClientIndex = null;
-                            else if (selectedClientIndex > idx) selectedClientIndex--;
-                            if (selectedLoanId && !findLoanById(selectedLoanId)) selectedLoanId = null;
-                            salvarDados();
-                            renderClientes();
-                            renderLoanList();
-                            updateParcelaPanel();
-                            renderCalendar();
-                        }
+                        removerCliente(idx);
                     } else {
-                        selectedClientIndex = idx;
-                        selectedLoanId = null;
-                        salvarDados();
-                        renderClientes();
-                        renderLoanList();
-                        updateParcelaPanel();
-                        // Não muda de aba automaticamente, deixa ver o resumo
+                        selecionarCliente(idx);
                     }
                 });
                 clientListEl.appendChild(tag);
             });
-
-            // Atualiza info do cliente selecionado e resumo de empréstimos
             if (selectedClientIndex !== null && clientes[selectedClientIndex]) {
                 selectedClientInfo.style.display = 'block';
                 selectedClientNameEl.textContent = clientes[selectedClientIndex].nome;
-                // Mostra resumo dos empréstimos do cliente
-                const loans = emprestimos.filter(e => e.clienteIndex === selectedClientIndex);
-                summaryClientName.textContent = clientes[selectedClientIndex].nome;
-                if (loans.length > 0) {
-                    clientLoanSummary.style.display = 'block';
-                    clientLoanSummaryList.innerHTML = loans.map(l => {
-                        const s = getLoanSummary(l);
-                        return `<div class="summary-item">
-                            <span>🐉 Missão #${l.id}</span>
-                            <span>${formatarMoeda(s.valorTotal)} (${s.pagas}/${s.totalParcelas} pagas)</span>
-                        </div>`;
-                    }).join('');
-                } else {
-                    clientLoanSummary.style.display = 'block';
-                    clientLoanSummaryList.innerHTML = '<p style="font-size:0.8rem; color:var(--text-light);">Nenhuma missão ainda.</p>';
-                }
             } else {
                 selectedClientInfo.style.display = 'none';
-                clientLoanSummary.style.display = 'none';
             }
             updateLoanPanelVisibility();
             updateGlobalResumo();
             if (document.getElementById('tab-agenda').classList.contains('active')) renderCalendar();
+        }
+
+        function selecionarCliente(idx) {
+            selectedClientIndex = idx;
+            selectedLoanId = null;
+            renderClientes();
+            renderLoanList();
+            updateParcelaPanel();
+            switchTab('tab-emprestimos');
+        }
+
+        function removerCliente(idx) {
+            if (!confirm(`Remover guerreiro "${clientes[idx].nome}" e todas as suas missões?`)) return;
+            emprestimos = emprestimos.filter(e => e.clienteIndex !== idx);
+            emprestimos.forEach(e => { if (e.clienteIndex > idx) e.clienteIndex--; });
+            clientes.splice(idx, 1);
+            if (selectedClientIndex === idx) selectedClientIndex = null;
+            else if (selectedClientIndex > idx) selectedClientIndex--;
+            if (selectedLoanId && !findLoanById(selectedLoanId)) selectedLoanId = null;
+            renderClientes();
+            renderLoanList();
+            updateParcelaPanel();
+            renderCalendar();
         }
 
         function adicionarCliente() {
@@ -685,7 +842,6 @@
             }
             clientes.push({ nome });
             newClientInput.value = '';
-            salvarDados();
             renderClientes();
         }
 
@@ -704,11 +860,17 @@
         }
 
         function criarEmprestimo() {
-            if (selectedClientIndex === null) { alert('Selecione um guerreiro.'); return; }
-            const valorOriginal = parseValor(loanValorInput.value);
-            const porcentagem = parseValor(loanPorcentagemInput.value);
+            if (selectedClientIndex === null) {
+                alert('Selecione um guerreiro primeiro.');
+                switchTab('tab-clientes');
+                return;
+            }
+            const valorRaw = loanValorInput.value;
+            const porcentagemRaw = loanPorcentagemInput.value;
             const numParcelas = parseInt(loanParcelasSelect.value);
             const dataBaseStr = loanDataInput.value;
+            const valorOriginal = parseValor(valorRaw);
+            const porcentagem = parseValor(porcentagemRaw);
             if (isNaN(valorOriginal) || valorOriginal <= 0) { alert('Valor inválido.'); return; }
             if (isNaN(porcentagem) || porcentagem < 0) { alert('Porcentagem inválida.'); return; }
             const taxa = 1 + (porcentagem / 100);
@@ -731,13 +893,11 @@
             emprestimos.push(novo);
             selectedLoanId = novo.id;
             loanValorInput.value = '';
-            salvarDados();
             renderLoanList();
             updateParcelaPanel();
             switchTab('tab-parcelas');
             updateGlobalResumo();
             renderCalendar();
-            renderClientes(); // atualiza resumo na aba clientes
         }
 
         function renderLoanList() {
@@ -745,23 +905,33 @@
             if (selectedClientIndex === null) { loanListContainer.innerHTML = ''; return; }
             const loans = emprestimos.filter(e => e.clienteIndex === selectedClientIndex);
             if (loans.length === 0) {
-                loanListContainer.innerHTML = '<p style="text-align:center; color:var(--text-light);">Nenhuma missão.</p>';
+                loanListContainer.innerHTML = '<p style="color:var(--text-light); padding:12px; text-align:center;">Nenhuma missão para este guerreiro.</p>';
                 return;
             }
             loanListContainer.innerHTML = loans.map(l => {
                 const s = getLoanSummary(l);
                 const pct = l.porcentagem.toFixed(2).replace(/\.?0+$/, '');
                 const dataFormatada = l.dataInicio ? formatarData(new Date(l.dataInicio + 'T00:00:00')) : '—';
-                return `<div class="loan-card ${selectedLoanId === l.id ? 'selected' : ''}" data-loan-id="${l.id}">
-                    <div class="loan-header"><span class="loan-title">🐉 Missão #${l.id} — ${formatarMoeda(l.valor)} +${pct}%</span><span class="loan-badge">${s.pagas}/${s.totalParcelas} esferas</span></div>
-                    <div class="loan-details"><span>📅 ${dataFormatada}</span><span>🔢 ${l.numParcelas} parcelas</span><span>📦 Total: ${formatarMoeda(s.valorTotal)}</span></div>
-                    <div class="installments-mini">${l.parcelas.map(p => `<div class="installment-dot ${p.pago?'paid':''}" title="Esfera ${p.numero}: ${formatarMoeda(p.valor)}">${p.numero}</div>`).join('')}</div>
+                return `
+                <div class="loan-card ${selectedLoanId === l.id ? 'selected' : ''}" data-loan-id="${l.id}">
+                    <div class="loan-header">
+                        <span class="loan-title">🐉 Missão #${l.id} — ${formatarMoeda(l.valor)} +${pct}%</span>
+                        <span class="loan-badge">${s.pagas}/${s.totalParcelas} esferas</span>
+                    </div>
+                    <div class="loan-details">
+                        <span>📅 ${dataFormatada}</span>
+                        <span>🔢 ${l.numParcelas} parcelas</span>
+                        <span>📦 Total: ${formatarMoeda(s.valorTotal)}</span>
+                    </div>
+                    <div class="installments-mini">
+                        ${l.parcelas.map(p => `<div class="installment-dot ${p.pago ? 'paid' : ''}" title="Esfera ${p.numero}: ${formatarMoeda(p.valor)}">${p.numero}</div>`).join('')}
+                    </div>
                 </div>`;
             }).join('');
             document.querySelectorAll('.loan-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    selectedLoanId = parseInt(this.getAttribute('data-loan-id'));
-                    salvarDados();
+                    const id = parseInt(this.getAttribute('data-loan-id'));
+                    selectedLoanId = id;
                     renderLoanList();
                     updateParcelaPanel();
                     switchTab('tab-parcelas');
@@ -782,256 +952,53 @@
             const s = getLoanSummary(loan);
             const pct = loan.porcentagem.toFixed(2).replace(/\.?0+$/, '');
             parcelaResumo.innerHTML = `
-                <div class="resumo-card"><div class="label">💵 Valor Original</div><div class="value">${formatarMoeda(loan.valor)}</div></div>
-                <div class="resumo-card destaque"><div class="label">📦 Total (+${pct}%)</div><div class="value">${formatarMoeda(s.valorTotal)}</div></div>
-                <div class="resumo-card success"><div class="label">⭐ Progresso</div><div class="value">${s.pagas}/${s.totalParcelas}</div></div>
+                <div class="resumo-card">
+                    <div class="label">💵 Valor Original</div>
+                    <div class="value">${formatarMoeda(loan.valor)}</div>
+                </div>
+                <div class="resumo-card destaque">
+                    <div class="label">📦 Total (+${pct}%)</div>
+                    <div class="value">${formatarMoeda(s.valorTotal)}</div>
+                </div>
+                <div class="resumo-card success">
+                    <div class="label">⭐ Progresso</div>
+                    <div class="value">${s.pagas}/${s.totalParcelas}</div>
+                </div>
             `;
             parcelaList.innerHTML = loan.parcelas.map(p => `
                 <div class="parcela-detail-row ${p.pago ? 'paid' : ''}" data-parcela-num="${p.numero}">
-                    <div class="check" data-toggle>${p.pago ? '✓' : ''}</div>
+                    <div class="check">${p.pago ? '✓' : ''}</div>
                     <div class="info">
                         <div><strong>${p.numero}ª Esfera</strong></div>
                         <div class="data">📅 ${formatarData(p.data)}</div>
                     </div>
                     <div class="valor">${formatarMoeda(p.valor)}</div>
-                    <button class="edit-icon" data-edit title="Editar parcela">✏️</button>
                 </div>
             `).join('');
-
-            parcelaList.querySelectorAll('[data-toggle]').forEach(check => {
-                check.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const num = parseInt(this.parentElement.getAttribute('data-parcela-num'));
-                    const parcela = loan.parcelas.find(p => p.numero === num);
-                    if (parcela) {
-                        parcela.pago = !parcela.pago;
-                        salvarDados();
-                        updateParcelaPanel();
-                        renderLoanList();
-                        updateGlobalResumo();
-                        renderCalendar();
-                        renderClientes();
-                    }
+            document.querySelectorAll('.parcela-detail-row').forEach(row => {
+                row.addEventListener('click', function() {
+                    const num = parseInt(this.getAttribute('data-parcela-num'));
+                    toggleParcela(loan, num);
                 });
             });
-
-            parcelaList.querySelectorAll('[data-edit]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const num = parseInt(this.parentElement.getAttribute('data-parcela-num'));
-                    abrirModalEdicao(loan.id, num);
-                });
-            });
-        }
-
-        // ============ EDIÇÃO DE PARCELA ============
-        function abrirModalEdicao(loanId, parcelaNum) {
-            const loan = findLoanById(loanId);
-            if (!loan) return;
-            const parcela = loan.parcelas.find(p => p.numero === parcelaNum);
-            if (!parcela) return;
-            editingLoanId = loanId;
-            editingParcelaNum = parcelaNum;
-            editDataInput.value = parcela.data.toISOString().split('T')[0];
-            editValorInput.value = parcela.valor.toFixed(2).replace('.', ',');
-            editNumeroInput.value = parcela.numero;
-            editModal.style.display = 'flex';
-        }
-
-        function fecharModalEdicao() {
-            editModal.style.display = 'none';
-            editingLoanId = null;
-            editingParcelaNum = null;
-        }
-
-        function salvarEdicao() {
-            if (editingLoanId === null || editingParcelaNum === null) return;
-            const loan = findLoanById(editingLoanId);
-            if (!loan) return;
-            const parcela = loan.parcelas.find(p => p.numero === editingParcelaNum);
-            if (!parcela) return;
-
-            const novaDataStr = editDataInput.value;
-            const novoValorStr = editValorInput.value;
-            const novoNumero = parseInt(editNumeroInput.value);
-
-            if (!novaDataStr) { alert('Data inválida.'); return; }
-            const novoValor = parseValor(novoValorStr);
-            if (isNaN(novoValor) || novoValor <= 0) { alert('Valor inválido.'); return; }
-            if (isNaN(novoNumero) || novoNumero < 1) { alert('Número inválido.'); return; }
-
-            if (novoNumero !== parcela.numero && loan.parcelas.some(p => p.numero === novoNumero)) {
-                alert('Já existe uma parcela com esse número nesta missão.');
-                return;
-            }
-
-            parcela.data = new Date(novaDataStr + 'T00:00:00');
-            parcela.valor = novoValor;
-            parcela.numero = novoNumero;
-
-            fecharModalEdicao();
-            salvarDados();
-            updateParcelaPanel();
-            renderLoanList();
             updateGlobalResumo();
-            renderCalendar();
-            renderClientes();
         }
 
-        cancelEditBtn.addEventListener('click', fecharModalEdicao);
-        saveEditBtn.addEventListener('click', salvarEdicao);
-        editModal.addEventListener('click', function(e) {
-            if (e.target === editModal) fecharModalEdicao();
-        });
-
-        // ============ CALENDÁRIO / AGENDA ============
-        function renderCalendar() {
-            const today = new Date();
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            const lastDay = new Date(currentYear, currentMonth + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startDow = firstDay.getDay();
-            const adjustedStart = (startDow === 0) ? 6 : startDow - 1;
-
-            calendarMonthLabel.textContent = new Date(currentYear, currentMonth).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-            const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-            let html = '<tr>' + weekDays.map(d => `<th>${d}</th>`).join('') + '</tr>';
-            let day = 1;
-            for (let i = 0; i < 42; i++) {
-                if (i % 7 === 0) html += '<tr>';
-                if (i < adjustedStart || day > daysInMonth) {
-                    const d = (i < adjustedStart) ? (new Date(currentYear, currentMonth - 1, 1).getDate() - (adjustedStart - i - 1)) : (i - adjustedStart - daysInMonth + 1);
-                    html += `<td class="other-month">${d}</td>`;
-                } else {
-                    const cellDate = new Date(currentYear, currentMonth, day);
-                    const dateStr = cellDate.toISOString().split('T')[0];
-                    const events = getAllEvents().filter(e => e.date.toISOString().split('T')[0] === dateStr);
-                    const hasUnpaid = events.some(e => !e.pago);
-                    const isToday = (cellDate.toDateString() === today.toDateString());
-                    const isSelected = (selectedDate && cellDate.toDateString() === selectedDate.toDateString());
-                    let classes = [];
-                    if (isToday) classes.push('today');
-                    if (isSelected) classes.push('selected');
-                    html += `<td class="${classes.join(' ')}" data-date="${dateStr}">${day}`;
-                    if (events.length > 0) {
-                        html += `<div class="event-dot${!hasUnpaid ? ' paid-dot' : ''}"></div>`;
-                    }
-                    html += `</td>`;
-                    day++;
-                }
-                if (i % 7 === 6) html += '</tr>';
+        function toggleParcela(loan, parcelaNum) {
+            const parcela = loan.parcelas.find(p => p.numero === parcelaNum);
+            if (parcela) {
+                parcela.pago = !parcela.pago;
+                updateParcelaPanel();
+                renderLoanList();
+                updateGlobalResumo();
+                renderCalendar();
             }
-            calendarTable.innerHTML = html;
-
-            calendarTable.querySelectorAll('td[data-date]').forEach(td => {
-                td.addEventListener('click', function() {
-                    const dateStr = this.getAttribute('data-date');
-                    selectedDate = new Date(dateStr + 'T00:00:00');
-                    renderCalendar();
-                    showAgendaForDate(dateStr);
-                });
-            });
-
-            if (selectedDate) {
-                showAgendaForDate(selectedDate.toISOString().split('T')[0]);
-            } else {
-                agendaTitle.textContent = '📋 Selecione um dia';
-                agendaList.innerHTML = '';
-            }
-            allEventsContainer.style.display = 'none';
         }
 
-        function showAgendaForDate(dateStr) {
-            const events = getAllEvents().filter(e => e.date.toISOString().split('T')[0] === dateStr);
-            agendaTitle.textContent = `📅 ${formatarData(new Date(dateStr + 'T00:00:00'))}`;
-            if (events.length === 0) {
-                agendaList.innerHTML = '<p style="color:var(--text-light);">Nenhum vencimento.</p>';
-                return;
-            }
-            agendaList.innerHTML = events.map(e => `
-                <div class="agenda-item ${e.pago ? 'paid' : ''}" data-loan-id="${e.loanId}" data-parcela="${e.parcelaNum}">
-                    <div class="agenda-status" data-toggle>${e.pago ? '✓' : ''}</div>
-                    <div class="agenda-info">
-                        <strong>${e.clienteNome}</strong> - Missão #${e.loanId} (${e.parcelaNum}ª esfera)
-                    </div>
-                    <div class="agenda-valor">${formatarMoeda(e.valor)}</div>
-                    <button class="edit-icon" data-edit title="Editar">✏️</button>
-                </div>
-            `).join('');
-
-            agendaList.querySelectorAll('[data-toggle]').forEach(el => {
-                el.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const loanId = parseInt(this.parentElement.getAttribute('data-loan-id'));
-                    const parcelaNum = parseInt(this.parentElement.getAttribute('data-parcela'));
-                    const loan = findLoanById(loanId);
-                    if (loan) {
-                        const p = loan.parcelas.find(pp => pp.numero === parcelaNum);
-                        if (p) { p.pago = !p.pago; }
-                        salvarDados();
-                        showAgendaForDate(dateStr);
-                        renderCalendar();
-                        updateParcelaPanel();
-                        renderLoanList();
-                        updateGlobalResumo();
-                        renderClientes();
-                    }
-                });
-            });
-
-            agendaList.querySelectorAll('[data-edit]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const loanId = parseInt(this.parentElement.getAttribute('data-loan-id'));
-                    const parcelaNum = parseInt(this.parentElement.getAttribute('data-parcela'));
-                    abrirModalEdicao(loanId, parcelaNum);
-                });
-            });
-        }
-
-        function showAllUpcomingEvents() {
-            const events = getAllEvents().filter(e => !e.pago).sort((a, b) => a.date - b.date);
-            if (events.length === 0) {
-                allEventsContainer.style.display = 'block';
-                allEventsContainer.innerHTML = '<p style="text-align:center;">Todos os vencimentos pagos! 🎉</p>';
-                return;
-            }
-            allEventsContainer.style.display = 'block';
-            allEventsContainer.innerHTML = '<h4>Próximos vencimentos</h4>' + events.map(e => `
-                <div class="agenda-item" data-loan-id="${e.loanId}" data-parcela="${e.parcelaNum}">
-                    <div class="agenda-status" data-toggle style="background:#FFB347;color:#fff;">!</div>
-                    <div class="agenda-info"><strong>${e.clienteNome}</strong> - Missão #${e.loanId} (${e.parcelaNum}ª esfera)<br>📅 ${formatarData(e.date)}</div>
-                    <div class="agenda-valor">${formatarMoeda(e.valor)}</div>
-                    <button class="edit-icon" data-edit>✏️</button>
-                </div>
-            `).join('');
-            allEventsContainer.querySelectorAll('[data-toggle]').forEach(el => {
-                el.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const loanId = parseInt(this.parentElement.getAttribute('data-loan-id'));
-                    const parcelaNum = parseInt(this.parentElement.getAttribute('data-parcela'));
-                    const loan = findLoanById(loanId);
-                    if (loan) {
-                        const p = loan.parcelas.find(pp => pp.numero === parcelaNum);
-                        if (p) { p.pago = !p.pago; }
-                        salvarDados();
-                        showAllUpcomingEvents();
-                        renderCalendar();
-                        updateParcelaPanel();
-                        renderLoanList();
-                        updateGlobalResumo();
-                        renderClientes();
-                    }
-                });
-            });
-            allEventsContainer.querySelectorAll('[data-edit]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const loanId = parseInt(this.parentElement.getAttribute('data-loan-id'));
-                    const parcelaNum = parseInt(this.parentElement.getAttribute('data-parcela'));
-                    abrirModalEdicao(loanId, parcelaNum);
-                });
-            });
+        // Função para toggle a partir da agenda (recebe loanId e parcelaNum)
+        function toggleParcelaFromAgenda(loanId, parcelaNum) {
+            const loan = findLoanById(loanId);
+            if (loan) toggleParcela(loan, parcelaNum);
         }
 
         function updateGlobalResumo() {
@@ -1051,6 +1018,7 @@
             if (tabId === 'tab-emprestimos') updateLoanPanelVisibility();
             if (tabId === 'tab-parcelas') updateParcelaPanel();
             if (tabId === 'tab-agenda') {
+                // initialize calendar to today if not set
                 if (!currentMonth) {
                     const now = new Date();
                     currentMonth = now.getMonth();
@@ -1059,12 +1027,155 @@
                 }
                 renderCalendar();
             }
-            if (tabId === 'tab-clientes') renderClientes();
         }
-        tabs.forEach(tab => tab.addEventListener('click', function() { switchTab(this.getAttribute('data-tab')); }));
 
-        // Inicializa calendário
-        (function() {
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                switchTab(this.getAttribute('data-tab'));
+            });
+        });
+
+        // ============ CALENDÁRIO / AGENDA ============
+        function renderCalendar() {
+            const today = new Date();
+            // month view
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDow = firstDay.getDay(); // 0=Sun
+            // Ajuste para segunda-feira como primeiro dia da semana
+            const adjustedStart = (startDow === 0) ? 6 : startDow - 1; // segunda=0 ... domingo=6
+
+            calendarMonthLabel.textContent = new Date(currentYear, currentMonth).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+
+            // Cabeçalho dos dias
+            const weekDays = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+            let thead = '<tr>' + weekDays.map(d => `<th>${d}</th>`).join('') + '</tr>';
+
+            // Preenche células
+            let cells = '';
+            let day = 1;
+            const totalCells = 42; // 6 semanas
+            for (let i = 0; i < totalCells; i++) {
+                if (i % 7 === 0) cells += '<tr>';
+                if (i < adjustedStart || day > daysInMonth) {
+                    // dia de outro mês
+                    const otherMonthDay = (i < adjustedStart) ? (new Date(currentYear, currentMonth - 1, 1).getDate() - (adjustedStart - i - 1)) : (i - adjustedStart - daysInMonth + 1);
+                    cells += `<td class="other-month">${otherMonthDay}</td>`;
+                } else {
+                    const cellDate = new Date(currentYear, currentMonth, day);
+                    const dateStr = cellDate.toISOString().split('T')[0];
+                    const events = getEventsForDate(dateStr);
+                    const hasEvents = events.length > 0;
+                    const hasUnpaid = events.some(e => !e.pago);
+                    const isToday = (cellDate.toDateString() === today.toDateString());
+                    const isSelected = (selectedDate && cellDate.toDateString() === selectedDate.toDateString());
+                    let classes = [];
+                    if (isToday) classes.push('today');
+                    if (isSelected) classes.push('selected');
+                    cells += `<td class="${classes.join(' ')}" data-date="${dateStr}">${day}`;
+                    if (hasEvents) {
+                        const dotClass = hasUnpaid ? 'event-dot' : 'event-dot paid-dot';
+                        cells += `<div class="${dotClass}"></div>`;
+                    }
+                    cells += `</td>`;
+                    day++;
+                }
+                if (i % 7 === 6) cells += '</tr>';
+            }
+            calendarTable.innerHTML = thead + cells;
+
+            // Eventos de clique nos dias
+            calendarTable.querySelectorAll('td[data-date]').forEach(td => {
+                td.addEventListener('click', function() {
+                    const dateStr = this.getAttribute('data-date');
+                    selectedDate = new Date(dateStr + 'T00:00:00');
+                    renderCalendar();
+                    showAgendaForDate(dateStr);
+                });
+            });
+
+            // Se tiver um dia selecionado, mostra agenda desse dia
+            if (selectedDate) {
+                const dateStr = selectedDate.toISOString().split('T')[0];
+                showAgendaForDate(dateStr);
+            } else {
+                agendaTitle.textContent = '📋 Selecione um dia';
+                agendaList.innerHTML = '';
+            }
+            allEventsContainer.style.display = 'none';
+            allEventsContainer.innerHTML = '';
+        }
+
+        function getEventsForDate(dateStr) {
+            const events = getAllEvents();
+            return events.filter(e => e.date.toISOString().split('T')[0] === dateStr);
+        }
+
+        function showAgendaForDate(dateStr) {
+            const events = getEventsForDate(dateStr);
+            const dataFormatada = new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            agendaTitle.textContent = `📅 ${dataFormatada}`;
+            if (events.length === 0) {
+                agendaList.innerHTML = '<p style="color:var(--text-light); font-size:0.8rem;">Nenhum vencimento nesse dia.</p>';
+                return;
+            }
+            agendaList.innerHTML = events.map(e => `
+                <div class="agenda-item ${e.pago ? 'paid' : ''}" data-loan-id="${e.loanId}" data-parcela="${e.parcelaNum}">
+                    <div class="agenda-status">${e.pago ? '✓' : ''}</div>
+                    <div class="agenda-info">
+                        <strong>${e.clienteNome}</strong> - Missão #${e.loanId} (${e.parcelaNum}ª esfera)
+                    </div>
+                    <div class="agenda-valor">${formatarMoeda(e.valor)}</div>
+                </div>
+            `).join('');
+
+            // Eventos para toggle
+            agendaList.querySelectorAll('.agenda-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const loanId = parseInt(this.getAttribute('data-loan-id'));
+                    const parcelaNum = parseInt(this.getAttribute('data-parcela'));
+                    toggleParcelaFromAgenda(loanId, parcelaNum);
+                    // Atualiza a agenda do dia
+                    showAgendaForDate(dateStr);
+                    renderCalendar(); // re-render para atualizar dots
+                });
+            });
+        }
+
+        function showAllUpcomingEvents() {
+            const events = getAllEvents().filter(e => !e.pago).sort((a, b) => a.date - b.date);
+            if (events.length === 0) {
+                allEventsContainer.style.display = 'block';
+                allEventsContainer.innerHTML = '<p style="text-align:center; color:var(--text-light);">Todos os vencimentos já foram pagos! 🎉</p>';
+                return;
+            }
+            allEventsContainer.style.display = 'block';
+            allEventsContainer.innerHTML = '<h4 style="margin-bottom:8px; color:var(--text);">Próximos vencimentos</h4>' +
+                events.map(e => {
+                    const dataStr = formatarData(e.date);
+                    return `<div class="agenda-item" data-loan-id="${e.loanId}" data-parcela="${e.parcelaNum}">
+                        <div class="agenda-status" style="background:#FFB347; color:#fff;">!</div>
+                        <div class="agenda-info">
+                            <strong>${e.clienteNome}</strong> - Missão #${e.loanId} (${e.parcelaNum}ª esfera) <br>📅 ${dataStr}
+                        </div>
+                        <div class="agenda-valor">${formatarMoeda(e.valor)}</div>
+                    </div>`;
+                }).join('');
+            // Eventos toggle
+            allEventsContainer.querySelectorAll('.agenda-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const loanId = parseInt(this.getAttribute('data-loan-id'));
+                    const parcelaNum = parseInt(this.getAttribute('data-parcela'));
+                    toggleParcelaFromAgenda(loanId, parcelaNum);
+                    showAllUpcomingEvents();
+                    renderCalendar();
+                });
+            });
+        }
+
+        // Inicializa calendário com mês atual
+        (function initCalendar() {
             const now = new Date();
             currentMonth = now.getMonth();
             currentYear = now.getFullYear();
@@ -1085,13 +1196,12 @@
         });
         allEventsBtn.addEventListener('click', showAllUpcomingEvents);
 
-        // ============ EVENTOS ============
+        // ============ EVENTOS GERAIS ============
         addClientBtn.addEventListener('click', adicionarCliente);
         newClientInput.addEventListener('keydown', e => { if (e.key === 'Enter') adicionarCliente(); });
         clearSelectedClientBtn.addEventListener('click', () => {
             selectedClientIndex = null;
             selectedLoanId = null;
-            salvarDados();
             renderClientes();
             updateLoanPanelVisibility();
             updateParcelaPanel();
@@ -1102,14 +1212,7 @@
             inp.addEventListener('keydown', e => { if (e.key === 'Enter') criarEmprestimo(); });
         });
 
-        // ============ INICIALIZAÇÃO ============
-        carregarDados(); // Carrega dados salvos
-        // Data default para novo empréstimo
-        (function() {
-            const hoje = new Date();
-            hoje.setDate(hoje.getDate() + 30);
-            loanDataInput.value = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
-        })();
+        // ============ INIT ============
         renderClientes();
         updateGlobalResumo();
     })();
