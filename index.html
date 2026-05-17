@@ -33,7 +33,7 @@
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
-                    const CACHE = 'caixinha-dbz-v3';
+                    const CACHE = 'caixinha-dbz-v4';
                     self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/']))));
                     self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
                 `], { type: 'application/javascript' }))).catch(() => {});
@@ -293,6 +293,21 @@
 
         .card-footer { text-align: center; padding: 8px 20px 14px; font-size: 0.68rem; color: #B8A090; border-top: 1px solid #FFE0C0; }
 
+        /* Resumo de empréstimos na aba clientes */
+        .client-loan-summary {
+            margin-top: 10px; padding: 10px; background: #FFF8F0;
+            border: 2px solid #FFB347; border-radius: 10px; display: none;
+        }
+        .client-loan-summary .summary-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 6px 0; border-bottom: 1px dashed #FFE0C0;
+            font-size: 0.8rem;
+        }
+        .client-loan-summary .summary-item:last-child { border-bottom: none; }
+        .client-loan-summary .summary-title {
+            font-weight: 800; color: #FF6B00; font-size: 0.85rem; margin-bottom: 6px;
+        }
+
         @media (max-width: 480px) {
             .card-body { padding: 16px 10px 18px; }
             .card-header { padding: 18px 12px 14px; }
@@ -338,11 +353,16 @@
                     </div>
                 </div>
                 <ul class="client-list" id="clientList"></ul>
-                <p style="font-size:0.75rem; color:var(--text-light);">Selecione um guerreiro para gerenciar seus empréstimos.</p>
+                <p style="font-size:0.75rem; color:var(--text-light);">Selecione um guerreiro para ver seus lançamentos.</p>
                 <div id="selectedClientInfo" style="margin-top:12px; padding:10px 14px; background:#FFF8F0; border-radius:10px; border:2px solid #FFB347; display:none;">
                     <strong style="color:#FF6B00;">⭐ Guerreiro:</strong>
                     <span id="selectedClientName" style="font-weight:700;"></span>
                     <button class="btn btn-small btn-outline" id="clearSelectedClient" style="margin-left:8px;">Limpar</button>
+                </div>
+                <!-- Resumo de empréstimos do cliente selecionado -->
+                <div class="client-loan-summary" id="clientLoanSummary">
+                    <div class="summary-title">📋 Missões de <span id="summaryClientName"></span></div>
+                    <div id="clientLoanSummaryList"></div>
                 </div>
             </div>
 
@@ -413,7 +433,7 @@
                 <div id="allEventsContainer" style="margin-top:10px; display:none;"></div>
             </div>
         </div>
-        <div class="card-footer">🐉 App completo • Calendário, clientes e edição de parcelas</div>
+        <div class="card-footer">🐉 Dados salvos automaticamente • Calendário, clientes e edição de parcelas</div>
     </div>
 </div>
 
@@ -442,6 +462,48 @@
 
 <script>
     (function() {
+        // ============ PERSISTÊNCIA COM LOCALSTORAGE ============
+        const STORAGE_KEY = 'caixinha_dbz_data';
+
+        function salvarDados() {
+            const dados = {
+                clientes: clientes,
+                emprestimos: emprestimos.map(e => ({
+                    ...e,
+                    parcelas: e.parcelas.map(p => ({
+                        ...p,
+                        data: p.data.toISOString()
+                    }))
+                })),
+                nextLoanId: nextLoanId
+            };
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+            } catch (e) {
+                console.warn('Não foi possível salvar os dados.', e);
+            }
+        }
+
+        function carregarDados() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const dados = JSON.parse(raw);
+                    clientes = dados.clientes || [];
+                    emprestimos = (dados.emprestimos || []).map(e => ({
+                        ...e,
+                        parcelas: e.parcelas.map(p => ({
+                            ...p,
+                            data: new Date(p.data)
+                        }))
+                    }));
+                    nextLoanId = dados.nextLoanId || 1;
+                }
+            } catch (e) {
+                console.warn('Erro ao carregar dados.', e);
+            }
+        }
+
         // ============ ESTADO ============
         let clientes = [];
         let selectedClientIndex = null;
@@ -465,6 +527,9 @@
         const selectedClientInfo = document.getElementById('selectedClientInfo');
         const selectedClientNameEl = document.getElementById('selectedClientName');
         const clearSelectedClientBtn = document.getElementById('clearSelectedClient');
+        const clientLoanSummary = document.getElementById('clientLoanSummary');
+        const summaryClientName = document.getElementById('summaryClientName');
+        const clientLoanSummaryList = document.getElementById('clientLoanSummaryList');
         const noClientWarning = document.getElementById('noClientWarning');
         const loanFormContainer = document.getElementById('loanFormContainer');
         const loanValorInput = document.getElementById('loanValorInput');
@@ -546,14 +611,7 @@
             return events;
         }
 
-        // Data default
-        (function() {
-            const hoje = new Date();
-            hoje.setDate(hoje.getDate() + 30);
-            loanDataInput.value = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
-        })();
-
-        // ============ RENDER CLIENTES ============
+        // ============ RENDER CLIENTES (COM RESUMO) ============
         function renderClientes() {
             clientListEl.innerHTML = '';
             clientes.forEach((c, idx) => {
@@ -570,6 +628,7 @@
                             if (selectedClientIndex === idx) selectedClientIndex = null;
                             else if (selectedClientIndex > idx) selectedClientIndex--;
                             if (selectedLoanId && !findLoanById(selectedLoanId)) selectedLoanId = null;
+                            salvarDados();
                             renderClientes();
                             renderLoanList();
                             updateParcelaPanel();
@@ -578,19 +637,39 @@
                     } else {
                         selectedClientIndex = idx;
                         selectedLoanId = null;
+                        salvarDados();
                         renderClientes();
                         renderLoanList();
                         updateParcelaPanel();
-                        switchTab('tab-emprestimos');
+                        // Não muda de aba automaticamente, deixa ver o resumo
                     }
                 });
                 clientListEl.appendChild(tag);
             });
+
+            // Atualiza info do cliente selecionado e resumo de empréstimos
             if (selectedClientIndex !== null && clientes[selectedClientIndex]) {
                 selectedClientInfo.style.display = 'block';
                 selectedClientNameEl.textContent = clientes[selectedClientIndex].nome;
+                // Mostra resumo dos empréstimos do cliente
+                const loans = emprestimos.filter(e => e.clienteIndex === selectedClientIndex);
+                summaryClientName.textContent = clientes[selectedClientIndex].nome;
+                if (loans.length > 0) {
+                    clientLoanSummary.style.display = 'block';
+                    clientLoanSummaryList.innerHTML = loans.map(l => {
+                        const s = getLoanSummary(l);
+                        return `<div class="summary-item">
+                            <span>🐉 Missão #${l.id}</span>
+                            <span>${formatarMoeda(s.valorTotal)} (${s.pagas}/${s.totalParcelas} pagas)</span>
+                        </div>`;
+                    }).join('');
+                } else {
+                    clientLoanSummary.style.display = 'block';
+                    clientLoanSummaryList.innerHTML = '<p style="font-size:0.8rem; color:var(--text-light);">Nenhuma missão ainda.</p>';
+                }
             } else {
                 selectedClientInfo.style.display = 'none';
+                clientLoanSummary.style.display = 'none';
             }
             updateLoanPanelVisibility();
             updateGlobalResumo();
@@ -606,6 +685,7 @@
             }
             clientes.push({ nome });
             newClientInput.value = '';
+            salvarDados();
             renderClientes();
         }
 
@@ -651,11 +731,13 @@
             emprestimos.push(novo);
             selectedLoanId = novo.id;
             loanValorInput.value = '';
+            salvarDados();
             renderLoanList();
             updateParcelaPanel();
             switchTab('tab-parcelas');
             updateGlobalResumo();
             renderCalendar();
+            renderClientes(); // atualiza resumo na aba clientes
         }
 
         function renderLoanList() {
@@ -679,6 +761,7 @@
             document.querySelectorAll('.loan-card').forEach(card => {
                 card.addEventListener('click', function() {
                     selectedLoanId = parseInt(this.getAttribute('data-loan-id'));
+                    salvarDados();
                     renderLoanList();
                     updateParcelaPanel();
                     switchTab('tab-parcelas');
@@ -715,7 +798,6 @@
                 </div>
             `).join('');
 
-            // Toggle pago
             parcelaList.querySelectorAll('[data-toggle]').forEach(check => {
                 check.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -723,15 +805,16 @@
                     const parcela = loan.parcelas.find(p => p.numero === num);
                     if (parcela) {
                         parcela.pago = !parcela.pago;
+                        salvarDados();
                         updateParcelaPanel();
                         renderLoanList();
                         updateGlobalResumo();
                         renderCalendar();
+                        renderClientes();
                     }
                 });
             });
 
-            // Botão editar
             parcelaList.querySelectorAll('[data-edit]').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -777,22 +860,22 @@
             if (isNaN(novoValor) || novoValor <= 0) { alert('Valor inválido.'); return; }
             if (isNaN(novoNumero) || novoNumero < 1) { alert('Número inválido.'); return; }
 
-            // Verifica se já existe outra parcela com o mesmo número (se foi alterado)
             if (novoNumero !== parcela.numero && loan.parcelas.some(p => p.numero === novoNumero)) {
                 alert('Já existe uma parcela com esse número nesta missão.');
                 return;
             }
 
-            // Aplica alterações
             parcela.data = new Date(novaDataStr + 'T00:00:00');
             parcela.valor = novoValor;
             parcela.numero = novoNumero;
 
             fecharModalEdicao();
+            salvarDados();
             updateParcelaPanel();
             renderLoanList();
             updateGlobalResumo();
             renderCalendar();
+            renderClientes();
         }
 
         cancelEditBtn.addEventListener('click', fecharModalEdicao);
@@ -885,11 +968,13 @@
                     if (loan) {
                         const p = loan.parcelas.find(pp => pp.numero === parcelaNum);
                         if (p) { p.pago = !p.pago; }
+                        salvarDados();
                         showAgendaForDate(dateStr);
                         renderCalendar();
                         updateParcelaPanel();
                         renderLoanList();
                         updateGlobalResumo();
+                        renderClientes();
                     }
                 });
             });
@@ -929,11 +1014,13 @@
                     if (loan) {
                         const p = loan.parcelas.find(pp => pp.numero === parcelaNum);
                         if (p) { p.pago = !p.pago; }
+                        salvarDados();
                         showAllUpcomingEvents();
                         renderCalendar();
                         updateParcelaPanel();
                         renderLoanList();
                         updateGlobalResumo();
+                        renderClientes();
                     }
                 });
             });
@@ -972,6 +1059,7 @@
                 }
                 renderCalendar();
             }
+            if (tabId === 'tab-clientes') renderClientes();
         }
         tabs.forEach(tab => tab.addEventListener('click', function() { switchTab(this.getAttribute('data-tab')); }));
 
@@ -1003,6 +1091,7 @@
         clearSelectedClientBtn.addEventListener('click', () => {
             selectedClientIndex = null;
             selectedLoanId = null;
+            salvarDados();
             renderClientes();
             updateLoanPanelVisibility();
             updateParcelaPanel();
@@ -1013,6 +1102,14 @@
             inp.addEventListener('keydown', e => { if (e.key === 'Enter') criarEmprestimo(); });
         });
 
+        // ============ INICIALIZAÇÃO ============
+        carregarDados(); // Carrega dados salvos
+        // Data default para novo empréstimo
+        (function() {
+            const hoje = new Date();
+            hoje.setDate(hoje.getDate() + 30);
+            loanDataInput.value = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
+        })();
         renderClientes();
         updateGlobalResumo();
     })();
